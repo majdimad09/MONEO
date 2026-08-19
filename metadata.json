@@ -1,0 +1,6 @@
+{
+  "name": "Cashly",
+  "description": "A modern personal money management and expense tracking dashboard to take control of your financial health.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
