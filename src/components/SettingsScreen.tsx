@@ -2,8 +2,9 @@ import React, { useState, useMemo } from 'react';
 import {
   Target, Edit2, Plus, Trash2, AlertTriangle, CheckCircle2, X,
   RefreshCw, Power, Calendar, Download, RotateCcw, Sparkles,
-  Wallet, ChevronRight, User, Check,
+  Wallet, ChevronRight, User, Check, LogOut,
 } from 'lucide-react';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { Transaction, CategoryLimit, Subscription, SubscriptionFrequency, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { getCategoryColor } from './CategoryIcon';
@@ -26,6 +27,8 @@ interface SettingsScreenProps {
   userName: string;
   onSaveUserName: (name: string) => void;
   initialTab?: SettingsTab;
+  user?: SupabaseUser | null;
+  onSignOut?: () => void;
 }
 
 type SettingsTab = 'budget' | 'subscriptions' | 'data';
@@ -76,7 +79,7 @@ const emptySub = { name: '', amount: '', frequency: 'monthly' as SubscriptionFre
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, onSaveBudget, onSaveLimits,
   subscriptions, onSaveSubscriptions, transactionCount, onLoadSampleData, onClearAllData, onExportCSV,
-  userName, onSaveUserName, initialTab,
+  userName, onSaveUserName, initialTab, user, onSignOut,
 }) => {
   const [tab, setTab] = useState<SettingsTab>(initialTab || 'budget');
   const [nameInput, setNameInput] = useState(userName);
@@ -208,6 +211,28 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Account section (only when signed in) */}
+      {user && (
+        <div className="card-dark rounded-2xl p-4 card-float-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold text-slate-300">Signed in as</p>
+              <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[200px]">{user.email}</p>
+            </div>
+            {onSignOut && (
+              <button
+                onClick={onSignOut}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+              >
+                <LogOut size={13} />
+                Sign Out
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Sub-tab nav */}
       <div className="flex p-1 gap-1 rounded-2xl" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>

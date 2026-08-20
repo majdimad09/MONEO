@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, AppView } from './types/finance';
 import {
   loadTransactions, saveTransactions,
@@ -15,8 +15,21 @@ import {
   loadUserName, saveUserName,
   SAMPLE_TRANSACTIONS, exportTransactionsToCSV,
 } from './utils/storage';
+import { isSupabaseConfigured } from './lib/supabase';
+import { useAuth } from './hooks/useAuth';
+import {
+  loadAllUserData,
+  insertTransaction,
+  updateTransaction as dbUpdateTransaction,
+  deleteTransaction as dbDeleteTransaction,
+  saveProfile,
+  saveUserPreferences,
+  replaceSavingGoals,
+  replaceSubscriptions,
+} from './lib/supabaseService';
 
 import { LandingPage } from './components/LandingPage';
+import { AuthScreen } from './components/AuthScreen';
 import { MobileTopBar } from './components/MobileTopBar';
 import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
@@ -30,8 +43,12 @@ import { EditTransactionModal } from './components/EditTransactionModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<AppView>('landing');
+  const { user, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
 
+  const [currentView, setCurrentView] = useState<AppView>('landing');
+  const [cloudLoading, setCloudLoading] = useState(false);
+
+  // ── Data state (guest defaults from localStorage) ─────────────────────────
   const [transactions, setTransactions] = useState<Transaction[]>(() => loadTransactions());
   const [currency, setCurrency] = useState<string>(() => loadSavedCurrency());
   const [monthlyBudget, setMonthlyBudget] = useState<number>(() => loadMonthlyBudget());
@@ -40,6 +57,7 @@ export default function App() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => loadSubscriptions());
   const [userName, setUserName] = useState<string>(() => loadUserName());
 
+  // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [addModalDefaultType, setAddModalDefaultType] = useState<TransactionType>('expense');
@@ -48,16 +66,44 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'budget' | 'subscriptions' | 'data' | undefined>();
 
-  useEffect(() => { saveTransactions(transactions); }, [transactions]);
-
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
-  };
+  }, []);
 
+  // ── Load cloud data when user signs in ────────────────────────────────────
+  useEffect(() => {
+    if (!user) return;
+
+    setCloudLoading(true);
+    loadAllUserData(user.id)
+      .then(data => {
+        setTransactions(data.transactions);
+        setSavingGoals(data.savingGoals);
+        setSubscriptions(data.subscriptions);
+        if (data.preferences) {
+          setMonthlyBudget(data.preferences.monthly_budget);
+          setCategoryLimits(data.preferences.category_limits);
+        }
+        if (data.profile) {
+          if (data.profile.name) setUserName(data.profile.name);
+          if (data.profile.currency) setCurrency(data.profile.currency);
+        }
+        setCurrentView('home');
+      })
+      .catch(() => {
+        showToast('Could not load cloud data. Using cached data.');
+        setCurrentView('home');
+      })
+      .finally(() => setCloudLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleCurrencyChange = (code: string) => {
     setCurrency(code);
     saveSelectedCurrency(code);
+    if (user) saveUserPreferences(user.id, { currency: code }).catch(() => {});
   };
 
   const handleAddTransaction = (data: { type: TransactionType; amount: number; description: string; category: string; date: string }) => {
@@ -67,16 +113,19 @@ export default function App() {
       createdAt: Date.now(),
     };
     setTransactions(prev => [newTx, ...prev]);
+    if (user) insertTransaction(user.id, newTx).catch(() => {});
     showToast(newTx.type === 'income' ? 'Income added!' : 'Expense recorded!');
   };
 
   const handleUpdateTransaction = (updated: Transaction) => {
     setTransactions(prev => prev.map(t => t.id === updated.id ? updated : t));
+    if (user) dbUpdateTransaction(user.id, updated).catch(() => {});
     showToast('Transaction updated!');
   };
 
   const handleDeleteTransaction = (tx: Transaction) => {
     setTransactions(prev => prev.filter(t => t.id !== tx.id));
+    if (user) dbDeleteTransaction(user.id, tx.id).catch(() => {});
     showToast('Transaction deleted.');
   };
 
@@ -98,26 +147,44 @@ export default function App() {
   const handleSaveBudget = (amount: number) => {
     setMonthlyBudget(amount);
     saveMonthlyBudget(amount);
+    if (user) saveUserPreferences(user.id, { monthly_budget: amount }).catch(() => {});
   };
 
   const handleSaveLimits = (limits: CategoryLimit[]) => {
     setCategoryLimits(limits);
     saveCategoryLimits(limits);
+    if (user) saveUserPreferences(user.id, { category_limits: limits }).catch(() => {});
   };
 
   const handleSaveGoals = (goals: SavingGoal[]) => {
     setSavingGoals(goals);
     saveSavingGoals(goals);
+    if (user) replaceSavingGoals(user.id, goals).catch(() => {});
   };
 
   const handleSaveSubscriptions = (subs: Subscription[]) => {
     setSubscriptions(subs);
     saveSubscriptions(subs);
+    if (user) replaceSubscriptions(user.id, subs).catch(() => {});
   };
 
   const handleSaveUserName = (name: string) => {
     setUserName(name);
     saveUserName(name);
+    if (user) saveProfile(user.id, { name }).catch(() => {});
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    // Clear all data — auth guard will show AuthScreen
+    setTransactions([]);
+    setCurrency('USD');
+    setMonthlyBudget(0);
+    setCategoryLimits([]);
+    setSavingGoals([]);
+    setSubscriptions([]);
+    setUserName('');
+    setCurrentView('landing');
   };
 
   const navigate = (view: AppView) => setCurrentView(view);
@@ -140,7 +207,37 @@ export default function App() {
     }
   };
 
-  // Landing page — full screen, no shell
+  // ── Render ────────────────────────────────────────────────────────────────
+
+  // While auth is initializing
+  if (authLoading || cloudLoading) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: '#060b18' }}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin"
+          />
+          <span className="text-xs text-slate-500">Loading Cashly…</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth wall — unauthenticated users always see the sign-in screen
+  if (!user) {
+    return (
+      <AuthScreen
+        onSignIn={signIn}
+        onSignUp={signUp}
+        onResetPassword={resetPassword}
+      />
+    );
+  }
+
+  // Landing page (authenticated users only)
   if (currentView === 'landing') {
     return <LandingPage onGetStarted={() => navigate('home')} />;
   }
@@ -215,6 +312,8 @@ export default function App() {
               userName={userName}
               onSaveUserName={handleSaveUserName}
               initialTab={settingsInitialTab}
+              user={user}
+              onSignOut={handleSignOut}
             />
           )}
 
