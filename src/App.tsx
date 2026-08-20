@@ -43,7 +43,7 @@ import { EditTransactionModal } from './components/EditTransactionModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 
 export default function App() {
-  const { user, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
+  const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
 
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [cloudLoading, setCloudLoading] = useState(false);
@@ -226,13 +226,15 @@ export default function App() {
     );
   }
 
-  // Auth wall — unauthenticated users always see the sign-in screen
-  if (!user) {
+  // Auth wall — unauthenticated users, or users mid-password-recovery, see the auth screen.
+  if (!user || isRecoveryMode) {
     return (
       <AuthScreen
         onSignIn={signIn}
         onSignUp={signUp}
         onResetPassword={resetPassword}
+        onUpdatePassword={updatePassword}
+        isRecoveryMode={isRecoveryMode}
       />
     );
   }

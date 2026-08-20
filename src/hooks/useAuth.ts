@@ -7,6 +7,7 @@ export interface AuthState {
   session: Session | null;
   loading: boolean;
   isConfigured: boolean;
+  isRecoveryMode: boolean;
 }
 
 export interface AuthActions {
@@ -14,12 +15,18 @@ export interface AuthActions {
   signUp: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<string | null>;
+  updatePassword: (password: string) => Promise<string | null>;
 }
 
 export function useAuth(): AuthState & AuthActions {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
+  // Immediately true when the URL contains a recovery token so the password
+  // form shows before any async session exchange completes.
+  const [isRecoveryMode, setIsRecoveryMode] = useState(() =>
+    typeof window !== 'undefined' && window.location.hash.includes('type=recovery')
+  );
 
   useEffect(() => {
     if (!supabase) {
@@ -27,17 +34,21 @@ export function useAuth(): AuthState & AuthActions {
       return;
     }
 
-    // Load existing session
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
       setLoading(false);
     });
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsRecoveryMode(true);
+      } else if (event === 'USER_UPDATED') {
+        // Password was successfully changed — exit recovery mode.
+        setIsRecoveryMode(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -55,7 +66,7 @@ export function useAuth(): AuthState & AuthActions {
       email,
       password,
       options: {
-        // Redirect to wherever the app is currently deployed (works for both Vercel and local).
+        // Use the current origin so the confirmation link works on any deployment.
         emailRedirectTo: window.location.origin,
       },
     });
@@ -70,19 +81,44 @@ export function useAuth(): AuthState & AuthActions {
   const resetPassword = async (email: string): Promise<string | null> => {
     if (!supabase) return 'Supabase is not configured.';
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // Redirect back to the app origin — Supabase appends #type=recovery tokens.
       redirectTo: window.location.origin,
     });
     return error ? friendlyError(error.message) : null;
   };
 
-  return { user, session, loading, isConfigured: isSupabaseConfigured, signIn, signUp, signOut, resetPassword };
+  const updatePassword = async (password: string): Promise<string | null> => {
+    if (!supabase) return 'Supabase is not configured.';
+    const { error } = await supabase.auth.updateUser({ password });
+    if (!error) setIsRecoveryMode(false);
+    return error ? friendlyError(error.message) : null;
+  };
+
+  return {
+    user, session, loading, isConfigured: isSupabaseConfigured, isRecoveryMode,
+    signIn, signUp, signOut, resetPassword, updatePassword,
+  };
 }
 
 function friendlyError(msg: string): string {
-  if (msg.includes('Invalid login credentials')) return 'Invalid email or password.';
-  if (msg.includes('Email not confirmed')) return 'Please confirm your email before signing in.';
-  if (msg.includes('already registered') || msg.includes('already exists')) return 'An account with this email already exists.';
-  if (msg.includes('Password should be')) return 'Password must be at least 6 characters.';
-  if (msg.includes('rate limit')) return 'Too many attempts. Please wait a moment.';
+  const m = msg.toLowerCase();
+  if (m.includes('invalid login credentials') || m.includes('invalid email or password')) {
+    return 'Invalid email or password.';
+  }
+  if (m.includes('email not confirmed')) {
+    return 'Please confirm your email first — check your inbox for a confirmation link.';
+  }
+  if (m.includes('already registered') || m.includes('already exists') || m.includes('user already registered')) {
+    return 'An account with this email already exists.';
+  }
+  if (m.includes('password should be') || m.includes('password must be') || m.includes('weak password')) {
+    return 'Password must be at least 6 characters.';
+  }
+  if (m.includes('rate limit') || m.includes('too many requests')) {
+    return 'Too many attempts. Please wait a moment.';
+  }
+  if (m.includes('invalid email')) {
+    return 'Please enter a valid email address.';
+  }
   return msg;
 }
