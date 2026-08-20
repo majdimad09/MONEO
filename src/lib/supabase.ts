@@ -1,9 +1,16 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const rawUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-// Supabase is optional — if credentials are missing, the app runs in guest-only mode.
+// Strip any accidental path suffix — only the origin (https://<ref>.supabase.co) is valid.
+let url: string | undefined;
+try {
+  url = rawUrl ? new URL(rawUrl).origin : undefined;
+} catch {
+  url = undefined;
+}
+
 const isConfigured =
   !!url && url !== 'https://your-project-ref.supabase.co' &&
   !!key && key !== 'your-anon-key-here';

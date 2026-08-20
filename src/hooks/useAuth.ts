@@ -51,7 +51,14 @@ export function useAuth(): AuthState & AuthActions {
 
   const signUp = async (email: string, password: string): Promise<string | null> => {
     if (!supabase) return 'Supabase is not configured.';
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Redirect to wherever the app is currently deployed (works for both Vercel and local).
+        emailRedirectTo: window.location.origin,
+      },
+    });
     return error ? friendlyError(error.message) : null;
   };
 
