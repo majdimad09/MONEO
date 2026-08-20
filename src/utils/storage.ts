@@ -6,6 +6,7 @@ const BUDGET_KEY = 'cashly_monthly_budget_v1';
 const LIMITS_KEY = 'cashly_category_limits_v1';
 const GOALS_KEY = 'cashly_saving_goals_v1';
 const SUBSCRIPTIONS_KEY = 'cashly_subscriptions_v1';
+const USERNAME_KEY = 'cashly_username_v1';
 
 export const SAMPLE_TRANSACTIONS: Transaction[] = [
   { id: 'sample-1', type: 'income', amount: 3500, description: 'Monthly Salary', category: 'Salary', date: '2026-08-01', createdAt: Date.now() - 86400000 * 18 },
@@ -89,6 +90,14 @@ export function loadSubscriptions(): Subscription[] {
 }
 export function saveSubscriptions(subs: Subscription[]): void {
   try { localStorage.setItem(SUBSCRIPTIONS_KEY, JSON.stringify(subs)); } catch { /* ignore */ }
+}
+
+// --- User Name ---
+export function loadUserName(): string {
+  try { return localStorage.getItem(USERNAME_KEY) || ''; } catch { return ''; }
+}
+export function saveUserName(name: string): void {
+  try { localStorage.setItem(USERNAME_KEY, name); } catch { /* ignore */ }
 }
 
 // --- CSV Export ---

@@ -28,13 +28,15 @@ interface AddTransactionFormProps {
     date: string;
   }) => void;
   currency: string;
+  defaultType?: TransactionType;
 }
 
 export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   onAddTransaction,
   currency,
+  defaultType,
 }) => {
-  const [activeTab, setActiveTab] = useState<TransactionType>('expense');
+  const [activeTab, setActiveTab] = useState<TransactionType>(defaultType || 'expense');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Food');

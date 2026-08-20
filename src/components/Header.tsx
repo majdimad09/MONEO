@@ -18,12 +18,11 @@ interface HeaderProps {
 }
 
 const NAV_ITEMS: { view: AppView; label: string; icon: React.ElementType }[] = [
-  { view: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { view: 'home', label: 'Home', icon: LayoutDashboard },
   { view: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
-  { view: 'budget', label: 'Budget', icon: Wallet },
-  { view: 'goals', label: 'Goals', icon: Flag },
-  { view: 'subscriptions', label: 'Subscriptions', icon: RefreshCw },
-  { view: 'insights', label: 'Insights', icon: LineChart },
+  { view: 'statistics', label: 'Statistics', icon: LineChart },
+  { view: 'savings', label: 'Savings', icon: Flag },
+  { view: 'settings', label: 'Settings', icon: Wallet },
 ];
 
 export const Header: React.FC<HeaderProps> = ({
