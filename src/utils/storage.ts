@@ -112,7 +112,7 @@ export function exportTransactionsToCSV(transactions: Transaction[], currencyCod
   const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const link = document.createElement('a');
   link.setAttribute('href', encodeURI(csv));
-  link.setAttribute('download', `cashly_${new Date().toISOString().split('T')[0]}.csv`);
+  link.setAttribute('download', `moneo_${new Date().toISOString().split('T')[0]}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

@@ -100,7 +100,7 @@ export const LogoWordmark: React.FC<LogoWordmarkProps> = ({
           className="text-white leading-none"
           style={{ fontFamily: BRAND_FONT, fontSize: cfg.cashly, fontWeight: 700, letterSpacing: '-0.01em' }}
         >
-          CASHLY
+          MONEO
         </span>
         <span
           className="font-semibold uppercase mt-1"
@@ -134,7 +134,7 @@ export const LogoBrandBlock: React.FC<LogoBrandBlockProps> = ({
         className="text-white leading-none tracking-tight"
         style={{ fontFamily: BRAND_FONT, fontSize: cashlySize, fontWeight: 700 }}
       >
-        CASHLY
+        MONEO
       </span>
       <span
         className="font-semibold uppercase tracking-widest"

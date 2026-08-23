@@ -633,7 +633,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               All data is stored locally in your browser.<br />
               No servers, no tracking, 100% private.
             </p>
-            <p className="text-[10px] text-slate-600 mt-2">{transactionCount} transactions · CASHLY by MJ/IA</p>
+            <p className="text-[10px] text-slate-600 mt-2">{transactionCount} transactions · MONEO by MJ/IA</p>
           </div>
         </div>
       )}

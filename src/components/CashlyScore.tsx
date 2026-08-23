@@ -24,7 +24,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, size = 'md' })
       {/* Title row */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Cashly Score</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Moneo Score</p>
           <p className="text-[11px] text-slate-600 mt-0.5">Financial health index</p>
         </div>
         <button

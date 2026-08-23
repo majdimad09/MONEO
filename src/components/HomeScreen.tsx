@@ -112,15 +112,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{monthLabel}</p>
           <p className="text-lg font-bold text-white mt-0.5">{greeting}</p>
         </div>
-        {isEmpty && (
-          <button
-            onClick={onLoadSample}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-blue-300 cursor-pointer"
-            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}
-          >
-            <Sparkles size={12} className="text-blue-400" /> Load demo
-          </button>
-        )}
       </div>
 
       {/* ── BALANCE CARD ─────────────────────────────── */}
@@ -257,7 +248,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-blue-400" />
-              <h3 className="text-sm font-bold text-white">Cashly Insights</h3>
+              <h3 className="text-sm font-bold text-white">Moneo Insights</h3>
             </div>
             <span className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Based on your data</span>
           </div>
@@ -299,7 +290,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
             <p className="text-slate-200 font-bold text-base mb-2">No transactions yet</p>
             <p className="text-slate-500 text-sm leading-relaxed mb-5">
-              Add your first transaction and Cashly will start building your financial picture.
+              Add your first transaction and Moneo will start building your financial picture.
             </p>
             <button onClick={onAddExpense} className="btn-blue px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2">
               <Plus size={16} /> Add Transaction

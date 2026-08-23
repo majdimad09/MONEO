@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, Eye, EyeOff, Loader2, ChevronLeft } from 'lucide-react';
 import { LogoWordmark } from './Logo';
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'update-password';
@@ -10,10 +10,11 @@ interface AuthScreenProps {
   onResetPassword: (email: string) => Promise<string | null>;
   onUpdatePassword?: (password: string) => Promise<string | null>;
   isRecoveryMode?: boolean;
+  onGoBack?: () => void;
 }
 
 export function AuthScreen({
-  onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode,
+  onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode, onGoBack,
 }: AuthScreenProps) {
   const [mode, setMode] = useState<AuthMode>(isRecoveryMode ? 'update-password' : 'signin');
   const [email, setEmail] = useState('');
@@ -98,9 +99,18 @@ export function AuthScreen({
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center p-4 relative"
       style={{ background: 'radial-gradient(ellipse at top, #0d1e3f 0%, #060b18 60%)' }}
     >
+      {onGoBack && !isRecoveryMode && (
+        <button
+          onClick={onGoBack}
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+        >
+          <ChevronLeft size={16} />
+          Back
+        </button>
+      )}
       <div
         className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-6"
         style={{ background: '#0d1526', border: '1px solid rgba(255,255,255,0.07)' }}

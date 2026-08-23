@@ -30,6 +30,7 @@ import {
 
 import { LandingPage } from './components/LandingPage';
 import { AuthScreen } from './components/AuthScreen';
+import { OnboardingScreen } from './components/OnboardingScreen';
 import { MobileTopBar } from './components/MobileTopBar';
 import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
@@ -45,7 +46,9 @@ import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
 
-  const [currentView, setCurrentView] = useState<AppView>('landing');
+  const [currentView, setCurrentView] = useState<AppView>('home');
+  const [showAuthScreen, setShowAuthScreen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [cloudLoading, setCloudLoading] = useState(false);
 
   // ── Data state (guest defaults from localStorage) ─────────────────────────
@@ -88,6 +91,11 @@ export default function App() {
         if (data.profile) {
           if (data.profile.name) setUserName(data.profile.name);
           if (data.profile.currency) setCurrency(data.profile.currency);
+        }
+        // Show onboarding to any user who hasn't dismissed it yet
+        const seenKey = `moneo_onboarded_${user.id}`;
+        if (localStorage.getItem(seenKey) !== 'true') {
+          setShowOnboarding(true);
         }
         setCurrentView('home');
       })
@@ -176,7 +184,6 @@ export default function App() {
 
   const handleSignOut = async () => {
     await signOut();
-    // Clear all data — auth guard will show AuthScreen
     setTransactions([]);
     setCurrency('USD');
     setMonthlyBudget(0);
@@ -184,7 +191,9 @@ export default function App() {
     setSavingGoals([]);
     setSubscriptions([]);
     setUserName('');
-    setCurrentView('landing');
+    setCurrentView('home');
+    setShowAuthScreen(false);
+    setShowOnboarding(false);
   };
 
   const navigate = (view: AppView) => setCurrentView(view);
@@ -220,14 +229,14 @@ export default function App() {
           <div
             className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin"
           />
-          <span className="text-xs text-slate-500">Loading Cashly…</span>
+          <span className="text-xs text-slate-500">Loading Moneo…</span>
         </div>
       </div>
     );
   }
 
-  // Auth wall — unauthenticated users, or users mid-password-recovery, see the auth screen.
-  if (!user || isRecoveryMode) {
+  // Password recovery always gets the auth screen directly.
+  if (isRecoveryMode) {
     return (
       <AuthScreen
         onSignIn={signIn}
@@ -239,9 +248,32 @@ export default function App() {
     );
   }
 
-  // Landing page (authenticated users only)
-  if (currentView === 'landing') {
-    return <LandingPage onGetStarted={() => navigate('home')} />;
+  // Unauthenticated: show public landing page or auth screen.
+  if (!user) {
+    if (showAuthScreen) {
+      return (
+        <AuthScreen
+          onSignIn={signIn}
+          onSignUp={signUp}
+          onResetPassword={resetPassword}
+          onUpdatePassword={updatePassword}
+          onGoBack={() => setShowAuthScreen(false)}
+        />
+      );
+    }
+    return <LandingPage onGetStarted={() => setShowAuthScreen(true)} />;
+  }
+
+  // New users see the "How It Works" walkthrough before the dashboard
+  if (showOnboarding) {
+    return (
+      <OnboardingScreen
+        onFinish={() => {
+          localStorage.setItem(`moneo_onboarded_${user.id}`, 'true');
+          setShowOnboarding(false);
+        }}
+      />
+    );
   }
 
   return (

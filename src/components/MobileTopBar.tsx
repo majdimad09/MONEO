@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Search, X, Download, RotateCcw, Sparkles, ArrowLeft } from 'lucide-react';
+import { ChevronDown, Search, X, Download, RotateCcw, ArrowLeft } from 'lucide-react';
 import { LogoWordmark } from './Logo';
 import { SUPPORTED_CURRENCIES, AppView } from '../types/finance';
 
@@ -58,17 +58,8 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
 
       {/* Right: actions */}
       <div className="flex items-center gap-2">
-        {/* Demo data / export when no transactions */}
-        {transactionCount === 0 && !isTransactions ? (
-          <button
-            onClick={onLoadSampleData}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-blue-300 cursor-pointer"
-            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}
-          >
-            <Sparkles size={12} className="text-blue-400" />
-            Demo
-          </button>
-        ) : transactionCount > 0 && !isTransactions ? (
+        {/* Export when transactions exist */}
+        {transactionCount > 0 && !isTransactions ? (
           <>
             <button
               onClick={onExportCSV}

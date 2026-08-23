@@ -28,7 +28,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onLoadSample }) =>
         </div>
 
         <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white mb-2">
-          Welcome to Cashly
+          Welcome to Moneo
         </h2>
         <p className="text-slate-400 text-xs sm:text-sm font-normal leading-relaxed">
           Log your income and expenses to track your real-time cash balance, monitor spending breakdown by category, and stay on top of your financial health.
