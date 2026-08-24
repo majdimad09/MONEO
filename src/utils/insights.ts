@@ -1,4 +1,4 @@
-import { Transaction, Subscription, CategoryLimit } from '../types/finance';
+import { Transaction, Subscription, CategoryLimit, SavingGoal } from '../types/finance';
 import { formatCurrency } from './formatters';
 
 function getMonthPrefix(date = new Date()): string {
@@ -142,7 +142,7 @@ export function generateInsights(
   return insights.slice(0, 4);
 }
 
-// ─── CASHLY SCORE ────────────────────────────────────────────────────────────
+// ─── MONEO SCORE ─────────────────────────────────────────────────────────────
 
 export interface ScoreFactor {
   label: string;
@@ -152,19 +152,48 @@ export interface ScoreFactor {
   color: string;
 }
 
+export interface ScoreLevel {
+  name: string;
+  min: number;
+  max: number;
+  color: string;
+}
+
+export const SCORE_LEVELS: ScoreLevel[] = [
+  { name: 'Getting Started', min: 0,  max: 30,  color: '#ef4444' },
+  { name: 'Building Up',     min: 31, max: 50,  color: '#f97316' },
+  { name: 'On Track',        min: 51, max: 70,  color: '#eab308' },
+  { name: 'Doing Well',      min: 71, max: 85,  color: '#3b82f6' },
+  { name: 'Excellent',       min: 86, max: 100, color: '#10b981' },
+];
+
+export function getScoreLevel(score: number): ScoreLevel {
+  return SCORE_LEVELS.find(l => score >= l.min && score <= l.max) ?? SCORE_LEVELS[0];
+}
+
+export function getNextScoreLevel(score: number): ScoreLevel | null {
+  const idx = SCORE_LEVELS.findIndex(l => score >= l.min && score <= l.max);
+  return idx < SCORE_LEVELS.length - 1 ? SCORE_LEVELS[idx + 1] : null;
+}
+
 export interface ScoreResult {
   score: number;
-  grade: 'Excellent' | 'Good' | 'Fair' | 'Needs Work';
+  grade: string;
   color: string;
   summary: string;
   factors: ScoreFactor[];
+  hasEnoughData: boolean;
+  missingDataHints: string[];
 }
+
+const MIN_TX_FOR_SCORE = 3;
 
 export function calculateCashlyScore(
   transactions: Transaction[],
   monthlyBudget: number,
   categoryLimits: CategoryLimit[],
-  subscriptions: Subscription[]
+  subscriptions: Subscription[],
+  savingGoals: SavingGoal[] = []
 ): ScoreResult {
   const thisMonth = getMonthPrefix();
   const monthExp = transactions.filter(t => t.type === 'expense' && t.date.startsWith(thisMonth));
@@ -172,78 +201,107 @@ export function calculateCashlyScore(
   const income = monthInc.reduce((s, t) => s + t.amount, 0);
   const expenses = monthExp.reduce((s, t) => s + t.amount, 0);
 
+  // Check if user has enough data for a meaningful score
+  const hasEnoughData = transactions.length >= MIN_TX_FOR_SCORE;
+  const missingDataHints: string[] = [];
+  if (transactions.length === 0) missingDataHints.push('Add your first transactions');
+  else if (transactions.length < MIN_TX_FOR_SCORE) missingDataHints.push(`Add ${MIN_TX_FOR_SCORE - transactions.length} more transaction${MIN_TX_FOR_SCORE - transactions.length > 1 ? 's' : ''}`);
+  if (income === 0) missingDataHints.push('Record income for this month');
+  if (monthlyBudget === 0) missingDataHints.push('Set a monthly spending budget');
+  if (categoryLimits.length === 0) missingDataHints.push('Add category spending limits');
+  if (savingGoals.length === 0) missingDataHints.push('Create a savings goal');
+
+  if (!hasEnoughData) {
+    return {
+      score: 0, grade: 'Getting Started', color: '#ef4444',
+      summary: 'Add more transactions so Moneo can calculate your score.',
+      factors: [], hasEnoughData: false, missingDataHints,
+    };
+  }
+
   const factors: ScoreFactor[] = [];
   let total = 0;
 
-  // Savings rate (30 pts)
+  // 1. Saving Consistency (25 pts)
   {
-    let pts = transactions.length === 0 ? 15 : income > 0
-      ? (() => { const r = (income - expenses) / income; return r >= 0.2 ? 30 : r >= 0.1 ? 22 : r >= 0.05 ? 14 : r >= 0 ? 8 : 2; })()
-      : 6;
+    let pts = income > 0
+      ? (() => { const r = (income - expenses) / income; return r >= 0.2 ? 25 : r >= 0.1 ? 18 : r >= 0.05 ? 11 : r >= 0 ? 6 : 2; })()
+      : transactions.length > 0 ? 8 : 5;
     factors.push({
-      label: 'Savings Rate', points: pts, maxPoints: 30,
-      description: income > 0 ? `Saving ${(Math.max(0, (income - expenses) / income) * 100).toFixed(0)}% of income` : 'No income this month',
-      color: pts >= 22 ? '#10b981' : pts >= 12 ? '#3b82f6' : pts >= 8 ? '#f59e0b' : '#ef4444',
+      label: 'Saving Consistency', points: pts, maxPoints: 25,
+      description: income > 0
+        ? `Saving ${(Math.max(0, (income - expenses) / income) * 100).toFixed(0)}% of income this month`
+        : 'No income recorded this month',
+      color: pts >= 18 ? '#10b981' : pts >= 11 ? '#3b82f6' : pts >= 6 ? '#f59e0b' : '#ef4444',
     });
     total += pts;
   }
 
-  // Budget control (25 pts)
+  // 2. Spending Control (20 pts) — category limits adherence + income ratio
   {
-    let pts = 13;
-    if (monthlyBudget > 0) {
-      const r = expenses / monthlyBudget;
-      pts = r <= 0.7 ? 25 : r <= 0.85 ? 20 : r <= 1.0 ? 12 : r <= 1.2 ? 5 : 0;
-    }
-    factors.push({
-      label: 'Budget Control', points: pts, maxPoints: 25,
-      description: monthlyBudget > 0 ? `Using ${((expenses / monthlyBudget) * 100).toFixed(0)}% of budget` : 'Set a budget to improve',
-      color: pts >= 20 ? '#10b981' : pts >= 12 ? '#f59e0b' : '#ef4444',
-    });
-    total += pts;
-  }
-
-  // Consistency (20 pts)
-  {
-    const byMonth: Record<string, number> = {};
-    transactions.filter(t => t.type === 'expense').forEach(t => { const m = t.date.slice(0, 7); byMonth[m] = (byMonth[m] || 0) + t.amount; });
-    const vals = Object.values(byMonth);
-    let pts = 10;
-    if (vals.length >= 2) {
-      const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
-      const std = Math.sqrt(vals.reduce((s, v) => s + (v - avg) ** 2, 0) / vals.length);
-      const cv = avg > 0 ? std / avg : 1;
-      pts = cv <= 0.1 ? 20 : cv <= 0.2 ? 16 : cv <= 0.35 ? 10 : cv <= 0.5 ? 5 : 2;
-    }
-    factors.push({
-      label: 'Consistency', points: pts, maxPoints: 20,
-      description: vals.length < 2 ? 'Need 2+ months of data' : pts >= 16 ? 'Very consistent spending' : 'High month-to-month variance',
-      color: pts >= 16 ? '#10b981' : pts >= 10 ? '#f59e0b' : '#ef4444',
-    });
-    total += pts;
-  }
-
-  // Category limits (15 pts)
-  {
-    let pts = 7;
+    let pts = 10; // neutral default
     if (categoryLimits.length > 0) {
       const catMap: Record<string, number> = {};
       monthExp.forEach(t => { catMap[t.category] = (catMap[t.category] || 0) + t.amount; });
       const exceeded = categoryLimits.filter(l => (catMap[l.category] || 0) > l.limit).length;
       const r = exceeded / categoryLimits.length;
-      pts = r === 0 ? 15 : r <= 0.2 ? 10 : r <= 0.5 ? 5 : 0;
-      factors.push({
-        label: 'Category Limits', points: pts, maxPoints: 15,
-        description: exceeded === 0 ? 'All limits respected' : `${exceeded}/${categoryLimits.length} limits exceeded`,
-        color: pts >= 10 ? '#10b981' : pts >= 5 ? '#f59e0b' : '#ef4444',
-      });
-    } else {
-      factors.push({ label: 'Category Limits', points: pts, maxPoints: 15, description: 'Add limits to boost this', color: '#64748b' });
+      pts = r === 0 ? 20 : r <= 0.2 ? 15 : r <= 0.5 ? 8 : 2;
+    } else if (income > 0) {
+      // No limits set — score based on expenses vs income
+      const r = expenses / income;
+      pts = r <= 0.5 ? 14 : r <= 0.7 ? 10 : r <= 0.9 ? 6 : 2;
     }
+    const catMap: Record<string, number> = {};
+    monthExp.forEach(t => { catMap[t.category] = (catMap[t.category] || 0) + t.amount; });
+    const exceeded = categoryLimits.filter(l => (catMap[l.category] || 0) > l.limit).length;
+    factors.push({
+      label: 'Spending Control', points: pts, maxPoints: 20,
+      description: categoryLimits.length > 0
+        ? exceeded === 0 ? 'All category limits respected' : `${exceeded}/${categoryLimits.length} category limits exceeded`
+        : 'Set category limits to improve this score',
+      color: pts >= 15 ? '#10b981' : pts >= 10 ? '#3b82f6' : pts >= 6 ? '#f59e0b' : '#ef4444',
+    });
     total += pts;
   }
 
-  // Subscription load (10 pts)
+  // 3. Budget Performance (20 pts)
+  {
+    let pts = 10; // neutral if no budget
+    if (monthlyBudget > 0) {
+      const r = expenses / monthlyBudget;
+      pts = r <= 0.7 ? 20 : r <= 0.85 ? 16 : r <= 1.0 ? 10 : r <= 1.2 ? 4 : 0;
+    }
+    factors.push({
+      label: 'Budget Performance', points: pts, maxPoints: 20,
+      description: monthlyBudget > 0
+        ? `Using ${((expenses / monthlyBudget) * 100).toFixed(0)}% of monthly budget`
+        : 'Set a monthly budget to unlock this score',
+      color: pts >= 16 ? '#10b981' : pts >= 10 ? '#f59e0b' : '#ef4444',
+    });
+    total += pts;
+  }
+
+  // 4. Financial Stability (15 pts) — month-to-month spending variance
+  {
+    const byMonth: Record<string, number> = {};
+    transactions.filter(t => t.type === 'expense').forEach(t => { const m = t.date.slice(0, 7); byMonth[m] = (byMonth[m] || 0) + t.amount; });
+    const vals = Object.values(byMonth);
+    let pts = 8;
+    if (vals.length >= 2) {
+      const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
+      const std = Math.sqrt(vals.reduce((s, v) => s + (v - avg) ** 2, 0) / vals.length);
+      const cv = avg > 0 ? std / avg : 1;
+      pts = cv <= 0.1 ? 15 : cv <= 0.2 ? 12 : cv <= 0.35 ? 8 : cv <= 0.5 ? 4 : 1;
+    }
+    factors.push({
+      label: 'Financial Stability', points: pts, maxPoints: 15,
+      description: vals.length < 2 ? 'Need 2+ months of data for stability score' : pts >= 12 ? 'Very consistent month-to-month spending' : 'High variance between months',
+      color: pts >= 12 ? '#10b981' : pts >= 8 ? '#f59e0b' : '#ef4444',
+    });
+    total += pts;
+  }
+
+  // 5. Recurring Commitments (10 pts)
   {
     const active = subscriptions.filter(s => s.isActive);
     const monthly = active.reduce((s, sub) => {
@@ -253,24 +311,45 @@ export function calculateCashlyScore(
     }, 0);
     let pts = income > 0
       ? (() => { const r = monthly / income; return r <= 0.05 ? 10 : r <= 0.1 ? 8 : r <= 0.2 ? 5 : r <= 0.3 ? 2 : 0; })()
-      : active.length === 0 ? 10 : 5;
+      : active.length === 0 ? 10 : 6;
     factors.push({
-      label: 'Subscriptions', points: pts, maxPoints: 10,
-      description: monthly > 0 ? `${active.length} active, ${income > 0 ? `${((monthly/income)*100).toFixed(0)}% of income` : 'tracking'}` : 'No active subscriptions',
+      label: 'Recurring Commitments', points: pts, maxPoints: 10,
+      description: monthly > 0
+        ? `${active.length} active · ${income > 0 ? `${((monthly/income)*100).toFixed(0)}% of income` : 'tracked'}`
+        : active.length === 0 ? 'No recurring payments tracked' : 'All subscriptions tracked',
+      color: pts >= 8 ? '#10b981' : pts >= 5 ? '#f59e0b' : '#ef4444',
+    });
+    total += pts;
+  }
+
+  // 6. Goal Progress (10 pts)
+  {
+    let pts = 5; // neutral if no goals
+    if (savingGoals.length > 0) {
+      const avgProgress = savingGoals.reduce((s, g) => s + (g.targetAmount > 0 ? Math.min(g.currentAmount / g.targetAmount, 1) : 0), 0) / savingGoals.length;
+      pts = avgProgress >= 0.8 ? 10 : avgProgress >= 0.5 ? 8 : avgProgress >= 0.25 ? 5 : 3;
+    }
+    const completedGoals = savingGoals.filter(g => g.currentAmount >= g.targetAmount).length;
+    factors.push({
+      label: 'Goal Progress', points: pts, maxPoints: 10,
+      description: savingGoals.length === 0 ? 'Create savings goals to track progress' : `${completedGoals}/${savingGoals.length} goals completed`,
       color: pts >= 8 ? '#10b981' : pts >= 5 ? '#f59e0b' : '#ef4444',
     });
     total += pts;
   }
 
   const score = Math.min(100, Math.max(0, total));
-  const grade = score >= 80 ? 'Excellent' : score >= 65 ? 'Good' : score >= 45 ? 'Fair' : 'Needs Work';
-  const color = score >= 80 ? '#10b981' : score >= 65 ? '#3b82f6' : score >= 45 ? '#f59e0b' : '#ef4444';
-  const summary = score >= 80 ? 'Outstanding! Your finances are in great shape.'
-    : score >= 65 ? 'Good habits. A few tweaks could push you to excellent.'
-    : score >= 45 ? 'Room to improve. Focus on budgeting and savings rate.'
-    : 'Start with a monthly budget and track every expense.';
+  const level = getScoreLevel(score);
+  const grade = level.name;
+  const color = level.color;
 
-  return { score, grade, color, summary, factors };
+  const summary = score >= 86 ? 'Outstanding! Your finances are in excellent shape.'
+    : score >= 71 ? 'Great habits. A few tweaks could push you to excellent.'
+    : score >= 51 ? 'Solid foundation. Focus on your budget and savings rate.'
+    : score >= 31 ? 'You\'re building momentum. Keep tracking and improving.'
+    : 'Start with a monthly budget and log every transaction.';
+
+  return { score, grade, color, summary, factors, hasEnoughData: true, missingDataHints };
 }
 
 // ─── SAFE TO SPEND ───────────────────────────────────────────────────────────

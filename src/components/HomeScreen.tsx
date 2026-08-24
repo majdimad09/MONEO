@@ -29,7 +29,8 @@ interface HomeScreenProps {
   onAddExpense: () => void;
   onAddIncome: () => void;
   onNavigateStats: () => void;
-  onNavigateSettings: () => void;
+  onNavigateBudget: () => void;
+  onNavigateScore: () => void;
 }
 
 function getCurrentMonthPrefix(): string {
@@ -67,7 +68,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, userName,
   onViewAllTransactions, onEdit, onLoadSample,
-  onAddExpense, onAddIncome, onNavigateStats, onNavigateSettings,
+  onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
 }) => {
   const [balanceExpanded, setBalanceExpanded] = useState(false);
   const prefix = getCurrentMonthPrefix();
@@ -96,7 +97,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const safeToSpend = useMemo(() => calculateSafeToSpend(transactions, subscriptions), [transactions, subscriptions]);
   const insights = useMemo(() => generateInsights(transactions, currency, subscriptions), [transactions, currency, subscriptions]);
-  const scoreResult = useMemo(() => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions), [transactions, monthlyBudget, categoryLimits, subscriptions]);
+  const scoreResult = useMemo(() => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals), [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals]);
 
   const budgetPct = monthlyBudget > 0 ? (thisMonthExpenses / monthlyBudget) * 100 : 0;
   const isPositive = balance >= 0;
@@ -225,7 +226,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             { label: 'Expense', icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', onClick: onAddExpense },
             { label: 'Income', icon: ArrowUpRight, color: '#34d399', bg: 'rgba(16,185,129,0.1)', onClick: onAddIncome },
             { label: 'Stats', icon: BarChart2, color: '#60a5fa', bg: 'rgba(59,130,246,0.1)', onClick: onNavigateStats },
-            { label: 'Budget', icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateSettings },
+            { label: 'Budget', icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateBudget },
           ].map(({ label, icon: Icon, color, bg, onClick }) => (
             <button key={label} onClick={onClick} className="quick-action-btn">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: bg }}>
@@ -237,9 +238,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
-      {/* ── CASHLY SCORE ─────────────────────────────── */}
+      {/* ── MONEO SCORE ──────────────────────────────── */}
       <div className="px-4 card-float-3">
-        <CashlyScore result={scoreResult} size="md" />
+        <CashlyScore result={scoreResult} onViewDetails={onNavigateScore} />
       </div>
 
       {/* ── INSIGHTS ─────────────────────────────────── */}

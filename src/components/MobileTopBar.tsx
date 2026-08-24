@@ -35,7 +35,13 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     if (!showCurrency) setSearch('');
   }, [showCurrency]);
 
-  const isTransactions = currentView === 'transactions';
+  const BACK_VIEWS: Partial<Record<string, { label: string; dest: 'home' | 'budget' }>> = {
+    transactions: { label: 'Transactions', dest: 'home' },
+    'moneo-score': { label: 'Moneo Score', dest: 'home' },
+    savings: { label: 'Savings Goals', dest: 'budget' },
+    recurring: { label: 'Recurring', dest: 'budget' },
+  };
+  const backInfo = BACK_VIEWS[currentView];
 
   return (
     <div
@@ -43,14 +49,14 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
       style={{ height: 56, borderBottom: '1px solid #0f1e38', background: '#060b18' }}
     >
       {/* Left: logo or back */}
-      {isTransactions ? (
+      {backInfo ? (
         <button
-          onClick={() => onNavigate('home')}
+          onClick={() => onNavigate(backInfo.dest)}
           className="flex items-center gap-2 text-sm font-bold text-slate-300 cursor-pointer"
           style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           <ArrowLeft size={18} className="text-blue-400" />
-          <span>Transactions</span>
+          <span>{backInfo.label}</span>
         </button>
       ) : (
         <LogoWordmark iconSize={26} textSize="sm" />
@@ -58,8 +64,8 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
 
       {/* Right: actions */}
       <div className="flex items-center gap-2">
-        {/* Export when transactions exist */}
-        {transactionCount > 0 && !isTransactions ? (
+        {/* Export when transactions exist (not on sub-pages) */}
+        {transactionCount > 0 && !backInfo ? (
           <>
             <button
               onClick={onExportCSV}

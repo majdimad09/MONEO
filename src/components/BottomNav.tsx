@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BarChart2, Plus, Target, Settings2 } from 'lucide-react';
+import { Home, BarChart2, Plus, Wallet, Settings2 } from 'lucide-react';
 import { AppView } from '../types/finance';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -20,7 +20,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, o
         <Plus size={22} color="white" strokeWidth={2.8} />
       </button>
 
-      <NavBtn view="savings" label={t('navSave')} Icon={Target} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn view="budget" label="Budget" Icon={Wallet} currentView={currentView} onNavigate={onNavigate} />
       <NavBtn view="settings" label={t('navSettings')} Icon={Settings2} currentView={currentView} onNavigate={onNavigate} />
     </div>
   );

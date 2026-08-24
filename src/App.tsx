@@ -37,6 +37,9 @@ import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
 import { StatisticsScreen } from './components/StatisticsScreen';
 import { SavingsScreen } from './components/SavingsScreen';
+import { BudgetScreen } from './components/BudgetScreen';
+import { RecurringScreen } from './components/RecurringScreen';
+import { MoneoScoreScreen } from './components/MoneoScoreScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { TransactionHistory } from './components/TransactionHistory';
 import { AddTransactionModal } from './components/AddTransactionModal';
@@ -98,7 +101,7 @@ export default function App() {
           if (data.profile.status) setUserStatus(data.profile.status);
         }
 
-        // Populate profile from signup metadata on first sign-in (profile.name is empty)
+        // Populate profile from signup metadata on first sign-in
         if (data.profile && !data.profile.name) {
           const meta = user.user_metadata as { name?: string; age?: number; status?: string; language?: string } | undefined;
           if (meta?.name) {
@@ -219,7 +222,6 @@ export default function App() {
 
   const handleDeleteAccount = async () => {
     if (user) {
-      // Clear all cloud data
       await replaceSavingGoals(user.id, []).catch(() => {});
       await replaceSubscriptions(user.id, []).catch(() => {});
     }
@@ -239,51 +241,39 @@ export default function App() {
     setShowActionMenu(false);
     if (action === 'expense') { openAddModal('expense'); }
     else if (action === 'income') { openAddModal('income'); }
-    else if (action === 'recurring') { navigate('settings'); }
+    else if (action === 'recurring') { navigate('recurring'); }
     else if (action === 'scan') { showToast('Scan receipt — coming soon!'); }
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  // While auth is initializing
   if (authLoading || cloudLoading) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: '#060b18' }}
-      >
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#060b18' }}>
         <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin"
-          />
+          <div className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
           <span className="text-xs text-slate-500">Loading Moneo…</span>
         </div>
       </div>
     );
   }
 
-  // Password recovery always gets the auth screen directly.
   if (isRecoveryMode) {
     return (
       <AuthScreen
-        onSignIn={signIn}
-        onSignUp={signUp}
-        onResetPassword={resetPassword}
-        onUpdatePassword={updatePassword}
+        onSignIn={signIn} onSignUp={signUp}
+        onResetPassword={resetPassword} onUpdatePassword={updatePassword}
         isRecoveryMode={isRecoveryMode}
       />
     );
   }
 
-  // Unauthenticated: show public landing page or auth screen.
   if (!user) {
     if (showAuthScreen) {
       return (
         <AuthScreen
-          onSignIn={signIn}
-          onSignUp={signUp}
-          onResetPassword={resetPassword}
-          onUpdatePassword={updatePassword}
+          onSignIn={signIn} onSignUp={signUp}
+          onResetPassword={resetPassword} onUpdatePassword={updatePassword}
           onGoBack={() => setShowAuthScreen(false)}
         />
       );
@@ -296,7 +286,6 @@ export default function App() {
     <div className="desktop-bg">
       <div className="app-shell">
 
-        {/* Top bar */}
         <MobileTopBar
           currentView={currentView}
           currentCurrency={currency}
@@ -308,7 +297,6 @@ export default function App() {
           onNavigate={navigate}
         />
 
-        {/* Scrollable content */}
         <div className="app-content">
           {currentView === 'home' && (
             <HomeScreen
@@ -326,15 +314,13 @@ export default function App() {
               onAddExpense={() => openAddModal('expense')}
               onAddIncome={() => openAddModal('income')}
               onNavigateStats={() => navigate('statistics')}
-              onNavigateSettings={() => navigate('settings')}
+              onNavigateBudget={() => navigate('budget')}
+              onNavigateScore={() => navigate('moneo-score')}
             />
           )}
 
           {currentView === 'statistics' && (
-            <StatisticsScreen
-              transactions={transactions}
-              currency={currency}
-            />
+            <StatisticsScreen transactions={transactions} currency={currency} />
           )}
 
           {currentView === 'savings' && (
@@ -342,6 +328,38 @@ export default function App() {
               currency={currency}
               goals={savingGoals}
               onSaveGoals={handleSaveGoals}
+            />
+          )}
+
+          {currentView === 'budget' && (
+            <BudgetScreen
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              transactions={transactions}
+              currency={currency}
+              onSaveBudget={handleSaveBudget}
+              onSaveLimits={handleSaveLimits}
+              onNavigateRecurring={() => navigate('recurring')}
+              onNavigateSavings={() => navigate('savings')}
+            />
+          )}
+
+          {currentView === 'recurring' && (
+            <RecurringScreen
+              subscriptions={subscriptions}
+              currency={currency}
+              onSaveSubscriptions={handleSaveSubscriptions}
+            />
+          )}
+
+          {currentView === 'moneo-score' && (
+            <MoneoScoreScreen
+              transactions={transactions}
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              currency={currency}
             />
           )}
 
@@ -375,7 +393,6 @@ export default function App() {
           )}
         </div>
 
-        {/* Bottom nav */}
         <BottomNav
           currentView={currentView}
           onNavigate={navigate}
@@ -402,15 +419,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Action Menu (+ button) */}
       {showActionMenu && (
-        <ActionMenu
-          onSelect={handleActionSelect}
-          onClose={() => setShowActionMenu(false)}
-        />
+        <ActionMenu onSelect={handleActionSelect} onClose={() => setShowActionMenu(false)} />
       )}
 
-      {/* Add Transaction Modal */}
       <AddTransactionModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -419,7 +431,6 @@ export default function App() {
         defaultType={addModalDefaultType}
       />
 
-      {/* Edit Transaction Modal */}
       <EditTransactionModal
         transaction={editingTransaction}
         isOpen={!!editingTransaction}
@@ -428,7 +439,6 @@ export default function App() {
         currency={currency}
       />
 
-      {/* Delete Confirm Modal */}
       <DeleteConfirmModal
         transaction={deletingTransaction}
         isOpen={!!deletingTransaction}

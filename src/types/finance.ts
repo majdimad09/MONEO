@@ -153,4 +153,4 @@ export interface Subscription {
   createdAt: number;
 }
 
-export type AppView = 'landing' | 'auth' | 'home' | 'statistics' | 'savings' | 'settings' | 'transactions';
+export type AppView = 'landing' | 'auth' | 'home' | 'statistics' | 'savings' | 'settings' | 'transactions' | 'budget' | 'recurring' | 'moneo-score';
