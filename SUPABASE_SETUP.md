@@ -29,7 +29,6 @@ create table if not exists profiles (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
-
 alter table profiles enable row level security;
 
 create policy "Users can view their own profile"
