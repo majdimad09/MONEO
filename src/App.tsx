@@ -26,14 +26,12 @@ import {
   saveUserPreferences,
   replaceSavingGoals,
   replaceSubscriptions,
-  markOnboarded,
 } from './lib/supabaseService';
 import { useLanguage } from './i18n/LanguageContext';
 import { LangCode } from './i18n/translations';
 
 import { LandingPage } from './components/LandingPage';
 import { AuthScreen } from './components/AuthScreen';
-import { OnboardingScreen } from './components/OnboardingScreen';
 import { MobileTopBar } from './components/MobileTopBar';
 import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
@@ -52,7 +50,6 @@ export default function App() {
 
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [cloudLoading, setCloudLoading] = useState(false);
 
   // ── Data state (guest defaults from localStorage) ─────────────────────────
@@ -63,6 +60,8 @@ export default function App() {
   const [savingGoals, setSavingGoals] = useState<SavingGoal[]>(() => loadSavingGoals());
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => loadSubscriptions());
   const [userName, setUserName] = useState<string>(() => loadUserName());
+  const [userAge, setUserAge] = useState<number | null>(null);
+  const [userStatus, setUserStatus] = useState<string>('');
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -95,6 +94,8 @@ export default function App() {
           if (data.profile.name) setUserName(data.profile.name);
           if (data.profile.currency) setCurrency(data.profile.currency);
           if (data.profile.language) setLanguage(data.profile.language as LangCode);
+          if (data.profile.age != null) setUserAge(data.profile.age);
+          if (data.profile.status) setUserStatus(data.profile.status);
         }
 
         // Populate profile from signup metadata on first sign-in (profile.name is empty)
@@ -108,17 +109,12 @@ export default function App() {
               language: meta.language ?? 'en',
             }).catch(() => {});
             setUserName(meta.name);
+            if (meta.age != null) setUserAge(meta.age);
+            if (meta.status) setUserStatus(meta.status);
             if (meta.language) setLanguage(meta.language as LangCode);
           }
         }
 
-        // Check onboarding state: Supabase first, localStorage as fallback
-        const seenKey = `moneo_onboarded_${user.id}`;
-        const isOnboarded = data.profile?.onboarded === true ||
-          localStorage.getItem(seenKey) === 'true';
-        if (!isOnboarded) {
-          setShowOnboarding(true);
-        }
         setCurrentView('home');
       })
       .catch(() => {
@@ -198,10 +194,12 @@ export default function App() {
     if (user) replaceSubscriptions(user.id, subs).catch(() => {});
   };
 
-  const handleSaveUserName = (name: string) => {
-    setUserName(name);
-    saveUserName(name);
-    if (user) saveProfile(user.id, { name }).catch(() => {});
+  const handleSaveProfile = (data: { name: string; age: number | null; status: string }) => {
+    setUserName(data.name);
+    saveUserName(data.name);
+    setUserAge(data.age);
+    setUserStatus(data.status);
+    if (user) saveProfile(user.id, { name: data.name, age: data.age, status: data.status }).catch(() => {});
   };
 
   const handleSignOut = async () => {
@@ -213,9 +211,20 @@ export default function App() {
     setSavingGoals([]);
     setSubscriptions([]);
     setUserName('');
+    setUserAge(null);
+    setUserStatus('');
     setCurrentView('home');
     setShowAuthScreen(false);
-    setShowOnboarding(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (user) {
+      // Clear all cloud data
+      await replaceSavingGoals(user.id, []).catch(() => {});
+      await replaceSubscriptions(user.id, []).catch(() => {});
+    }
+    handleClearAllData();
+    await handleSignOut();
   };
 
   const navigate = (view: AppView) => setCurrentView(view);
@@ -282,20 +291,7 @@ export default function App() {
     return <LandingPage onGetStarted={() => setShowAuthScreen(true)} />;
   }
 
-  // New users see the "How It Works" walkthrough before the dashboard
-  if (showOnboarding) {
-    return (
-      <OnboardingScreen
-        onFinish={() => {
-          const seenKey = `moneo_onboarded_${user.id}`;
-          localStorage.setItem(seenKey, 'true');
-          markOnboarded(user.id).catch(() => {});
-          setShowOnboarding(false);
-        }}
-      />
-    );
-  }
-
+  // Authenticated: go straight to dashboard — no onboarding inside the app.
   return (
     <div className="desktop-bg">
       <div className="app-shell">
@@ -356,9 +352,14 @@ export default function App() {
               onClearAllData={handleClearAllData}
               onExportCSV={handleExportCSV}
               userName={userName}
-              onSaveUserName={handleSaveUserName}
+              userEmail={user.email ?? ''}
+              userAge={userAge}
+              userStatus={userStatus}
+              onSaveProfile={handleSaveProfile}
               user={user}
               onSignOut={handleSignOut}
+              onChangePassword={updatePassword}
+              onDeleteAccount={handleDeleteAccount}
             />
           )}
 
