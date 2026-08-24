@@ -10,9 +10,16 @@ export interface AuthState {
   isRecoveryMode: boolean;
 }
 
+export interface SignupMeta {
+  name: string;
+  age: number;
+  status: string;
+  language: string;
+}
+
 export interface AuthActions {
   signIn: (email: string, password: string) => Promise<string | null>;
-  signUp: (email: string, password: string) => Promise<string | null>;
+  signUp: (email: string, password: string, meta?: SignupMeta) => Promise<string | null>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<string | null>;
   updatePassword: (password: string) => Promise<string | null>;
@@ -60,14 +67,15 @@ export function useAuth(): AuthState & AuthActions {
     return error ? friendlyError(error.message) : null;
   };
 
-  const signUp = async (email: string, password: string): Promise<string | null> => {
+  const signUp = async (email: string, password: string, meta?: SignupMeta): Promise<string | null> => {
     if (!supabase) return 'Supabase is not configured.';
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        // Use the current origin so the confirmation link works on any deployment.
         emailRedirectTo: window.location.origin,
+        // Store profile fields in user_metadata so they survive until first sign-in.
+        data: meta,
       },
     });
     return error ? friendlyError(error.message) : null;
@@ -112,7 +120,7 @@ function friendlyError(msg: string): string {
     return 'An account with this email already exists.';
   }
   if (m.includes('password should be') || m.includes('password must be') || m.includes('weak password')) {
-    return 'Password must be at least 6 characters.';
+    return 'Password must be at least 8 characters.';
   }
   if (m.includes('rate limit') || m.includes('too many requests')) {
     return 'Too many attempts. Please wait a moment.';

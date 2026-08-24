@@ -9,21 +9,41 @@ import { Transaction, CategoryLimit, SavingGoal, Subscription } from '../types/f
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────────
 
-export async function loadProfile(userId: string): Promise<{ name: string; currency: string } | null> {
+export interface ProfileData {
+  name: string;
+  currency: string;
+  age: number | null;
+  status: string;
+  language: string;
+  onboarded: boolean;
+}
+
+export async function loadProfile(userId: string): Promise<ProfileData | null> {
   if (!supabase) return null;
   const { data } = await supabase
     .from('profiles')
-    .select('name, currency')
+    .select('name, currency, age, status, language, onboarded')
     .eq('id', userId)
     .single();
   return data;
 }
 
-export async function saveProfile(userId: string, patch: { name?: string; currency?: string }): Promise<void> {
+export async function saveProfile(
+  userId: string,
+  patch: Partial<ProfileData & { currency: string }>
+): Promise<void> {
   if (!supabase) return;
   await supabase
     .from('profiles')
     .upsert({ id: userId, ...patch, updated_at: new Date().toISOString() });
+}
+
+export async function markOnboarded(userId: string): Promise<void> {
+  if (!supabase) return;
+  await supabase
+    .from('profiles')
+    .update({ onboarded: true, updated_at: new Date().toISOString() })
+    .eq('id', userId);
 }
 
 // ─── USER PREFERENCES ────────────────────────────────────────────────────────
@@ -219,7 +239,7 @@ export interface AllUserData {
   savingGoals: SavingGoal[];
   subscriptions: Subscription[];
   preferences: DbPreferences | null;
-  profile: { name: string; currency: string } | null;
+  profile: ProfileData | null;
 }
 
 export async function loadAllUserData(userId: string): Promise<AllUserData> {

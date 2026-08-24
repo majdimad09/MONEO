@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, ArrowLeft, Eye, EyeOff, Loader2, ChevronLeft } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, Eye, EyeOff, Loader2, ChevronLeft, User, Hash } from 'lucide-react';
 import { LogoWordmark } from './Logo';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LANGUAGES, LangCode } from '../i18n/translations';
+import type { SignupMeta } from '../hooks/useAuth';
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'update-password';
 
 interface AuthScreenProps {
   onSignIn: (email: string, password: string) => Promise<string | null>;
-  onSignUp: (email: string, password: string) => Promise<string | null>;
+  onSignUp: (email: string, password: string, meta?: SignupMeta) => Promise<string | null>;
   onResetPassword: (email: string) => Promise<string | null>;
   onUpdatePassword?: (password: string) => Promise<string | null>;
   isRecoveryMode?: boolean;
@@ -16,6 +19,8 @@ interface AuthScreenProps {
 export function AuthScreen({
   onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode, onGoBack,
 }: AuthScreenProps) {
+  const { t, lang, setLanguage } = useLanguage();
+
   const [mode, setMode] = useState<AuthMode>(isRecoveryMode ? 'update-password' : 'signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +29,12 @@ export function AuthScreen({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Signup-only fields
+  const [signupName, setSignupName] = useState('');
+  const [signupAge, setSignupAge] = useState('');
+  const [signupStatus, setSignupStatus] = useState('School');
+  const [signupLang, setSignupLang] = useState<LangCode>(lang);
 
   // Sync to recovery mode arriving asynchronously (PASSWORD_RECOVERY event fires after mount).
   useEffect(() => {
@@ -48,29 +59,45 @@ export function AuthScreen({
     setSuccessMsg(null);
 
     if (mode === 'update-password') {
-      if (!password) { setError('Please enter a new password.'); return; }
-      if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
-      if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
+      if (!password) { setError(t('errEnterNewPassword')); return; }
+      if (password.length < 8) { setError(t('errPasswordLength')); return; }
+      if (password !== confirmPassword) { setError(t('errPasswordsMatch')); return; }
       setLoading(true);
       const err = await onUpdatePassword?.(password);
       if (err) { setError(err); setLoading(false); }
-      // On success, isRecoveryMode becomes false → App re-renders into dashboard.
       return;
     }
 
-    if (!email.trim()) { setError('Please enter your email.'); return; }
-    if (mode !== 'forgot' && !password) { setError('Please enter your password.'); return; }
+    if (!email.trim()) { setError(t('errEnterEmail')); return; }
+    if (mode !== 'forgot' && !password) { setError(t('errEnterPassword')); return; }
+
+    if (mode === 'signup') {
+      if (!signupName.trim()) { setError(t('errEnterName')); return; }
+      const ageNum = parseInt(signupAge, 10);
+      if (!signupAge || isNaN(ageNum) || ageNum < 13 || ageNum > 120) {
+        setError(t('errEnterAge')); return;
+      }
+      if (password.length < 8) { setError(t('errPasswordLength')); return; }
+      if (password !== confirmPassword) { setError(t('errPasswordsMatch')); return; }
+    }
 
     setLoading(true);
 
     if (mode === 'signin') {
       const err = await onSignIn(email.trim(), password);
       if (err) { setError(err); setLoading(false); }
-      // On success, auth state change handles navigation — do not setLoading(false).
+      // On success, auth state change handles navigation.
     } else if (mode === 'signup') {
-      const err = await onSignUp(email.trim(), password);
+      // Apply the language selected during signup immediately.
+      setLanguage(signupLang);
+      const err = await onSignUp(email.trim(), password, {
+        name: signupName.trim(),
+        age: parseInt(signupAge, 10),
+        status: signupStatus,
+        language: signupLang,
+      });
       if (!err) {
-        setSuccessMsg('Account created! Check your email to confirm, then sign in.');
+        setSuccessMsg(t('msgAccountCreated'));
         reset('signin');
       } else {
         setError(err);
@@ -79,7 +106,7 @@ export function AuthScreen({
     } else {
       const err = await onResetPassword(email.trim());
       if (!err) {
-        setSuccessMsg('Password reset email sent. Check your inbox.');
+        setSuccessMsg(t('msgResetSent'));
       } else {
         setError(err);
       }
@@ -91,11 +118,18 @@ export function AuthScreen({
     'w-full bg-[#0d1526] border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all';
 
   const subtitle: Record<AuthMode, string> = {
-    signin: 'Welcome back',
-    signup: 'Create your account',
-    forgot: 'Reset your password',
-    'update-password': 'Set a new password',
+    signin: t('welcomeBack'),
+    signup: t('createYourAccount'),
+    forgot: t('resetYourPassword'),
+    'update-password': t('setNewPassword'),
   };
+
+  const STATUS_OPTIONS: Array<{ value: string; label: string }> = [
+    { value: 'School',      label: t('statusSchool') },
+    { value: 'University',  label: t('statusUniversity') },
+    { value: 'Working',     label: t('statusWorking') },
+    { value: 'Unemployed',  label: t('statusUnemployed') },
+  ];
 
   return (
     <div
@@ -112,7 +146,7 @@ export function AuthScreen({
         </button>
       )}
       <div
-        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-6"
+        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
         style={{ background: '#0d1526', border: '1px solid rgba(255,255,255,0.07)' }}
       >
         {/* Logo */}
@@ -136,26 +170,23 @@ export function AuthScreen({
         {/* Form */}
         <form onSubmit={submit} className="flex flex-col gap-3">
 
-          {/* Update-password mode: two password fields, no email */}
+          {/* ── Update-password mode ── */}
           {mode === 'update-password' ? (
             <>
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                 <input
                   type={showPass ? 'text' : 'password'}
-                  placeholder="New password"
+                  placeholder={t('newPassword')}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className={inputBase + ' pl-9 pr-10'}
                   autoComplete="new-password"
                   disabled={loading}
                 />
-                <button
-                  type="button"
+                <button type="button" tabIndex={-1}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                  onClick={() => setShowPass(v => !v)}
-                  tabIndex={-1}
-                >
+                  onClick={() => setShowPass(v => !v)}>
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
@@ -163,7 +194,7 @@ export function AuthScreen({
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                 <input
                   type={showPass ? 'text' : 'password'}
-                  placeholder="Confirm new password"
+                  placeholder={t('confirmNewPassword')}
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   className={inputBase + ' pl-9'}
@@ -174,12 +205,83 @@ export function AuthScreen({
             </>
           ) : (
             <>
+              {/* ── Signup extra fields ── */}
+              {mode === 'signup' && (
+                <>
+                  {/* Name */}
+                  <div className="relative">
+                    <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder={t('fullName')}
+                      value={signupName}
+                      onChange={e => setSignupName(e.target.value)}
+                      className={inputBase + ' pl-9'}
+                      autoComplete="name"
+                      disabled={loading}
+                    />
+                  </div>
+
+                  {/* Age + Status (side by side) */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="relative">
+                      <Hash size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                      <input
+                        type="number"
+                        placeholder={t('age')}
+                        value={signupAge}
+                        onChange={e => setSignupAge(e.target.value)}
+                        min={13} max={120}
+                        className={inputBase + ' pl-9'}
+                        disabled={loading}
+                      />
+                    </div>
+                    <select
+                      value={signupStatus}
+                      onChange={e => setSignupStatus(e.target.value)}
+                      className={inputBase}
+                      disabled={loading}
+                    >
+                      {STATUS_OPTIONS.map(o => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Language picker */}
+                  <div>
+                    <p className="text-[11px] text-slate-500 mb-1.5 font-medium">{t('chooseLanguage')}</p>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {LANGUAGES.map(l => (
+                        <button
+                          key={l.code}
+                          type="button"
+                          onClick={() => { setSignupLang(l.code); setLanguage(l.code); }}
+                          disabled={loading}
+                          className={`py-2 px-1 rounded-xl text-[11px] font-semibold text-center transition-all cursor-pointer ${
+                            signupLang === l.code
+                              ? 'text-blue-300'
+                              : 'text-slate-500 hover:text-slate-300'
+                          }`}
+                          style={signupLang === l.code
+                            ? { background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.35)' }
+                            : { background: '#0a1424', border: '1px solid #1e2d4a' }
+                          }
+                        >
+                          {l.nativeName}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* Email (all modes except update-password) */}
               <div className="relative">
                 <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t('email')}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className={inputBase + ' pl-9'}
@@ -194,32 +296,43 @@ export function AuthScreen({
                   <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                   <input
                     type={showPass ? 'text' : 'password'}
-                    placeholder="Password"
+                    placeholder={t('password')}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     className={inputBase + ' pl-9 pr-10'}
                     autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                     disabled={loading}
                   />
-                  <button
-                    type="button"
+                  <button type="button" tabIndex={-1}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                    onClick={() => setShowPass(v => !v)}
-                    tabIndex={-1}
-                  >
+                    onClick={() => setShowPass(v => !v)}>
                     {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
               )}
 
+              {/* Confirm password (signup only) */}
+              {mode === 'signup' && (
+                <div className="relative">
+                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    placeholder={t('confirmNewPassword')}
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    className={inputBase + ' pl-9'}
+                    autoComplete="new-password"
+                    disabled={loading}
+                  />
+                </div>
+              )}
+
               {/* Forgot link */}
               {mode === 'signin' && (
-                <button
-                  type="button"
+                <button type="button"
                   className="text-xs text-blue-400 hover:text-blue-300 self-end -mt-1 transition-colors"
-                  onClick={() => reset('forgot')}
-                >
-                  Forgot password?
+                  onClick={() => reset('forgot')}>
+                  {t('forgotPassword')}
                 </button>
               )}
             </>
@@ -236,14 +349,14 @@ export function AuthScreen({
             }}
           >
             {loading && <Loader2 size={15} className="animate-spin" />}
-            {mode === 'signin' && 'Sign In'}
-            {mode === 'signup' && 'Create Account'}
-            {mode === 'forgot' && 'Send Reset Email'}
-            {mode === 'update-password' && 'Update Password'}
+            {mode === 'signin' && t('signIn')}
+            {mode === 'signup' && t('createAccount')}
+            {mode === 'forgot' && t('sendResetEmail')}
+            {mode === 'update-password' && t('updatePasswordBtn')}
           </button>
         </form>
 
-        {/* Mode switcher (not shown during password recovery) */}
+        {/* Mode switcher */}
         {mode !== 'update-password' && (
           <div className="flex flex-col items-center gap-3">
             {mode === 'forgot' ? (
@@ -251,16 +364,16 @@ export function AuthScreen({
                 className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
                 onClick={() => reset('signin')}
               >
-                <ArrowLeft size={13} /> Back to sign in
+                <ArrowLeft size={13} /> {t('backToSignIn')}
               </button>
             ) : (
               <p className="text-xs text-slate-500">
-                {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+                {mode === 'signin' ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
                 <button
                   className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
                   onClick={() => reset(mode === 'signin' ? 'signup' : 'signin')}
                 >
-                  {mode === 'signin' ? 'Sign up' : 'Sign in'}
+                  {mode === 'signin' ? t('signUpLink') : t('signInLink')}
                 </button>
               </p>
             )}

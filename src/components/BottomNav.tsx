@@ -1,6 +1,7 @@
 import React from 'react';
 import { Home, BarChart2, Plus, Target, Settings2 } from 'lucide-react';
 import { AppView } from '../types/finance';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BottomNavProps {
   currentView: AppView;
@@ -9,17 +10,18 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, onAddPress }) => {
+  const { t } = useLanguage();
   return (
     <div className="bottom-nav-bar">
-      <NavBtn view="home" label="Home" Icon={Home} currentView={currentView} onNavigate={onNavigate} />
-      <NavBtn view="statistics" label="Stats" Icon={BarChart2} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn view="home" label={t('navHome')} Icon={Home} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn view="statistics" label={t('navStats')} Icon={BarChart2} currentView={currentView} onNavigate={onNavigate} />
 
       <button className="fab-add" onClick={onAddPress} aria-label="Add transaction">
         <Plus size={22} color="white" strokeWidth={2.8} />
       </button>
 
-      <NavBtn view="savings" label="Savings" Icon={Target} currentView={currentView} onNavigate={onNavigate} />
-      <NavBtn view="settings" label="Settings" Icon={Settings2} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn view="savings" label={t('navSave')} Icon={Target} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn view="settings" label={t('navSettings')} Icon={Settings2} currentView={currentView} onNavigate={onNavigate} />
     </div>
   );
 };

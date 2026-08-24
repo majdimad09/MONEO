@@ -26,7 +26,10 @@ import {
   saveUserPreferences,
   replaceSavingGoals,
   replaceSubscriptions,
+  markOnboarded,
 } from './lib/supabaseService';
+import { useLanguage } from './i18n/LanguageContext';
+import { LangCode } from './i18n/translations';
 
 import { LandingPage } from './components/LandingPage';
 import { AuthScreen } from './components/AuthScreen';
@@ -45,6 +48,7 @@ import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
+  const { setLanguage } = useLanguage();
 
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
@@ -67,7 +71,6 @@ export default function App() {
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [deletingTransaction, setDeletingTransaction] = useState<Transaction | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [settingsInitialTab, setSettingsInitialTab] = useState<'budget' | 'subscriptions' | 'data' | undefined>();
 
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
@@ -80,7 +83,7 @@ export default function App() {
 
     setCloudLoading(true);
     loadAllUserData(user.id)
-      .then(data => {
+      .then(async data => {
         setTransactions(data.transactions);
         setSavingGoals(data.savingGoals);
         setSubscriptions(data.subscriptions);
@@ -91,10 +94,29 @@ export default function App() {
         if (data.profile) {
           if (data.profile.name) setUserName(data.profile.name);
           if (data.profile.currency) setCurrency(data.profile.currency);
+          if (data.profile.language) setLanguage(data.profile.language as LangCode);
         }
-        // Show onboarding to any user who hasn't dismissed it yet
+
+        // Populate profile from signup metadata on first sign-in (profile.name is empty)
+        if (data.profile && !data.profile.name) {
+          const meta = user.user_metadata as { name?: string; age?: number; status?: string; language?: string } | undefined;
+          if (meta?.name) {
+            await saveProfile(user.id, {
+              name: meta.name,
+              age: meta.age ?? null,
+              status: meta.status ?? '',
+              language: meta.language ?? 'en',
+            }).catch(() => {});
+            setUserName(meta.name);
+            if (meta.language) setLanguage(meta.language as LangCode);
+          }
+        }
+
+        // Check onboarding state: Supabase first, localStorage as fallback
         const seenKey = `moneo_onboarded_${user.id}`;
-        if (localStorage.getItem(seenKey) !== 'true') {
+        const isOnboarded = data.profile?.onboarded === true ||
+          localStorage.getItem(seenKey) === 'true';
+        if (!isOnboarded) {
           setShowOnboarding(true);
         }
         setCurrentView('home');
@@ -208,12 +230,8 @@ export default function App() {
     setShowActionMenu(false);
     if (action === 'expense') { openAddModal('expense'); }
     else if (action === 'income') { openAddModal('income'); }
-    else if (action === 'recurring') {
-      setSettingsInitialTab('subscriptions');
-      navigate('settings');
-    } else if (action === 'scan') {
-      showToast('Scan receipt — coming soon!');
-    }
+    else if (action === 'recurring') { navigate('settings'); }
+    else if (action === 'scan') { showToast('Scan receipt — coming soon!'); }
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -269,7 +287,9 @@ export default function App() {
     return (
       <OnboardingScreen
         onFinish={() => {
-          localStorage.setItem(`moneo_onboarded_${user.id}`, 'true');
+          const seenKey = `moneo_onboarded_${user.id}`;
+          localStorage.setItem(seenKey, 'true');
+          markOnboarded(user.id).catch(() => {});
           setShowOnboarding(false);
         }}
       />
@@ -331,21 +351,12 @@ export default function App() {
 
           {currentView === 'settings' && (
             <SettingsScreen
-              transactions={transactions}
-              currency={currency}
-              monthlyBudget={monthlyBudget}
-              categoryLimits={categoryLimits}
-              onSaveBudget={handleSaveBudget}
-              onSaveLimits={handleSaveLimits}
-              subscriptions={subscriptions}
-              onSaveSubscriptions={handleSaveSubscriptions}
               transactionCount={transactions.length}
               onLoadSampleData={handleLoadSampleData}
               onClearAllData={handleClearAllData}
               onExportCSV={handleExportCSV}
               userName={userName}
               onSaveUserName={handleSaveUserName}
-              initialTab={settingsInitialTab}
               user={user}
               onSignOut={handleSignOut}
             />
