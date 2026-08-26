@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   ShieldCheck, Lightbulb, BarChart2, TrendingUp, ChevronRight,
   TrendingDown, AlertTriangle, Info, Sparkles, Flame, PiggyBank,
-  CalendarDays, Zap,
+  CalendarDays, Zap, DollarSign, BookOpen, MessageCircle, GitBranch,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
@@ -32,6 +32,62 @@ const INSIGHT_COLORS: Record<InsightType, { bg: string; border: string; icon: st
   warning:  { bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.2)',   icon: '#f87171' },
   neutral:  { bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)', icon: '#60a5fa' },
   info:     { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)',  icon: '#a78bfa' },
+};
+
+interface ToolLink {
+  view: AppView;
+  icon: React.ElementType;
+  color: string;
+  label: string;
+  desc: string;
+  premium?: true;
+}
+
+const TOOL_LINKS: ToolLink[] = [
+  { view: 'safe-to-spend',     icon: DollarSign,    color: '#34d399', label: 'Safe to Spend',     desc: 'How much you can spend today without stress' },
+  { view: 'statistics',        icon: BarChart2,      color: '#60a5fa', label: 'Statistics',         desc: 'Charts, categories, monthly breakdown' },
+  { view: 'what-if',          icon: TrendingUp,     color: '#a78bfa', label: 'What If?',           desc: 'Simulate decisions before making them',  premium: true },
+  { view: 'spending-patterns', icon: GitBranch,      color: '#f97316', label: 'Spending Patterns',  desc: 'Detect trends across months',             premium: true },
+  { view: 'projection',        icon: Sparkles,       color: '#fbbf24', label: 'Future Projections', desc: 'Where will your finances be in 6 months?', premium: true },
+  { view: 'money-story',       icon: BookOpen,       color: '#c084fc', label: 'Monthly Story',      desc: 'A narrative recap of each month',          premium: true },
+  { view: 'ask-moneo',         icon: MessageCircle,  color: '#06b6d4', label: 'Ask Moneo',          desc: 'Query your finances in plain language',    premium: true },
+];
+
+const PremiumBadge = () => (
+  <span
+    className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide flex-shrink-0"
+    style={{ background: 'rgba(139,92,246,0.15)', color: '#c4b5fd', border: '1px solid rgba(139,92,246,0.3)' }}
+  >
+    Premium
+  </span>
+);
+
+const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView) => void }> = ({
+  view, icon: Icon, color, label, desc, premium, isPremium, onNavigate,
+}) => {
+  const locked = premium && !isPremium;
+  return (
+    <button
+      onClick={() => onNavigate(view)}
+      className="w-full rounded-2xl flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-left"
+      style={locked
+        ? { background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.2)' }
+        : { background: '#0d1526', border: '1px solid #1a2a45' }}
+    >
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: `${color}14` }}>
+        <Icon size={16} style={{ color }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-bold text-slate-200 truncate">{label}</p>
+          {locked && <PremiumBadge />}
+        </div>
+        <p className="text-xs text-slate-500 mt-0.5 truncate">{desc}</p>
+      </div>
+      <ChevronRight size={14} className="text-slate-600 flex-shrink-0" />
+    </button>
+  );
 };
 
 export const InsightsHub: React.FC<InsightsHubProps> = ({
@@ -156,35 +212,17 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         <ChevronRight size={15} className="text-slate-600" />
       </button>
 
-      {/* ── What If (Premium teaser) ─────────────────────────── */}
-      <button
-        onClick={() => onNavigate('what-if')}
-        className="w-full rounded-2xl flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all text-left"
-        style={isPremium
-          ? { background: '#0d1526', border: '1px solid #1e2d4a' }
-          : { background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.25)' }
-        }
-      >
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(139,92,246,0.15)' }}>
-          <TrendingUp size={17} style={{ color: '#a78bfa' }} />
+      {/* ── Quick tools grid ─────────────────────────────────── */}
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#3d5068' }}>
+          Tools
+        </p>
+        <div className="space-y-2">
+          {TOOL_LINKS.map(t => (
+            <ToolRow key={t.view} {...t} isPremium={isPremium} onNavigate={onNavigate} />
+          ))}
         </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-bold text-slate-200">What If?</p>
-            {!isPremium && (
-              <span
-                className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide"
-                style={{ background: 'rgba(139,92,246,0.15)', color: '#c4b5fd', border: '1px solid rgba(139,92,246,0.3)' }}
-              >
-                Premium
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-slate-500 mt-0.5">Simulate financial decisions</p>
-        </div>
-        <ChevronRight size={15} className="text-slate-600" />
-      </button>
+      </div>
 
     </div>
   );

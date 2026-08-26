@@ -5,7 +5,7 @@
  */
 
 import { supabase } from './supabase';
-import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome, PremiumPlan, MembershipState } from '../types/finance';
+import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome, PremiumPlan, MembershipState, Community, CommunityMember } from '../types/finance';
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────────
 
@@ -306,6 +306,205 @@ export async function saveMembership(userId: string, plan: PremiumPlan): Promise
     plan,
     updated_at: new Date().toISOString(),
   });
+}
+
+// ─── COMMUNITY ───────────────────────────────────────────────────────────────
+
+/** Fetch all communities the user belongs to, including member lists. */
+export async function fetchUserCommunities(userId: string): Promise<Community[]> {
+  if (!supabase) return [];
+
+  // Get community IDs for this user
+  const { data: memberships, error: memErr } = await supabase
+    .from('community_members')
+    .select('community_id, user_id, role, joined_at')
+    .eq('user_id', userId);
+  if (memErr || !memberships?.length) return [];
+
+  const communityIds = memberships.map(m => m.community_id as string);
+
+  // Get community metadata
+  const { data: communityRows } = await supabase
+    .from('communities')
+    .select('id, name, description, invite_code, creator_id, privacy, created_at')
+    .in('id', communityIds);
+  if (!communityRows?.length) return [];
+
+  // Get member profiles (display names + shared scores) — requires migration v4
+  let profileRows: Record<string, unknown>[] = [];
+  try {
+    const { data } = await supabase
+      .from('community_profiles')
+      .select('community_id, user_id, display_name, shared_score')
+      .in('community_id', communityIds);
+    profileRows = (data ?? []) as Record<string, unknown>[];
+  } catch { /* migration v4 not yet run — skip */ }
+
+  return communityRows.map(row => {
+    const userMem = memberships.find(m => m.community_id === row.id);
+    const communityProfiles = profileRows.filter(p => p.community_id === row.id);
+
+    const members: CommunityMember[] = communityProfiles.map(p => ({
+      userId:       p.user_id as string,
+      displayName:  (p.display_name as string) || 'Member',
+      role:         (memberships.find(m => m.community_id === row.id && m.user_id === p.user_id)?.role ?? 'member') as 'admin' | 'member',
+      joinedAt:     (memberships.find(m => m.community_id === row.id && m.user_id === p.user_id)?.joined_at as string) ?? new Date().toISOString(),
+      sharedScore:  p.shared_score as number | null,
+    }));
+
+    return {
+      id:          row.id as string,
+      name:        row.name as string,
+      description: (row.description as string) ?? '',
+      inviteCode:  row.invite_code as string,
+      creatorId:   row.creator_id as string,
+      privacy:     (row.privacy as 'public' | 'invite') ?? 'invite',
+      createdAt:   row.created_at as string,
+      role:        (userMem?.role ?? 'member') as 'admin' | 'member',
+      members,
+      challenges:  [],   // challenges live in localStorage (migration v4 needed for full sync)
+    };
+  });
+}
+
+/** Create a community in Supabase and join as admin. */
+export async function createCommunityInDB(
+  userId: string,
+  community: Community,
+  displayName: string,
+  sharedScore: number | null,
+): Promise<void> {
+  if (!supabase) return;
+
+  await supabase.from('communities').insert({
+    id:          community.id,
+    name:        community.name,
+    description: community.description,
+    invite_code: community.inviteCode,
+    creator_id:  userId,
+    privacy:     community.privacy,
+  }).throwOnError();
+
+  await supabase.from('community_members').insert({
+    community_id: community.id,
+    user_id:      userId,
+    role:         'admin',
+  }).throwOnError();
+
+  // community_profiles requires migration v4 — graceful skip if not present
+  try {
+    await supabase.from('community_profiles').upsert({
+      community_id: community.id,
+      user_id:      userId,
+      display_name: displayName,
+      shared_score: sharedScore,
+      updated_at:   new Date().toISOString(),
+    });
+  } catch { /* migration v4 not yet run */ }
+}
+
+/** Look up a community by invite code and join it. Returns the Community or null if not found. */
+export async function joinCommunityByCode(
+  userId: string,
+  inviteCode: string,
+  displayName: string,
+  sharedScore: number | null,
+): Promise<Community | null> {
+  if (!supabase) return null;
+
+  // Find community
+  const { data: row } = await supabase
+    .from('communities')
+    .select('id, name, description, invite_code, creator_id, privacy, created_at')
+    .eq('invite_code', inviteCode.toUpperCase())
+    .single();
+  if (!row) return null;
+
+  const communityId = row.id as string;
+
+  // Check if already a member
+  const { data: existing } = await supabase
+    .from('community_members')
+    .select('user_id')
+    .eq('community_id', communityId)
+    .eq('user_id', userId)
+    .single();
+  if (!existing) {
+    await supabase.from('community_members').insert({
+      community_id: communityId,
+      user_id:      userId,
+      role:         'member',
+    });
+  }
+
+  // Upsert community profile
+  try {
+    await supabase.from('community_profiles').upsert({
+      community_id: communityId,
+      user_id:      userId,
+      display_name: displayName,
+      shared_score: sharedScore,
+      updated_at:   new Date().toISOString(),
+    });
+  } catch { /* migration v4 not yet run */ }
+
+  // Load all member profiles
+  let profileRows: Record<string, unknown>[] = [];
+  try {
+    const { data } = await supabase
+      .from('community_profiles')
+      .select('user_id, display_name, shared_score')
+      .eq('community_id', communityId);
+    profileRows = (data ?? []) as Record<string, unknown>[];
+  } catch {}
+
+  const { data: memberRows } = await supabase
+    .from('community_members')
+    .select('user_id, role, joined_at')
+    .eq('community_id', communityId);
+
+  const members: CommunityMember[] = (memberRows ?? []).map(m => {
+    const profile = profileRows.find(p => p.user_id === m.user_id);
+    return {
+      userId:      m.user_id as string,
+      displayName: (profile?.display_name as string) ?? 'Member',
+      role:        (m.role as 'admin' | 'member') ?? 'member',
+      joinedAt:    m.joined_at as string,
+      sharedScore: (profile?.shared_score as number | null) ?? null,
+    };
+  });
+
+  return {
+    id:          communityId,
+    name:        row.name as string,
+    description: (row.description as string) ?? '',
+    inviteCode:  row.invite_code as string,
+    creatorId:   row.creator_id as string,
+    privacy:     (row.privacy as 'public' | 'invite') ?? 'invite',
+    createdAt:   row.created_at as string,
+    role:        'member',
+    members,
+    challenges:  [],
+  };
+}
+
+/** Sync user's shared score/name to community_profiles. */
+export async function updateCommunityProfile(
+  communityId: string,
+  userId: string,
+  displayName: string,
+  sharedScore: number | null,
+): Promise<void> {
+  if (!supabase) return;
+  try {
+    await supabase.from('community_profiles').upsert({
+      community_id: communityId,
+      user_id:      userId,
+      display_name: displayName,
+      shared_score: sharedScore,
+      updated_at:   new Date().toISOString(),
+    });
+  } catch {}
 }
 
 // ─── BULK LOAD ────────────────────────────────────────────────────────────────

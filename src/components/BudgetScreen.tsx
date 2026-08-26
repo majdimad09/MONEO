@@ -200,9 +200,18 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             )}
           </div>
         ) : (
-          <div className="text-center py-4">
-            <p className="text-sm text-slate-500 mb-1">No budget set yet</p>
-            <p className="text-xs text-slate-600">Set a monthly budget to track your spending progress.</p>
+          <div
+            className="rounded-2xl p-5 text-center"
+            style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.15)' }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
+              style={{ background: 'rgba(59,130,246,0.12)' }}>
+              <Wallet size={20} className="text-blue-400" />
+            </div>
+            <p className="text-sm font-bold text-slate-300 mb-1">No monthly budget yet</p>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Set a total monthly budget to see how much of your income you're spending — and get a clear safe-to-spend number each day.
+            </p>
           </div>
         )}
       </div>
@@ -274,9 +283,17 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         )}
 
         {categoryLimits.length === 0 && !showAddLimit ? (
-          <div className="card-dark rounded-2xl p-6 text-center">
-            <p className="text-sm text-slate-400 mb-1">No category budgets set</p>
-            <p className="text-xs text-slate-600">Add budgets per category to track specific spending areas.</p>
+          <div className="card-dark rounded-2xl px-4 py-5 flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ background: 'rgba(96,165,250,0.1)' }}>
+              <Target size={17} className="text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-300 mb-1">Per-category spending limits</p>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Cap spending on Food, Transport, Entertainment, and more. Get alerted when you're getting close.
+              </p>
+            </div>
           </div>
         ) : (
           <div className="space-y-2.5">

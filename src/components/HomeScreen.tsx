@@ -5,7 +5,8 @@ import {
   BarChart2, ShieldCheck, Zap, Flame, PiggyBank, CalendarDays,
   Info, Plus,
 } from 'lucide-react';
-import { Transaction, CategoryLimit, Subscription, SavingGoal } from '../types/finance';
+import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome } from '../types/finance';
+import { monthlyEquivalent } from '../utils/recurringUtils';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
 import { CashlyScore } from './CashlyScore';
@@ -21,6 +22,7 @@ interface HomeScreenProps {
   categoryLimits: CategoryLimit[];
   subscriptions: Subscription[];
   savingGoals: SavingGoal[];
+  recurringIncome: RecurringIncome[];
   userName: string;
   onViewAllTransactions: () => void;
   onEdit: (tx: Transaction) => void;
@@ -66,7 +68,7 @@ const INSIGHT_COLORS: Record<string, { bg: string; border: string; icon: string;
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
-  savingGoals, userName,
+  savingGoals, recurringIncome, userName,
   onViewAllTransactions, onEdit, onLoadSample,
   onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
 }) => {
@@ -96,6 +98,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }, [transactions, prefix]);
 
   const safeToSpend = useMemo(() => calculateSafeToSpend(transactions, subscriptions), [transactions, subscriptions]);
+
+  const monthlyRecurringIncome = useMemo(() =>
+    recurringIncome.filter(r => r.isActive).reduce((s, r) => s + monthlyEquivalent(r.amount, r.frequency), 0),
+    [recurringIncome],
+  );
   const insights = useMemo(() => generateInsights(transactions, currency, subscriptions), [transactions, currency, subscriptions]);
   const scoreResult = useMemo(() => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals), [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals]);
 
@@ -176,9 +183,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </div>
                 <div className="mt-2.5 space-y-1">
                   <div className="flex justify-between text-[11px]">
-                    <span className="text-slate-500">This month's income</span>
+                    <span className="text-slate-500">Income logged</span>
                     <span className="text-slate-300 font-medium">{formatCurrency(safeToSpend.income, currency)}</span>
                   </div>
+                  {monthlyRecurringIncome > 0 && (
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-500">Expected recurring</span>
+                      <span className="text-emerald-400 font-medium">+ {formatCurrency(monthlyRecurringIncome, currency)}/mo</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-[11px]">
                     <span className="text-slate-500">Spent so far</span>
                     <span className="text-red-400 font-medium">− {formatCurrency(safeToSpend.expenses, currency)}</span>

@@ -157,20 +157,13 @@ export type AppView =
   // Core (existing)
   | 'landing' | 'auth' | 'home' | 'statistics' | 'savings'
   | 'settings' | 'transactions' | 'budget' | 'recurring' | 'moneo-score'
-  // New — Stage 1
-  | 'activity'           // Recent + upcoming timeline
-  | 'insights'           // Insights hub tab
-  | 'more'               // Features hub tab
-  | 'money-coach'        // Dedicated Money Coach
-  | 'what-if'            // What If simulator (Premium)
-  | 'recurring-income'   // Recurring income management
-  | 'premium'            // Premium upgrade screen
-  | 'projection'         // Future projection (Premium)
-  | 'money-story'        // Monthly Money Story (Premium)
-  | 'spending-patterns'  // Spending patterns (Premium)
-  | 'safe-to-spend'      // Safe to Spend 2.0
-  | 'community'          // Community (Premium, Stage 2)
-  | 'ask-moneo';         // Ask Moneo (Premium, Stage 2)
+  // Stage 1
+  | 'activity' | 'insights' | 'more' | 'money-coach' | 'what-if'
+  | 'recurring-income' | 'premium' | 'projection' | 'money-story'
+  | 'spending-patterns' | 'safe-to-spend' | 'ask-moneo'
+  // Stage 2 — Community
+  | 'community'           // Community hub tab
+  | 'community-detail';   // Specific community view
 
 export type RecurringIncomeFrequency = 'weekly' | 'biweekly' | 'monthly';
 
@@ -191,4 +184,73 @@ export type PremiumPlan = 'free' | 'premium';
 export interface MembershipState {
   plan: PremiumPlan;
   startedAt: string | null;
+}
+
+// ─── Community ────────────────────────────────────────────────────────────────
+
+export type ChallengeType =
+  | 'log_daily'       // Log a transaction every day
+  | 'budget_stay'     // Stay within monthly budget
+  | 'score_boost'     // Reach a target Moneo Score
+  | 'category_cut'    // Reduce spending in a category
+  | 'custom';         // Manual / community-defined
+
+export interface ChallengeParams {
+  daysTarget?: number;       // log_daily
+  targetScore?: number;      // score_boost
+  targetCategory?: string;   // category_cut
+  reductionPct?: number;     // category_cut (% reduction goal)
+  customTarget?: string;     // custom description
+}
+
+export interface ChallengeParticipant {
+  userId: string;
+  displayName: string;
+  progress: number;     // 0–100
+  streak: number;       // consecutive days/periods
+  joinedAt: string;
+  lastUpdated: string;
+  badges: string[];
+  manualDays?: number;  // for custom challenges
+}
+
+export interface Challenge {
+  id: string;
+  communityId: string;
+  name: string;
+  type: ChallengeType;
+  description: string;
+  startDate: string;  // YYYY-MM-DD
+  endDate: string;    // YYYY-MM-DD
+  createdBy: string;
+  createdAt: number;
+  params: ChallengeParams;
+  participants: ChallengeParticipant[];
+}
+
+export interface CommunityMember {
+  userId: string;
+  displayName: string;
+  role: 'admin' | 'member';
+  joinedAt: string;
+  sharedScore: number | null; // null = not shared
+}
+
+export interface Community {
+  id: string;
+  name: string;
+  description: string;
+  inviteCode: string;
+  creatorId: string;
+  privacy: 'public' | 'invite';
+  createdAt: string;
+  role: 'admin' | 'member';
+  members: CommunityMember[];
+  challenges: Challenge[];
+}
+
+export interface CommunityPrivacy {
+  showScore: boolean;
+  showProfileName: boolean;
+  appearOnLeaderboards: boolean;
 }

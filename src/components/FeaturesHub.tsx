@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   Wallet, Repeat, PiggyBank, TrendingUp, BarChart2, Sparkles,
-  BookOpen, ShieldCheck, GitBranch, CalendarDays, Clock,
-  Users, Crown, Settings2, Zap, Target, DollarSign,
+  BookOpen, ShieldCheck, GitBranch, CalendarDays,
+  Crown, Settings2, Zap, Target, DollarSign,
 } from 'lucide-react';
 import { AppView } from '../types/finance';
 
@@ -48,12 +48,6 @@ const SECTIONS: { title: string; cards: FeatureCard[] }[] = [
       { icon: CalendarDays, iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  label: 'Timeline',         desc: 'Upcoming payments & income', view: 'activity' },
       { icon: TrendingUp,   iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',  label: 'What If?',         desc: 'Simulate financial decisions', view: 'what-if', premium: true },
       { icon: Target,       iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', label: 'Projection',       desc: 'Future financial forecast', view: 'projection', premium: true },
-    ],
-  },
-  {
-    title: 'Community',
-    cards: [
-      { icon: Users,        iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', label: 'Community',        desc: 'Improve finances together', view: 'community', premium: true, badge: 'Coming Soon' },
     ],
   },
 ];

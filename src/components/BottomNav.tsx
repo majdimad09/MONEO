@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Clock, Plus, Lightbulb, LayoutGrid } from 'lucide-react';
+import { Home, Lightbulb, Plus, Users, LayoutGrid } from 'lucide-react';
 import { AppView } from '../types/finance';
 
 interface BottomNavProps {
@@ -8,41 +8,39 @@ interface BottomNavProps {
   onAddPress: () => void;
 }
 
-const HOME_VIEWS: AppView[] = ['home', 'transactions'];
-const ACTIVITY_VIEWS: AppView[] = ['activity'];
+const HOME_VIEWS: AppView[] = ['home', 'transactions', 'activity'];
 const INSIGHTS_VIEWS: AppView[] = [
   'insights', 'statistics', 'money-coach', 'spending-patterns',
-  'what-if', 'moneo-score', 'projection', 'money-story', 'ask-moneo',
+  'what-if', 'moneo-score', 'projection', 'money-story', 'ask-moneo', 'safe-to-spend',
 ];
+const COMMUNITY_VIEWS: AppView[] = ['community', 'community-detail'];
 const MORE_VIEWS: AppView[] = [
   'more', 'budget', 'savings', 'recurring', 'recurring-income',
-  'safe-to-spend', 'settings', 'community', 'premium',
+  'settings', 'premium',
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, onAddPress }) => {
-  const homeActive    = HOME_VIEWS.includes(currentView);
-  const activityActive = ACTIVITY_VIEWS.includes(currentView);
-  const insightsActive = INSIGHTS_VIEWS.includes(currentView);
-  const moreActive    = MORE_VIEWS.includes(currentView);
+  const homeActive      = HOME_VIEWS.includes(currentView);
+  const insightsActive  = INSIGHTS_VIEWS.includes(currentView);
+  const communityActive = COMMUNITY_VIEWS.includes(currentView);
+  const moreActive      = MORE_VIEWS.includes(currentView);
 
   return (
     <div className="bottom-nav-bar">
-      <NavBtn label="Home" Icon={Home} active={homeActive} onClick={() => onNavigate('home')} />
-      <NavBtn label="Activity" Icon={Clock} active={activityActive} onClick={() => onNavigate('activity')} />
+      <NavBtn label="Home"      Icon={Home}       active={homeActive}      onClick={() => onNavigate('home')} />
+      <NavBtn label="Insights"  Icon={Lightbulb}  active={insightsActive}  onClick={() => onNavigate('insights')} />
 
       <button className="fab-add" onClick={onAddPress} aria-label="Add transaction">
         <Plus size={22} color="white" strokeWidth={2.8} />
       </button>
 
-      <NavBtn label="Insights" Icon={Lightbulb} active={insightsActive} onClick={() => onNavigate('insights')} />
-      <NavBtn label="More" Icon={LayoutGrid} active={moreActive} onClick={() => onNavigate('more')} />
+      <NavBtn label="Community" Icon={Users}       active={communityActive} onClick={() => onNavigate('community')} />
+      <NavBtn label="More"      Icon={LayoutGrid}  active={moreActive}     onClick={() => onNavigate('more')} />
     </div>
   );
 };
 
-function NavBtn({
-  label, Icon, active, onClick,
-}: {
+function NavBtn({ label, Icon, active, onClick }: {
   label: string; Icon: React.ElementType; active: boolean; onClick: () => void;
 }) {
   return (
@@ -59,10 +57,7 @@ function NavBtn({
           transition: 'color 0.18s ease, filter 0.18s ease',
         }}
       />
-      <span
-        className="text-[10px] font-bold transition-colors"
-        style={{ color: active ? '#60a5fa' : '#3d5068' }}
-      >
+      <span className="text-[10px] font-bold transition-colors" style={{ color: active ? '#60a5fa' : '#3d5068' }}>
         {label}
       </span>
     </button>

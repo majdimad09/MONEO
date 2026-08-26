@@ -1,0 +1,803 @@
+import React, { useState, useMemo } from 'react';
+import {
+  ChevronLeft, Users, Trophy, Zap, Crown, Plus, Check, X,
+  Shield, Copy, Calendar, Target, Flame, BarChart2, Hash,
+  ChevronDown, ChevronUp, Eye, EyeOff, Share2,
+} from 'lucide-react';
+import {
+  Community, Challenge, ChallengeType, Transaction,
+  CategoryLimit, Subscription, SavingGoal, AppView,
+  ChallengeParticipant, EXPENSE_CATEGORIES,
+} from '../types/finance';
+import {
+  getChallengeStatus, challengeDaysTotal, challengeDaysElapsed,
+  challengeTypeLabel, challengeTypeDescription, communityAvgProgress,
+  buildParticipant, newChallengeId, saveCommunities,
+  loadCommunities, challengeBadgeLabel,
+} from '../utils/communityUtils';
+
+const CHALLENGE_TYPES: { type: ChallengeType; icon: React.ElementType; color: string }[] = [
+  { type: 'log_daily',    icon: Flame,    color: '#f97316' },
+  { type: 'budget_stay',  icon: Shield,   color: '#60a5fa' },
+  { type: 'score_boost',  icon: BarChart2, color: '#a78bfa' },
+  { type: 'category_cut', icon: Target,   color: '#34d399' },
+  { type: 'custom',       icon: Hash,     color: '#fbbf24' },
+];
+
+interface CommunityDetailScreenProps {
+  community: Community;
+  userId: string;
+  userName: string;
+  isPremium: boolean;
+  transactions: Transaction[];
+  monthlyBudget: number;
+  categoryLimits: CategoryLimit[];
+  subscriptions: Subscription[];
+  savingGoals: SavingGoal[];
+  currency: string;
+  currentScore: number;
+  onBack: () => void;
+  onCommunityUpdate: (updated: Community) => void;
+  onNavigate: (v: AppView) => void;
+}
+
+type DetailTab = 'overview' | 'challenges' | 'members';
+
+export const CommunityDetailScreen: React.FC<CommunityDetailScreenProps> = ({
+  community, userId, userName, isPremium,
+  transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals,
+  currency, currentScore, onBack, onCommunityUpdate, onNavigate,
+}) => {
+  const [tab, setTab] = useState<DetailTab>('overview');
+  const [showInvite, setShowInvite] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [showCreateChallenge, setShowCreateChallenge] = useState(false);
+  const [expandedChallenge, setExpandedChallenge] = useState<string | null>(null);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [shareScore, setShareScore] = useState(true);
+  const [shareName, setShareName] = useState(true);
+
+  // Create challenge form state
+  const [chType, setChType]       = useState<ChallengeType>('log_daily');
+  const [chName, setChName]       = useState('');
+  const [chDesc, setChDesc]       = useState('');
+  const [chStart, setChStart]     = useState(new Date().toISOString().split('T')[0]);
+  const [chEnd, setChEnd]         = useState(() => {
+    const d = new Date(); d.setDate(d.getDate() + 7);
+    return d.toISOString().split('T')[0];
+  });
+  const [chTarget, setChTarget]   = useState('');
+  const [chCategory, setChCategory] = useState(EXPENSE_CATEGORIES[0].name);
+  const [chReduction, setChReduction] = useState('20');
+  const [creating, setCreating]   = useState(false);
+
+  const isAdmin = community.role === 'admin';
+  const me = community.members.find(m => m.userId === userId);
+
+  // Compute challenge progress in real-time for current user
+  const enrichedChallenges = useMemo(() => {
+    return community.challenges.map(ch => {
+      const participant = ch.participants.find(p => p.userId === userId);
+      const live = buildParticipant(
+        userId, shareName ? (userName || 'You') : 'Member',
+        ch, transactions, monthlyBudget, currentScore,
+        participant?.manualDays,
+      );
+      return { ch, participant, live };
+    });
+  }, [community.challenges, userId, userName, transactions, monthlyBudget, currentScore, shareName]);
+
+  const activeChallenges   = enrichedChallenges.filter(e => getChallengeStatus(e.ch) === 'active');
+  const upcomingChallenges = enrichedChallenges.filter(e => getChallengeStatus(e.ch) === 'upcoming');
+  const pastChallenges     = enrichedChallenges.filter(e => getChallengeStatus(e.ch) === 'completed');
+
+  const handleJoinChallenge = (challengeId: string) => {
+    const updated: Community = {
+      ...community,
+      challenges: community.challenges.map(ch => {
+        if (ch.id !== challengeId) return ch;
+        if (ch.participants.some(p => p.userId === userId)) return ch; // already joined
+        const participant = buildParticipant(userId, shareName ? (userName || 'You') : 'Member',
+          ch, transactions, monthlyBudget, currentScore);
+        return { ...ch, participants: [...ch.participants, participant] };
+      }),
+    };
+    onCommunityUpdate(updated);
+    const all = loadCommunities().map(c => c.id === updated.id ? updated : c);
+    saveCommunities(all);
+  };
+
+  const handleManualProgress = (challengeId: string, increment: boolean) => {
+    const updated: Community = {
+      ...community,
+      challenges: community.challenges.map(ch => {
+        if (ch.id !== challengeId) return ch;
+        const existing = ch.participants.find(p => p.userId === userId);
+        if (!existing) return ch;
+        const manualDays = (existing.manualDays ?? 0) + (increment ? 1 : -1);
+        const totalDays  = challengeDaysTotal(ch);
+        const progress   = Math.round(Math.max(0, Math.min(1, manualDays / totalDays)) * 100);
+        const updated_p: ChallengeParticipant = { ...existing, manualDays: Math.max(0, manualDays), progress };
+        return { ...ch, participants: ch.participants.map(p => p.userId === userId ? updated_p : p) };
+      }),
+    };
+    onCommunityUpdate(updated);
+    const all = loadCommunities().map(c => c.id === updated.id ? updated : c);
+    saveCommunities(all);
+  };
+
+  const handleCreateChallenge = async () => {
+    if (!chName.trim() || !isAdmin) return;
+    setCreating(true);
+    await new Promise(r => setTimeout(r, 300));
+    const newCh: Challenge = {
+      id: newChallengeId(),
+      communityId: community.id,
+      name: chName.trim(),
+      type: chType,
+      description: chDesc.trim() || challengeTypeDescription(chType),
+      startDate: chStart,
+      endDate: chEnd,
+      createdBy: userId,
+      createdAt: Date.now(),
+      params: {
+        targetScore:    chType === 'score_boost'  ? Number(chTarget) || 70 : undefined,
+        targetCategory: chType === 'category_cut' ? chCategory : undefined,
+        reductionPct:   chType === 'category_cut' ? Number(chReduction) || 20 : undefined,
+        daysTarget:     chType === 'log_daily'    ? challengeDaysTotal({ startDate: chStart, endDate: chEnd } as Challenge) : undefined,
+        customTarget:   chType === 'custom'       ? chTarget : undefined,
+      },
+      participants: [],
+    };
+    const updatedCom: Community = { ...community, challenges: [...community.challenges, newCh] };
+    onCommunityUpdate(updatedCom);
+    const all = loadCommunities().map(c => c.id === updatedCom.id ? updatedCom : c);
+    saveCommunities(all);
+    setCreating(false);
+    setShowCreateChallenge(false);
+    setChName(''); setChDesc(''); setChTarget('');
+    setTab('challenges');
+  };
+
+  const copyInvite = () => {
+    navigator.clipboard.writeText(community.inviteCode).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const inputBase = 'input-dark w-full px-3 py-2.5 rounded-xl text-sm';
+
+  return (
+    <div className="page-enter pb-8">
+      {/* Header */}
+      <div className="px-4 pt-3 mb-4">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 mb-3 cursor-pointer">
+          <ChevronLeft size={18} /> Back
+        </button>
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-bold text-white"
+              style={{ background: 'linear-gradient(135deg,rgba(99,102,241,0.5),rgba(139,92,246,0.5))', border: '1px solid rgba(139,92,246,0.4)' }}>
+              {community.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-bold text-white">{community.name}</h1>
+                {isAdmin && (
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{ background: 'rgba(139,92,246,0.15)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.25)' }}>
+                    Admin
+                  </span>
+                )}
+              </div>
+              {community.description && <p className="text-xs text-slate-500 mt-0.5">{community.description}</p>}
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-[11px] text-slate-600">{community.members.length} member{community.members.length !== 1 ? 's' : ''}</span>
+                <span className="text-[11px] text-slate-600">·</span>
+                <span className="text-[11px] text-slate-600">{community.challenges.length} challenge{community.challenges.length !== 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+          {/* Invite code button */}
+          <button
+            onClick={() => setShowInvite(v => !v)}
+            className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl cursor-pointer"
+            style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+          >
+            <Share2 size={13} className="text-slate-500" />
+          </button>
+        </div>
+
+        {showInvite && (
+          <div className="mt-3 rounded-2xl p-3 flex items-center justify-between"
+            style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
+            <div>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Invite Code</p>
+              <p className="text-lg font-bold tracking-[0.2em] mt-0.5" style={{ color: '#a78bfa' }}>{community.inviteCode}</p>
+            </div>
+            <button onClick={copyInvite} className="cursor-pointer flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+              {copied ? <><Check size={14} className="text-emerald-400" /> Copied</> : <><Copy size={14} /> Copy</>}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Tabs */}
+      <div className="flex px-4 mb-4 gap-1">
+        {(['overview', 'challenges', 'members'] as DetailTab[]).map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className="flex-1 py-2 rounded-xl text-xs font-bold cursor-pointer capitalize transition-all"
+            style={tab === t
+              ? { background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa' }
+              : { background: '#0d1526', border: '1px solid #1e2d4a', color: '#475569' }}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {/* ── OVERVIEW TAB ─────────────────────────────────── */}
+      {tab === 'overview' && (
+        <div className="px-4 space-y-4">
+          {/* My stats card */}
+          <div className="card-dark rounded-2xl p-4">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Your Stats</p>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: 'Moneo Score', value: currentScore, color: currentScore >= 70 ? '#34d399' : currentScore >= 45 ? '#fbbf24' : '#f87171' },
+                { label: 'Challenges', value: activeChallenges.filter(e => e.participant).length, color: '#60a5fa' },
+                { label: 'Completed', value: pastChallenges.filter(e => e.participant && e.live.progress >= 100).length, color: '#a78bfa' },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="text-center">
+                  <p className="text-xl font-bold" style={{ color }}>{value}</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Active challenges summary */}
+          {activeChallenges.length > 0 && (
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>Active Challenges</p>
+              <div className="space-y-2">
+                {activeChallenges.slice(0, 3).map(({ ch, participant, live }) => (
+                  <ChallengeRow
+                    key={ch.id}
+                    challenge={ch}
+                    participant={participant ?? null}
+                    liveParticipant={live}
+                    userId={userId}
+                    onJoin={() => handleJoinChallenge(ch.id)}
+                    onManual={(inc) => handleManualProgress(ch.id, inc)}
+                    expanded={expandedChallenge === ch.id}
+                    onToggle={() => setExpandedChallenge(v => v === ch.id ? null : ch.id)}
+                    isAdmin={isAdmin}
+                  />
+                ))}
+              </div>
+              {activeChallenges.length > 3 && (
+                <button onClick={() => setTab('challenges')} className="text-xs text-blue-400 font-semibold mt-2 cursor-pointer">
+                  See all {activeChallenges.length} challenges →
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Leaderboard preview */}
+          <LeaderboardSection community={community} userId={userId} shareScore={shareScore} shareName={shareName} />
+
+          {/* Privacy settings */}
+          <div className="card-dark rounded-2xl overflow-hidden">
+            <button
+              onClick={() => setShowPrivacy(v => !v)}
+              className="w-full flex items-center justify-between px-4 py-3.5 cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Shield size={15} className="text-blue-400" />
+                <p className="text-sm font-semibold text-slate-200">Privacy Settings</p>
+              </div>
+              {showPrivacy ? <ChevronUp size={15} className="text-slate-600" /> : <ChevronDown size={15} className="text-slate-600" />}
+            </button>
+            {showPrivacy && (
+              <div className="px-4 pb-4 space-y-3" style={{ borderTop: '1px solid #0c1a30' }}>
+                <p className="text-[11px] text-slate-500 pt-2">Control what others in this community can see about you.</p>
+                {[
+                  { label: 'Share my Moneo Score', value: shareScore, toggle: () => setShareScore(v => !v) },
+                  { label: 'Show my name', value: shareName, toggle: () => setShareName(v => !v) },
+                ].map(({ label, value, toggle }) => (
+                  <div key={label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {value ? <Eye size={13} className="text-slate-500" /> : <EyeOff size={13} className="text-slate-600" />}
+                      <span className="text-xs text-slate-300">{label}</span>
+                    </div>
+                    <button onClick={toggle} className="relative cursor-pointer" style={{ width: 40, height: 22 }}>
+                      <div className="absolute inset-0 rounded-full transition-all"
+                        style={{ background: value ? 'rgba(59,130,246,0.7)' : '#1e2d4a' }} />
+                      <div className="absolute top-1 rounded-full bg-white transition-all"
+                        style={{ width: 14, height: 14, left: value ? 22 : 4, transition: 'left 0.15s ease' }} />
+                    </button>
+                  </div>
+                ))}
+                <p className="text-[10px] text-slate-600">Your transactions and exact balances are never shared.</p>
+              </div>
+            )}
+          </div>
+
+          {isAdmin && !showCreateChallenge && (
+            <button
+              onClick={() => setShowCreateChallenge(true)}
+              className="w-full py-3 rounded-2xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2"
+              style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}
+            >
+              <Plus size={15} /> Create New Challenge
+            </button>
+          )}
+
+          {showCreateChallenge && (
+            <CreateChallengePanel
+              chType={chType} setChType={setChType}
+              chName={chName} setChName={setChName}
+              chDesc={chDesc} setChDesc={setChDesc}
+              chStart={chStart} setChStart={setChStart}
+              chEnd={chEnd} setChEnd={setChEnd}
+              chTarget={chTarget} setChTarget={setChTarget}
+              chCategory={chCategory} setChCategory={setChCategory}
+              chReduction={chReduction} setChReduction={setChReduction}
+              creating={creating}
+              onCreate={handleCreateChallenge}
+              onCancel={() => setShowCreateChallenge(false)}
+            />
+          )}
+        </div>
+      )}
+
+      {/* ── CHALLENGES TAB ───────────────────────────────── */}
+      {tab === 'challenges' && (
+        <div className="px-4 space-y-4">
+          {isAdmin && (
+            <button
+              onClick={() => { setShowCreateChallenge(v => !v); }}
+              className="w-full py-3 rounded-2xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2"
+              style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}
+            >
+              <Plus size={15} /> Create Challenge
+            </button>
+          )}
+
+          {showCreateChallenge && (
+            <CreateChallengePanel
+              chType={chType} setChType={setChType}
+              chName={chName} setChName={setChName}
+              chDesc={chDesc} setChDesc={setChDesc}
+              chStart={chStart} setChStart={setChStart}
+              chEnd={chEnd} setChEnd={setChEnd}
+              chTarget={chTarget} setChTarget={setChTarget}
+              chCategory={chCategory} setChCategory={setChCategory}
+              chReduction={chReduction} setChReduction={setChReduction}
+              creating={creating}
+              onCreate={handleCreateChallenge}
+              onCancel={() => setShowCreateChallenge(false)}
+            />
+          )}
+
+          {community.challenges.length === 0 ? (
+            <EmptyChallenges isAdmin={isAdmin} onCreate={() => setShowCreateChallenge(true)} />
+          ) : (
+            <>
+              {[
+                { label: 'Active', items: activeChallenges },
+                { label: 'Upcoming', items: upcomingChallenges },
+                { label: 'Completed', items: pastChallenges },
+              ].map(({ label, items }) => items.length > 0 && (
+                <div key={label}>
+                  <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>{label}</p>
+                  <div className="space-y-2">
+                    {items.map(({ ch, participant, live }) => (
+                      <ChallengeRow
+                        key={ch.id}
+                        challenge={ch}
+                        participant={participant ?? null}
+                        liveParticipant={live}
+                        userId={userId}
+                        onJoin={() => handleJoinChallenge(ch.id)}
+                        onManual={(inc) => handleManualProgress(ch.id, inc)}
+                        expanded={expandedChallenge === ch.id}
+                        onToggle={() => setExpandedChallenge(v => v === ch.id ? null : ch.id)}
+                        isAdmin={isAdmin}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ── MEMBERS TAB ──────────────────────────────────── */}
+      {tab === 'members' && (
+        <div className="px-4 space-y-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+            {community.members.length} Member{community.members.length !== 1 ? 's' : ''}
+          </p>
+          {community.members.map(member => {
+            const isMe = member.userId === userId;
+            return (
+              <div
+                key={member.userId}
+                className="card-dark rounded-2xl px-4 py-3 flex items-center gap-3"
+                style={isMe ? { border: '1px solid rgba(59,130,246,0.3)' } : {}}
+              >
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ background: isMe ? 'rgba(59,130,246,0.15)' : 'rgba(100,116,139,0.1)', color: isMe ? '#60a5fa' : '#64748b' }}
+                >
+                  {member.displayName.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-slate-200 truncate">
+                      {member.displayName}{isMe ? ' (You)' : ''}
+                    </p>
+                    {member.role === 'admin' && (
+                      <Crown size={11} style={{ color: '#a78bfa' }} />
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    Joined {new Date(member.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                  </p>
+                </div>
+                {member.sharedScore != null && (
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm font-bold" style={{ color: member.sharedScore >= 70 ? '#34d399' : member.sharedScore >= 45 ? '#fbbf24' : '#f87171' }}>
+                      {member.sharedScore}
+                    </p>
+                    <p className="text-[10px] text-slate-600">Score</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Challenge Row ────────────────────────────────────────────────────────────
+
+const ChallengeRow: React.FC<{
+  challenge: Challenge;
+  participant: ChallengeParticipant | null;
+  liveParticipant: ChallengeParticipant;
+  userId: string;
+  onJoin: () => void;
+  onManual: (inc: boolean) => void;
+  expanded: boolean;
+  onToggle: () => void;
+  isAdmin: boolean;
+}> = ({ challenge, participant, liveParticipant, userId, onJoin, onManual, expanded, onToggle, isAdmin }) => {
+  const status  = getChallengeStatus(challenge);
+  const total   = challengeDaysTotal(challenge);
+  const elapsed = challengeDaysElapsed(challenge);
+  const avg     = communityAvgProgress(challenge);
+  const myPct   = participant ? liveParticipant.progress : null;
+  const joined  = !!participant;
+
+  const TypeInfo = CHALLENGE_TYPES.find(t => t.type === challenge.type) ?? CHALLENGE_TYPES[4];
+  const Icon = TypeInfo.icon;
+
+  const statusColor = status === 'active' ? '#34d399' : status === 'upcoming' ? '#fbbf24' : '#64748b';
+
+  return (
+    <div className="card-dark rounded-2xl overflow-hidden">
+      <button className="w-full p-4 text-left cursor-pointer" onClick={onToggle}>
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: `${TypeInfo.color}18` }}>
+            <Icon size={16} style={{ color: TypeInfo.color }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-sm font-bold text-slate-200 leading-tight">{challenge.name}</p>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: statusColor }} />
+                <span className="text-[10px] font-bold capitalize" style={{ color: statusColor }}>{status}</span>
+              </div>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-0.5">{challengeTypeLabel(challenge.type)}</p>
+            {/* Progress bar */}
+            {joined && myPct !== null && (
+              <div className="mt-2.5">
+                <div className="flex justify-between text-[10px] mb-1">
+                  <span className="text-slate-500">You: {myPct}%</span>
+                  <span className="text-slate-600">Community: {avg}%</span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#0a1828' }}>
+                  <div className="h-full rounded-full" style={{
+                    width: `${myPct}%`,
+                    background: myPct >= 80 ? '#34d399' : myPct >= 40 ? '#fbbf24' : '#3b82f6',
+                  }} />
+                </div>
+              </div>
+            )}
+            {!joined && status !== 'completed' && (
+              <p className="text-[10px] text-slate-600 mt-1">
+                {challenge.participants.length} joined · {elapsed}/{total} days
+              </p>
+            )}
+          </div>
+          {expanded ? <ChevronUp size={14} className="text-slate-600 flex-shrink-0 mt-1" /> : <ChevronDown size={14} className="text-slate-600 flex-shrink-0 mt-1" />}
+        </div>
+      </button>
+
+      {expanded && (
+        <div className="px-4 pb-4 space-y-3" style={{ borderTop: '1px solid #0c1a30' }}>
+          <p className="text-xs text-slate-400 pt-2 leading-relaxed">{challenge.description}</p>
+
+          {/* Dates */}
+          <div className="flex items-center gap-4 text-[11px]">
+            <div className="flex items-center gap-1.5">
+              <Calendar size={12} className="text-slate-600" />
+              <span className="text-slate-500">
+                {new Date(challenge.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                {' – '}
+                {new Date(challenge.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </span>
+            </div>
+            <span className="text-slate-600">{total} days · {elapsed} elapsed</span>
+          </div>
+
+          {/* Badges */}
+          {joined && liveParticipant.badges.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {liveParticipant.badges.map(b => (
+                <span key={b} className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.25)', color: '#fbbf24' }}>
+                  {challengeBadgeLabel(b)}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Streak (log_daily) */}
+          {joined && challenge.type === 'log_daily' && liveParticipant.streak > 0 && (
+            <div className="flex items-center gap-2 py-2 px-3 rounded-xl"
+              style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)' }}>
+              <Flame size={14} style={{ color: '#f97316' }} />
+              <p className="text-xs font-bold" style={{ color: '#f97316' }}>{liveParticipant.streak}-day streak</p>
+            </div>
+          )}
+
+          {/* Manual progress (custom challenges) */}
+          {joined && challenge.type === 'custom' && status === 'active' && (
+            <div>
+              <p className="text-[10px] text-slate-500 mb-2 font-semibold uppercase tracking-widest">Mark Progress</p>
+              <div className="flex items-center gap-3">
+                <button onClick={() => onManual(false)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer font-bold text-slate-400"
+                  style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>−</button>
+                <div className="flex-1 text-center">
+                  <p className="text-lg font-bold text-white">{liveParticipant.manualDays ?? 0} / {total}</p>
+                  <p className="text-[10px] text-slate-600">days marked</p>
+                </div>
+                <button onClick={() => onManual(true)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer font-bold text-blue-400"
+                  style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}>+</button>
+              </div>
+            </div>
+          )}
+
+          {/* Participants list */}
+          {challenge.participants.length > 0 && (
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-2">Participants</p>
+              <div className="space-y-1.5">
+                {challenge.participants.slice(0, 5).map(p => (
+                  <div key={p.userId} className="flex items-center justify-between">
+                    <span className="text-xs text-slate-400">{p.displayName}</span>
+                    <div className="flex items-center gap-2">
+                      {p.streak > 0 && <span className="text-[10px] text-orange-400">🔥{p.streak}</span>}
+                      <span className="text-xs font-bold"
+                        style={{ color: p.progress >= 80 ? '#34d399' : p.progress >= 40 ? '#fbbf24' : '#64748b' }}>
+                        {p.progress}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Join / already joined */}
+          {!joined && status !== 'completed' && (
+            <button onClick={onJoin}
+              className="w-full py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-2">
+              <Plus size={14} /> Join Challenge
+            </button>
+          )}
+          {joined && (
+            <div className="flex items-center gap-2 py-2 px-3 rounded-xl"
+              style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.15)' }}>
+              <Check size={14} className="text-emerald-400" />
+              <p className="text-xs font-semibold text-emerald-400">You've joined this challenge</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Leaderboard ──────────────────────────────────────────────────────────────
+
+const LeaderboardSection: React.FC<{
+  community: Community; userId: string; shareScore: boolean; shareName: boolean;
+}> = ({ community, userId, shareScore, shareName }) => {
+  const ranked = community.members
+    .filter(m => m.sharedScore != null)
+    .sort((a, b) => (b.sharedScore ?? 0) - (a.sharedScore ?? 0));
+
+  if (ranked.length < 2) return null;
+
+  return (
+    <div>
+      <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>Score Leaderboard</p>
+      <div className="card-dark rounded-2xl overflow-hidden">
+        {ranked.slice(0, 5).map((member, i) => {
+          const isMe = member.userId === userId;
+          const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+          return (
+            <div key={member.userId}
+              className="flex items-center gap-3 px-4 py-3"
+              style={{ borderBottom: i < ranked.length - 1 ? '1px solid #0c1a30' : 'none', background: isMe ? 'rgba(59,130,246,0.04)' : undefined }}>
+              <span className="text-sm w-6 text-center flex-shrink-0">{medal}</span>
+              <p className="flex-1 text-sm font-semibold text-slate-200 truncate">
+                {member.displayName}{isMe ? ' (You)' : ''}
+              </p>
+              <p className="text-sm font-bold flex-shrink-0"
+                style={{ color: (member.sharedScore ?? 0) >= 70 ? '#34d399' : (member.sharedScore ?? 0) >= 45 ? '#fbbf24' : '#f87171' }}>
+                {member.sharedScore}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      {!shareScore && (
+        <p className="text-[10px] text-slate-600 px-1 mt-1.5">You're not sharing your score. Enable it in Privacy Settings.</p>
+      )}
+    </div>
+  );
+};
+
+// ─── Create challenge panel ────────────────────────────────────────────────────
+
+const CreateChallengePanel: React.FC<{
+  chType: ChallengeType; setChType: (t: ChallengeType) => void;
+  chName: string; setChName: (s: string) => void;
+  chDesc: string; setChDesc: (s: string) => void;
+  chStart: string; setChStart: (s: string) => void;
+  chEnd: string; setChEnd: (s: string) => void;
+  chTarget: string; setChTarget: (s: string) => void;
+  chCategory: string; setChCategory: (s: string) => void;
+  chReduction: string; setChReduction: (s: string) => void;
+  creating: boolean; onCreate: () => void; onCancel: () => void;
+}> = (p) => {
+  const inputBase = 'input-dark w-full px-3 py-2.5 rounded-xl text-sm';
+  const selectStyle = {
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'no-repeat' as const,
+    backgroundPosition: 'right 10px center' as const,
+    backgroundSize: '16px',
+    paddingRight: '2rem',
+  };
+
+  return (
+    <div className="card-dark rounded-2xl p-4 space-y-3" style={{ border: '1px solid rgba(139,92,246,0.25)' }}>
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold text-slate-200">New Challenge</p>
+        <button onClick={p.onCancel} className="text-slate-500 cursor-pointer"><X size={16} /></button>
+      </div>
+
+      {/* Type */}
+      <div>
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Challenge Type</label>
+        <div className="grid grid-cols-2 gap-1.5">
+          {CHALLENGE_TYPES.map(({ type, icon: Icon, color }) => (
+            <button
+              key={type}
+              onClick={() => p.setChType(type)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer text-left"
+              style={p.chType === type
+                ? { background: `${color}18`, border: `1px solid ${color}40`, color }
+                : { background: '#0a1424', border: '1px solid #1e2d4a', color: '#475569' }}
+            >
+              <Icon size={12} /> {challengeTypeLabel(type)}
+            </button>
+          ))}
+        </div>
+        <p className="text-[11px] text-slate-600 mt-2">{challengeTypeDescription(p.chType)}</p>
+      </div>
+
+      {/* Name */}
+      <div>
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Challenge Name</label>
+        <input className={inputBase} placeholder="e.g. 7-Day Spending Awareness" value={p.chName} onChange={e => p.setChName(e.target.value)} />
+      </div>
+
+      {/* Type-specific params */}
+      {p.chType === 'score_boost' && (
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Target Score</label>
+          <input className={inputBase} type="number" placeholder="70" value={p.chTarget} onChange={e => p.setChTarget(e.target.value)} min={0} max={100} />
+        </div>
+      )}
+      {p.chType === 'category_cut' && (
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Category</label>
+            <select className={inputBase + ' appearance-none cursor-pointer'} style={selectStyle} value={p.chCategory} onChange={e => p.setChCategory(e.target.value)}>
+              {EXPENSE_CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Reduce by %</label>
+            <input className={inputBase} type="number" placeholder="20" value={p.chReduction} onChange={e => p.setChReduction(e.target.value)} min={1} max={100} />
+          </div>
+        </div>
+      )}
+      {p.chType === 'custom' && (
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">What's the goal?</label>
+          <input className={inputBase} placeholder="e.g. No eating out for 7 days" value={p.chTarget} onChange={e => p.setChTarget(e.target.value)} />
+        </div>
+      )}
+
+      {/* Dates */}
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Start</label>
+          <input className={inputBase} type="date" value={p.chStart} onChange={e => p.setChStart(e.target.value)} />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">End</label>
+          <input className={inputBase} type="date" value={p.chEnd} onChange={e => p.setChEnd(e.target.value)} />
+        </div>
+      </div>
+
+      <button
+        onClick={p.onCreate}
+        disabled={p.creating || !p.chName.trim()}
+        className="w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
+        style={{ background: 'linear-gradient(135deg,#7c3aed,#8b5cf6)', color: '#fff' }}
+      >
+        {p.creating ? 'Creating…' : <><Check size={14} /> Create Challenge</>}
+      </button>
+    </div>
+  );
+};
+
+// ─── Empty challenges ──────────────────────────────────────────────────────────
+
+const EmptyChallenges: React.FC<{ isAdmin: boolean; onCreate: () => void }> = ({ isAdmin, onCreate }) => {
+  return (
+    <div className="rounded-2xl px-4 py-8 text-center" style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}>
+      <Trophy size={28} className="mx-auto mb-3 text-slate-600" />
+      <p className="text-sm font-semibold text-slate-400 mb-1">No challenges yet</p>
+      <p className="text-xs text-slate-600 leading-relaxed mb-4">
+        {isAdmin
+          ? 'Create the first challenge for your community. Challenges help members stay motivated and accountable.'
+          : 'No challenges have been created yet. Ask your community admin to start one.'}
+      </p>
+      {isAdmin && (
+        <button onClick={onCreate} className="btn-blue px-5 py-2 rounded-xl text-sm font-bold cursor-pointer">
+          Create First Challenge
+        </button>
+      )}
+    </div>
+  );
+}
+

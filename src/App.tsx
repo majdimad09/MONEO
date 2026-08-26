@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, AppView } from './types/finance';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, Community, AppView } from './types/finance';
 import {
   loadTransactions, saveTransactions,
   loadSavedCurrency, saveSelectedCurrency,
@@ -33,6 +33,9 @@ import {
 } from './lib/supabaseService';
 import { useLanguage } from './i18n/LanguageContext';
 import { LangCode } from './i18n/translations';
+import { loadCommunities, saveCommunities } from './utils/communityUtils';
+import { calculateCashlyScore } from './utils/insights';
+import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
 
 import { LandingPage } from './components/LandingPage';
 import { AuthScreen } from './components/AuthScreen';
@@ -58,6 +61,9 @@ import { MoneyCoachScreen } from './components/MoneyCoachScreen';
 import { WhatIfScreen } from './components/WhatIfScreen';
 import { RecurringIncomeScreen } from './components/RecurringIncomeScreen';
 import { PremiumUpgradeScreen } from './components/PremiumUpgradeScreen';
+// Stage 2 — Community
+import { CommunityScreen } from './components/CommunityScreen';
+import { CommunityDetailScreen } from './components/CommunityDetailScreen';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -80,6 +86,8 @@ export default function App() {
   const [userAge, setUserAge] = useState<number | null>(null);
   const [userStatus, setUserStatus] = useState<string>('');
   const [recurringIncome, setRecurringIncome] = useState<RecurringIncome[]>(() => loadRecurringIncome());
+  const [communities, setCommunities]         = useState<Community[]>(() => loadCommunities());
+  const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -136,6 +144,20 @@ export default function App() {
             if (meta.language) setLanguage(meta.language as LangCode);
           }
         }
+
+        // Load communities from Supabase (merge with localStorage challenges)
+        fetchUserCommunities(user.id).then(cloudCommunities => {
+          if (cloudCommunities.length > 0) {
+            const local = loadCommunities();
+            // Merge: keep challenges from localStorage, use cloud for membership/members
+            const merged = cloudCommunities.map(cc => {
+              const localMatch = local.find(lc => lc.id === cc.id);
+              return localMatch ? { ...cc, challenges: localMatch.challenges } : cc;
+            });
+            setCommunities(merged);
+            saveCommunities(merged);
+          }
+        }).catch(() => {});
 
         setCurrentView('home');
       })
@@ -254,6 +276,8 @@ export default function App() {
     setSavingGoals([]);
     setSubscriptions([]);
     setRecurringIncome([]);
+    setCommunities([]);
+    setSelectedCommunityId(null);
     setUserName('');
     setUserAge(null);
     setUserStatus('');
@@ -271,6 +295,40 @@ export default function App() {
   };
 
   const navigate = (view: AppView) => setCurrentView(view);
+
+  // ── Community helpers ─────────────────────────────────────────────────────
+  const handleCommunitiesChange = useCallback((updated: Community[]) => {
+    setCommunities(updated);
+    saveCommunities(updated);
+  }, []);
+
+  const handleSelectCommunity = useCallback((id: string) => {
+    setSelectedCommunityId(id);
+    setCurrentView('community-detail');
+  }, []);
+
+  const handleCommunityUpdate = useCallback((updated: Community) => {
+    setCommunities(prev => {
+      const next = prev.map(c => c.id === updated.id ? updated : c);
+      saveCommunities(next);
+      return next;
+    });
+  }, []);
+
+  const currentScore = useMemo(
+    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals).score,
+    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals],
+  );
+
+  const handleCreateCommunity = useCallback(async (community: Community) => {
+    if (!user) return;
+    await createCommunityInDB(user.id, community, userName || 'You', currentScore).catch(() => {});
+  }, [user, userName, currentScore]);
+
+  const handleJoinByCode = useCallback(async (code: string): Promise<Community | null> => {
+    if (!user) return null;
+    return dbJoinCommunity(user.id, code, userName || 'You', currentScore).catch(() => null);
+  }, [user, userName, currentScore]);
 
   const openAddModal = (type: TransactionType) => {
     setAddModalDefaultType(type);
@@ -352,6 +410,7 @@ export default function App() {
               categoryLimits={categoryLimits}
               subscriptions={subscriptions}
               savingGoals={savingGoals}
+              recurringIncome={recurringIncome}
               userName={userName}
               onViewAllTransactions={() => navigate('transactions')}
               onEdit={tx => setEditingTransaction(tx)}
@@ -519,6 +578,44 @@ export default function App() {
               onGoBack={() => navigate('more')}
             />
           )}
+
+          {currentView === 'community' && (
+            <CommunityScreen
+              userId={user.id}
+              userName={userName}
+              isPremium={isPremium}
+              communities={communities}
+              currentScore={currentScore}
+              onCommunitiesChange={handleCommunitiesChange}
+              onSelectCommunity={handleSelectCommunity}
+              onNavigate={navigate}
+              onCreateCommunity={handleCreateCommunity}
+              onJoinByCode={handleJoinByCode}
+            />
+          )}
+
+          {currentView === 'community-detail' && (() => {
+            const community = communities.find(c => c.id === selectedCommunityId);
+            if (!community) return <div className="px-4 pt-6 text-slate-500 text-sm">Community not found.</div>;
+            return (
+              <CommunityDetailScreen
+                community={community}
+                userId={user.id}
+                userName={userName}
+                isPremium={isPremium}
+                transactions={transactions}
+                monthlyBudget={monthlyBudget}
+                categoryLimits={categoryLimits}
+                subscriptions={subscriptions}
+                savingGoals={savingGoals}
+                currency={currency}
+                currentScore={currentScore}
+                onBack={() => navigate('community')}
+                onCommunityUpdate={handleCommunityUpdate}
+                onNavigate={navigate}
+              />
+            );
+          })()}
         </div>
 
         <BottomNav
