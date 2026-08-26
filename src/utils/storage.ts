@@ -1,4 +1,4 @@
-import { Transaction, CategoryLimit, SavingGoal, Subscription } from '../types/finance';
+import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome } from '../types/finance';
 
 const STORAGE_KEY = 'cashly_transactions_v1';
 const CURRENCY_KEY = 'cashly_selected_currency_v1';
@@ -90,6 +90,18 @@ export function loadSubscriptions(): Subscription[] {
 }
 export function saveSubscriptions(subs: Subscription[]): void {
   try { localStorage.setItem(SUBSCRIPTIONS_KEY, JSON.stringify(subs)); } catch { /* ignore */ }
+}
+
+// --- Recurring Income ---
+const RECURRING_INCOME_KEY = 'moneo_recurring_income_v1';
+export function loadRecurringIncome(): RecurringIncome[] {
+  try {
+    const v = localStorage.getItem(RECURRING_INCOME_KEY);
+    return v ? JSON.parse(v) : [];
+  } catch { return []; }
+}
+export function saveRecurringIncome(items: RecurringIncome[]): void {
+  try { localStorage.setItem(RECURRING_INCOME_KEY, JSON.stringify(items)); } catch { /* ignore */ }
 }
 
 // --- User Name ---

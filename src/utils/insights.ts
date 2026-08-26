@@ -209,7 +209,6 @@ export function calculateCashlyScore(
   if (income === 0) missingDataHints.push('Record income for this month');
   if (monthlyBudget === 0) missingDataHints.push('Set a monthly spending budget');
   if (categoryLimits.length === 0) missingDataHints.push('Add category spending limits');
-  if (savingGoals.length === 0) missingDataHints.push('Create a savings goal');
 
   if (!hasEnoughData) {
     return {
@@ -222,17 +221,18 @@ export function calculateCashlyScore(
   const factors: ScoreFactor[] = [];
   let total = 0;
 
-  // 1. Saving Consistency (25 pts)
+  // 1. Spending vs Income (25 pts) — not penalizing goals or saving style
   {
     let pts = income > 0
-      ? (() => { const r = (income - expenses) / income; return r >= 0.2 ? 25 : r >= 0.1 ? 18 : r >= 0.05 ? 11 : r >= 0 ? 6 : 2; })()
-      : transactions.length > 0 ? 8 : 5;
+      ? (() => { const r = expenses / income; return r <= 0.6 ? 25 : r <= 0.75 ? 20 : r <= 0.9 ? 14 : r <= 1.0 ? 8 : 3; })()
+      : transactions.length > 0 ? 10 : 5;
+    const ratio = income > 0 ? (expenses / income * 100).toFixed(0) : null;
     factors.push({
-      label: 'Saving Consistency', points: pts, maxPoints: 25,
+      label: 'Spending vs Income', points: pts, maxPoints: 25,
       description: income > 0
-        ? `Saving ${(Math.max(0, (income - expenses) / income) * 100).toFixed(0)}% of income this month`
+        ? `Spending ${ratio}% of this month's income`
         : 'No income recorded this month',
-      color: pts >= 18 ? '#10b981' : pts >= 11 ? '#3b82f6' : pts >= 6 ? '#f59e0b' : '#ef4444',
+      color: pts >= 20 ? '#10b981' : pts >= 14 ? '#3b82f6' : pts >= 8 ? '#f59e0b' : '#ef4444',
     });
     total += pts;
   }
@@ -364,7 +364,8 @@ export interface SafeToSpendResult {
 
 export function calculateSafeToSpend(
   transactions: Transaction[],
-  subscriptions: Subscription[]
+  subscriptions: Subscription[],
+  savingsBuffer = 0
 ): SafeToSpendResult {
   const now = new Date();
   const thisMonth = getMonthPrefix();
@@ -380,8 +381,6 @@ export function calculateSafeToSpend(
     if (next >= now && next <= endOfMonth) subsRemaining += sub.amount;
   });
 
-  const savingsBuffer = income > 0 ? income * 0.1 : 0;
   const safeAmount = Math.max(0, income - expenses - subsRemaining - savingsBuffer);
-
   return { safeAmount, income, expenses, subsRemaining, savingsBuffer };
 }

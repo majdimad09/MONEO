@@ -1,7 +1,6 @@
 import React from 'react';
-import { Home, BarChart2, Plus, Wallet, Settings2 } from 'lucide-react';
+import { Home, Clock, Plus, Lightbulb, LayoutGrid } from 'lucide-react';
 import { AppView } from '../types/finance';
-import { useLanguage } from '../i18n/LanguageContext';
 
 interface BottomNavProps {
   currentView: AppView;
@@ -9,33 +8,46 @@ interface BottomNavProps {
   onAddPress: () => void;
 }
 
+const HOME_VIEWS: AppView[] = ['home', 'transactions'];
+const ACTIVITY_VIEWS: AppView[] = ['activity'];
+const INSIGHTS_VIEWS: AppView[] = [
+  'insights', 'statistics', 'money-coach', 'spending-patterns',
+  'what-if', 'moneo-score', 'projection', 'money-story', 'ask-moneo',
+];
+const MORE_VIEWS: AppView[] = [
+  'more', 'budget', 'savings', 'recurring', 'recurring-income',
+  'safe-to-spend', 'settings', 'community', 'premium',
+];
+
 export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, onAddPress }) => {
-  const { t } = useLanguage();
+  const homeActive    = HOME_VIEWS.includes(currentView);
+  const activityActive = ACTIVITY_VIEWS.includes(currentView);
+  const insightsActive = INSIGHTS_VIEWS.includes(currentView);
+  const moreActive    = MORE_VIEWS.includes(currentView);
+
   return (
     <div className="bottom-nav-bar">
-      <NavBtn view="home" label={t('navHome')} Icon={Home} currentView={currentView} onNavigate={onNavigate} />
-      <NavBtn view="statistics" label={t('navStats')} Icon={BarChart2} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn label="Home" Icon={Home} active={homeActive} onClick={() => onNavigate('home')} />
+      <NavBtn label="Activity" Icon={Clock} active={activityActive} onClick={() => onNavigate('activity')} />
 
       <button className="fab-add" onClick={onAddPress} aria-label="Add transaction">
         <Plus size={22} color="white" strokeWidth={2.8} />
       </button>
 
-      <NavBtn view="budget" label="Budget" Icon={Wallet} currentView={currentView} onNavigate={onNavigate} />
-      <NavBtn view="settings" label={t('navSettings')} Icon={Settings2} currentView={currentView} onNavigate={onNavigate} />
+      <NavBtn label="Insights" Icon={Lightbulb} active={insightsActive} onClick={() => onNavigate('insights')} />
+      <NavBtn label="More" Icon={LayoutGrid} active={moreActive} onClick={() => onNavigate('more')} />
     </div>
   );
 };
 
 function NavBtn({
-  view, label, Icon, currentView, onNavigate,
+  label, Icon, active, onClick,
 }: {
-  view: AppView; label: string; Icon: React.ElementType;
-  currentView: AppView; onNavigate: (v: AppView) => void;
+  label: string; Icon: React.ElementType; active: boolean; onClick: () => void;
 }) {
-  const active = currentView === view || (view === 'home' && currentView === 'transactions');
   return (
     <button
-      onClick={() => onNavigate(view)}
+      onClick={onClick}
       className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all select-none cursor-pointer"
       style={{ minWidth: 54, WebkitTapHighlightColor: 'transparent' }}
     >

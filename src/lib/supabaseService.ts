@@ -5,7 +5,7 @@
  */
 
 import { supabase } from './supabase';
-import { Transaction, CategoryLimit, SavingGoal, Subscription } from '../types/finance';
+import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome, PremiumPlan, MembershipState } from '../types/finance';
 
 // ─── PROFILE ─────────────────────────────────────────────────────────────────
 
@@ -232,31 +232,113 @@ export async function replaceSubscriptions(userId: string, subs: Subscription[])
   }
 }
 
+// ─── RECURRING INCOME ────────────────────────────────────────────────────────
+
+function dbRowToRecurringIncome(r: Record<string, unknown>): RecurringIncome {
+  return {
+    id: r.id as string,
+    name: r.name as string,
+    amount: Number(r.amount),
+    frequency: r.frequency as RecurringIncome['frequency'],
+    nextPaymentDate: r.next_payment_date as string,
+    category: r.category as string,
+    isActive: r.is_active as boolean,
+    createdAt: r.created_at_ms as number,
+    notes: (r.notes as string | null) ?? undefined,
+  };
+}
+
+export async function fetchRecurringIncome(userId: string): Promise<RecurringIncome[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('recurring_income')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at_ms', { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map(dbRowToRecurringIncome);
+}
+
+export async function upsertRecurringIncome(userId: string, item: RecurringIncome): Promise<void> {
+  if (!supabase) return;
+  const { error } = await supabase.from('recurring_income').upsert({
+    id: item.id,
+    user_id: userId,
+    name: item.name,
+    amount: item.amount,
+    frequency: item.frequency,
+    next_payment_date: item.nextPaymentDate,
+    category: item.category,
+    is_active: item.isActive,
+    notes: item.notes ?? null,
+    created_at_ms: item.createdAt,
+  });
+  if (error) throw error;
+}
+
+export async function deleteRecurringIncome(userId: string, id: string): Promise<void> {
+  if (!supabase) return;
+  const { error } = await supabase
+    .from('recurring_income')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
+// ─── MEMBERSHIP ──────────────────────────────────────────────────────────────
+
+export async function loadMembership(userId: string): Promise<MembershipState | null> {
+  if (!supabase) return null;
+  const { data } = await supabase
+    .from('memberships')
+    .select('plan, created_at')
+    .eq('user_id', userId)
+    .single();
+  if (!data) return null;
+  return { plan: data.plan as PremiumPlan, startedAt: data.created_at };
+}
+
+export async function saveMembership(userId: string, plan: PremiumPlan): Promise<void> {
+  if (!supabase) return;
+  await supabase.from('memberships').upsert({
+    user_id: userId,
+    plan,
+    updated_at: new Date().toISOString(),
+  });
+}
+
 // ─── BULK LOAD ────────────────────────────────────────────────────────────────
 
 export interface AllUserData {
   transactions: Transaction[];
   savingGoals: SavingGoal[];
   subscriptions: Subscription[];
+  recurringIncome: RecurringIncome[];
   preferences: DbPreferences | null;
   profile: ProfileData | null;
+  membership: MembershipState | null;
 }
 
 export async function loadAllUserData(userId: string): Promise<AllUserData> {
-  const [txR, goalsR, subsR, prefsR, profileR] = await Promise.allSettled([
+  const [txR, goalsR, subsR, riR, prefsR, profileR, memberR] = await Promise.allSettled([
     fetchTransactions(userId),
     fetchSavingGoals(userId),
     fetchSubscriptions(userId),
+    fetchRecurringIncome(userId),
     loadUserPreferences(userId),
     loadProfile(userId),
+    loadMembership(userId),
   ]);
 
   return {
     transactions: txR.status === 'fulfilled' ? txR.value : [],
     savingGoals: goalsR.status === 'fulfilled' ? goalsR.value : [],
     subscriptions: subsR.status === 'fulfilled' ? subsR.value : [],
+    recurringIncome: riR.status === 'fulfilled' ? riR.value : [],
     preferences: prefsR.status === 'fulfilled' ? prefsR.value : null,
     profile: profileR.status === 'fulfilled' ? profileR.value : null,
+    membership: memberR.status === 'fulfilled' ? memberR.value : null,
   };
 }
 

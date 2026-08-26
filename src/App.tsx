@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, AppView } from './types/finance';
+import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, AppView } from './types/finance';
 import {
   loadTransactions, saveTransactions,
   loadSavedCurrency, saveSelectedCurrency,
@@ -12,11 +12,13 @@ import {
   loadCategoryLimits, saveCategoryLimits,
   loadSavingGoals, saveSavingGoals,
   loadSubscriptions, saveSubscriptions,
+  loadRecurringIncome, saveRecurringIncome,
   loadUserName, saveUserName,
   SAMPLE_TRANSACTIONS, exportTransactionsToCSV,
 } from './utils/storage';
 import { isSupabaseConfigured } from './lib/supabase';
 import { useAuth } from './hooks/useAuth';
+import { usePremium } from './hooks/usePremium';
 import {
   loadAllUserData,
   insertTransaction,
@@ -26,6 +28,8 @@ import {
   saveUserPreferences,
   replaceSavingGoals,
   replaceSubscriptions,
+  upsertRecurringIncome,
+  deleteRecurringIncome as dbDeleteRecurringIncome,
 } from './lib/supabaseService';
 import { useLanguage } from './i18n/LanguageContext';
 import { LangCode } from './i18n/translations';
@@ -46,10 +50,19 @@ import { AddTransactionModal } from './components/AddTransactionModal';
 import { ActionMenu } from './components/ActionMenu';
 import { EditTransactionModal } from './components/EditTransactionModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
+// Stage 1 — new screens
+import { FeaturesHub } from './components/FeaturesHub';
+import { InsightsHub } from './components/InsightsHub';
+import { ActivityScreen } from './components/ActivityScreen';
+import { MoneyCoachScreen } from './components/MoneyCoachScreen';
+import { WhatIfScreen } from './components/WhatIfScreen';
+import { RecurringIncomeScreen } from './components/RecurringIncomeScreen';
+import { PremiumUpgradeScreen } from './components/PremiumUpgradeScreen';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
   const { setLanguage } = useLanguage();
+  const { isPremium, membership, upgradeToPremium, cancelPremium } = usePremium(user?.id);
 
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
@@ -66,6 +79,7 @@ export default function App() {
   const [userName, setUserName] = useState<string>(() => loadUserName());
   const [userAge, setUserAge] = useState<number | null>(null);
   const [userStatus, setUserStatus] = useState<string>('');
+  const [recurringIncome, setRecurringIncome] = useState<RecurringIncome[]>(() => loadRecurringIncome());
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -93,6 +107,10 @@ export default function App() {
         if (data.preferences) {
           setMonthlyBudget(data.preferences.monthly_budget);
           setCategoryLimits(data.preferences.category_limits);
+        }
+        if (data.recurringIncome?.length) {
+          setRecurringIncome(data.recurringIncome);
+          saveRecurringIncome(data.recurringIncome);
         }
         if (data.profile) {
           if (data.profile.name) setUserName(data.profile.name);
@@ -198,6 +216,27 @@ export default function App() {
     if (user) replaceSubscriptions(user.id, subs).catch(() => {});
   };
 
+  const handleSaveRecurringIncome = useCallback((items: RecurringIncome[]) => {
+    const prev = recurringIncome;
+    setRecurringIncome(items);
+    saveRecurringIncome(items);
+    if (user) {
+      // Upsert new/updated items
+      items.forEach(item => {
+        const old = prev.find(p => p.id === item.id);
+        if (!old || JSON.stringify(old) !== JSON.stringify(item)) {
+          upsertRecurringIncome(user.id, item).catch(() => {});
+        }
+      });
+      // Delete removed items
+      prev.forEach(p => {
+        if (!items.find(i => i.id === p.id)) {
+          dbDeleteRecurringIncome(user.id, p.id).catch(() => {});
+        }
+      });
+    }
+  }, [recurringIncome, user]);
+
   const handleSaveProfile = (data: { name: string; age: number | null; status: string }) => {
     setUserName(data.name);
     saveUserName(data.name);
@@ -214,6 +253,7 @@ export default function App() {
     setCategoryLimits([]);
     setSavingGoals([]);
     setSubscriptions([]);
+    setRecurringIncome([]);
     setUserName('');
     setUserAge(null);
     setUserStatus('');
@@ -325,6 +365,7 @@ export default function App() {
             />
           )}
 
+          {/* ── Existing views ─────────────────────────────── */}
           {currentView === 'statistics' && (
             <StatisticsScreen transactions={transactions} currency={currency} />
           )}
@@ -384,6 +425,9 @@ export default function App() {
               onSignOut={handleSignOut}
               onChangePassword={updatePassword}
               onDeleteAccount={handleDeleteAccount}
+              isPremium={isPremium}
+              membershipStartedAt={membership.startedAt}
+              onNavigatePremium={() => navigate('premium')}
             />
           )}
 
@@ -396,6 +440,84 @@ export default function App() {
                 currency={currency}
               />
             </div>
+          )}
+
+          {/* ── Stage 1 new views ──────────────────────────── */}
+          {currentView === 'activity' && (
+            <ActivityScreen
+              transactions={transactions}
+              subscriptions={subscriptions}
+              recurringIncome={recurringIncome}
+              currency={currency}
+              onEdit={tx => setEditingTransaction(tx)}
+              onDelete={tx => setDeletingTransaction(tx)}
+            />
+          )}
+
+          {currentView === 'insights' && (
+            <InsightsHub
+              transactions={transactions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              isPremium={isPremium}
+              onNavigate={navigate}
+            />
+          )}
+
+          {currentView === 'more' && (
+            <FeaturesHub
+              isPremium={isPremium}
+              onNavigate={navigate}
+            />
+          )}
+
+          {currentView === 'money-coach' && (
+            <MoneyCoachScreen
+              transactions={transactions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              recurringIncome={recurringIncome}
+              onNavigate={navigate}
+            />
+          )}
+
+          {currentView === 'what-if' && (
+            <WhatIfScreen
+              transactions={transactions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              isPremium={isPremium}
+              onNavigate={navigate}
+              onUpgrade={() => navigate('premium')}
+            />
+          )}
+
+          {currentView === 'recurring-income' && (
+            <RecurringIncomeScreen
+              items={recurringIncome}
+              currency={currency}
+              onSave={handleSaveRecurringIncome}
+              onNavigate={navigate}
+            />
+          )}
+
+          {currentView === 'premium' && (
+            <PremiumUpgradeScreen
+              isPremium={isPremium}
+              membershipStartedAt={membership.startedAt}
+              onUpgrade={upgradeToPremium}
+              onCancelPremium={cancelPremium}
+              onGoBack={() => navigate('more')}
+            />
           )}
         </div>
 

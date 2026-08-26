@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
   User, Mail, Hash, Briefcase, ChevronRight, Check, Globe,
-  Bell, BellOff, Shield, Lock, LogOut, Download, RotateCcw,
-  Sparkles, Info, MessageCircle, Trash2, Eye, EyeOff,
+  Bell, BellOff, Lock, LogOut, Download, RotateCcw,
+  Sparkles, Info, MessageCircle, Trash2, Eye, EyeOff, Crown,
 } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -23,6 +23,10 @@ interface SettingsScreenProps {
   onSignOut?: () => void;
   onChangePassword?: (newPassword: string) => Promise<string | null>;
   onDeleteAccount?: () => Promise<void>;
+  isPremium?: boolean;
+  membershipStartedAt?: string | null;
+  onUpgrade?: () => void;
+  onNavigatePremium?: () => void;
 }
 
 const STATUSES = ['School', 'University', 'Working', 'Unemployed'];
@@ -83,6 +87,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   transactionCount, onLoadSampleData, onClearAllData, onExportCSV,
   userName, userEmail, userAge, userStatus,
   onSaveProfile, user, onSignOut, onChangePassword, onDeleteAccount,
+  isPremium = false, membershipStartedAt, onNavigatePremium,
 }) => {
   const { t, lang, setLanguage } = useLanguage();
 
@@ -423,6 +428,35 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             <div className="flex-1">
               <p className="text-sm font-semibold text-red-400">{t('signOut')}</p>
               <p className="text-xs text-slate-500 mt-0.5">{t('signOutDesc')}</p>
+            </div>
+            <ChevronRight size={15} className="text-slate-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── SUBSCRIPTION ─────────────────────────────────────────────── */}
+      <div>
+        <SectionHeader label="Subscription" />
+        <div className="card-dark rounded-2xl overflow-hidden">
+          <button
+            onClick={onNavigatePremium}
+            className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left cursor-pointer transition-colors"
+          >
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: isPremium ? 'rgba(139,92,246,0.15)' : 'rgba(100,116,139,0.1)', border: `1px solid ${isPremium ? 'rgba(139,92,246,0.3)' : '#1e2d4a'}` }}>
+              <Crown size={17} style={{ color: isPremium ? '#a78bfa' : '#64748b' }} />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-slate-200">
+                {isPremium ? 'Moneo Premium' : 'Moneo Free'}
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {isPremium
+                  ? membershipStartedAt
+                    ? `Active since ${new Date(membershipStartedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`
+                    : 'All features unlocked'
+                  : 'Upgrade for advanced features · $3.99/month'}
+              </p>
             </div>
             <ChevronRight size={15} className="text-slate-600" />
           </button>

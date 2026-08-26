@@ -153,4 +153,42 @@ export interface Subscription {
   createdAt: number;
 }
 
-export type AppView = 'landing' | 'auth' | 'home' | 'statistics' | 'savings' | 'settings' | 'transactions' | 'budget' | 'recurring' | 'moneo-score';
+export type AppView =
+  // Core (existing)
+  | 'landing' | 'auth' | 'home' | 'statistics' | 'savings'
+  | 'settings' | 'transactions' | 'budget' | 'recurring' | 'moneo-score'
+  // New — Stage 1
+  | 'activity'           // Recent + upcoming timeline
+  | 'insights'           // Insights hub tab
+  | 'more'               // Features hub tab
+  | 'money-coach'        // Dedicated Money Coach
+  | 'what-if'            // What If simulator (Premium)
+  | 'recurring-income'   // Recurring income management
+  | 'premium'            // Premium upgrade screen
+  | 'projection'         // Future projection (Premium)
+  | 'money-story'        // Monthly Money Story (Premium)
+  | 'spending-patterns'  // Spending patterns (Premium)
+  | 'safe-to-spend'      // Safe to Spend 2.0
+  | 'community'          // Community (Premium, Stage 2)
+  | 'ask-moneo';         // Ask Moneo (Premium, Stage 2)
+
+export type RecurringIncomeFrequency = 'weekly' | 'biweekly' | 'monthly';
+
+export interface RecurringIncome {
+  id: string;
+  name: string;
+  amount: number;
+  frequency: RecurringIncomeFrequency;
+  nextPaymentDate: string; // YYYY-MM-DD
+  category: string;
+  isActive: boolean;
+  createdAt: number;
+  notes?: string;
+}
+
+export type PremiumPlan = 'free' | 'premium';
+
+export interface MembershipState {
+  plan: PremiumPlan;
+  startedAt: string | null;
+}
