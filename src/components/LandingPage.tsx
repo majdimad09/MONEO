@@ -3,7 +3,7 @@ import { ArrowRight, Shield, Sparkles, ChevronLeft } from 'lucide-react';
 import { LogoWordmark, LogoBrandBlock } from './Logo';
 
 interface LandingPageProps {
-  onGetStarted: () => void;
+  onGetStarted: (mode: 'signin' | 'signup') => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -488,7 +488,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                   Get Started <ArrowRight size={19} />
                 </button>
                 <button
-                  onClick={onGetStarted}
+                  onClick={() => onGetStarted('signin')}
                   style={{ width: '100%', padding: '15px', borderRadius: 18, background: 'transparent', color: '#64748b', fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid #1e2d4a' }}
                 >
                   Already have an account? <span style={{ color: '#60a5fa' }}>Sign In</span>
@@ -546,14 +546,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 11, position: 'relative', zIndex: 1 }}>
                 <button
-                  onClick={onGetStarted}
+                  onClick={() => onGetStarted('signup')}
                   className="btn-blue"
                   style={{ width: '100%', padding: '17px', borderRadius: 18, fontSize: 16, fontWeight: 700, cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                 >
                   Create Account <ArrowRight size={19} />
                 </button>
                 <button
-                  onClick={onGetStarted}
+                  onClick={() => onGetStarted('signin')}
                   style={{ width: '100%', padding: '15px', borderRadius: 18, background: 'rgba(59,130,246,0.07)', color: '#93c5fd', fontSize: 15, fontWeight: 600, cursor: 'pointer', border: '1px solid rgba(59,130,246,0.2)' }}
                 >
                   Sign In

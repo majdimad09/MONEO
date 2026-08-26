@@ -13,15 +13,16 @@ interface AuthScreenProps {
   onResetPassword: (email: string) => Promise<string | null>;
   onUpdatePassword?: (password: string) => Promise<string | null>;
   isRecoveryMode?: boolean;
+  initialMode?: 'signin' | 'signup';
   onGoBack?: () => void;
 }
 
 export function AuthScreen({
-  onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode, onGoBack,
+  onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode, initialMode, onGoBack,
 }: AuthScreenProps) {
   const { t, lang, setLanguage } = useLanguage();
 
-  const [mode, setMode] = useState<AuthMode>(isRecoveryMode ? 'update-password' : 'signin');
+  const [mode, setMode] = useState<AuthMode>(isRecoveryMode ? 'update-password' : (initialMode ?? 'signin'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

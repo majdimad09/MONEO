@@ -53,6 +53,7 @@ export default function App() {
 
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
+  const [authInitialMode, setAuthInitialMode] = useState<'signin' | 'signup'>('signin');
   const [cloudLoading, setCloudLoading] = useState(false);
 
   // ── Data state (guest defaults from localStorage) ─────────────────────────
@@ -274,11 +275,16 @@ export default function App() {
         <AuthScreen
           onSignIn={signIn} onSignUp={signUp}
           onResetPassword={resetPassword} onUpdatePassword={updatePassword}
+          initialMode={authInitialMode}
           onGoBack={() => setShowAuthScreen(false)}
         />
       );
     }
-    return <LandingPage onGetStarted={() => setShowAuthScreen(true)} />;
+    return (
+      <LandingPage
+        onGetStarted={(mode) => { setAuthInitialMode(mode); setShowAuthScreen(true); }}
+      />
+    );
   }
 
   // Authenticated: go straight to dashboard — no onboarding inside the app.
