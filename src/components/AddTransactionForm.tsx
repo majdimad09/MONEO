@@ -115,18 +115,18 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   const categoriesList = activeTab === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: '#16161f', border: '1px solid #242434' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
       {/* Header Tabs */}
-      <div className="flex p-2 gap-1" style={{ background: '#111118', borderBottom: '1px solid #242434' }}>
+      <div className="flex p-2 gap-1" style={{ background: '#f7f8fc', borderBottom: '1px solid #e5e7eb' }}>
         <button
           type="button"
           onClick={() => handleTabChange('expense')}
           className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
             activeTab === 'expense'
               ? 'text-red-400'
-              : 'text-slate-500 hover:text-slate-300'
+              : 'text-slate-500 hover:text-slate-600'
           }`}
-          style={activeTab === 'expense' ? { background: '#16161f', border: '1px solid #2d2d3e' } : {}}
+          style={activeTab === 'expense' ? { background: '#ffffff', border: '1px solid #e5e7eb' } : {}}
         >
           <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
             activeTab === 'expense' ? 'bg-red-500/15 text-red-400' : 'text-slate-600'
@@ -142,9 +142,9 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
             activeTab === 'income'
               ? 'text-green-400'
-              : 'text-slate-500 hover:text-slate-300'
+              : 'text-slate-500 hover:text-slate-600'
           }`}
-          style={activeTab === 'income' ? { background: '#16161f', border: '1px solid #2d2d3e' } : {}}
+          style={activeTab === 'income' ? { background: '#ffffff', border: '1px solid #e5e7eb' } : {}}
         >
           <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
             activeTab === 'income' ? 'bg-green-500/15 text-green-400' : 'text-slate-600'
@@ -266,7 +266,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
 
           {!isCustomCategory ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-36 overflow-y-auto p-1.5 rounded-xl"
-              style={{ background: '#111118', border: '1px solid #242434' }}>
+              style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
               {categoriesList.map((cat) => {
                 const isSelected = category === cat.name;
                 return (
@@ -275,11 +275,11 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
                     type="button"
                     onClick={() => setCategory(cat.name)}
                     className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all text-left truncate ${
-                      isSelected ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                      isSelected ? 'text-white' : 'text-slate-400 hover:text-slate-700'
                     }`}
                     style={isSelected
                       ? { background: 'linear-gradient(135deg, #2563eb, #3b82f6)', boxShadow: '0 0 10px rgba(59,130,246,0.3)' }
-                      : { background: '#16161f', border: '1px solid #242434' }
+                      : { background: '#ffffff', border: '1px solid #e5e7eb' }
                     }
                   >
                     <CategoryIcon

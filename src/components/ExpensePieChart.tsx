@@ -24,7 +24,7 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
           style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
           <PieChartIcon className="w-7 h-7 text-blue-400 stroke-[1.75]" />
         </div>
-        <h3 className="text-base font-bold text-slate-200 mb-1">
+        <h3 className="text-base font-bold text-slate-700 mb-1">
           No Expenses Recorded
         </h3>
         <p className="text-xs text-slate-500 max-w-xs leading-relaxed font-medium">
@@ -100,7 +100,7 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
             <PieChartIcon className="w-4 h-4 text-blue-400" />
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-100">
+            <h3 className="text-sm sm:text-base font-bold text-slate-800">
               Expense Breakdown
             </h3>
             <p className="text-xs text-slate-500">
@@ -113,7 +113,7 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
             Total Spent
           </span>
-          <span className="text-sm font-bold text-slate-100">
+          <span className="text-sm font-bold text-slate-800">
             {formatCurrency(totalExpenses, currency)}
           </span>
         </div>
@@ -156,7 +156,7 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate max-w-[100px]">
                 {activeCategory ? activeCategory.category : 'Total'}
               </span>
-              <span className="text-base sm:text-lg font-bold text-slate-100 leading-tight">
+              <span className="text-base sm:text-lg font-bold text-slate-800 leading-tight">
                 {activeCategory ? `${activeCategory.percentage.toFixed(1)}%` : formatCurrency(totalExpenses, currency)}
               </span>
               <span className="text-[11px] font-medium text-slate-500">
@@ -199,14 +199,14 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
                         size={13}
                         className="text-slate-500 flex-shrink-0"
                       />
-                      <span className="text-slate-300 font-semibold truncate">
+                      <span className="text-slate-600 font-semibold truncate">
                         {cat.category}
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0 font-mono">
-                    <span className="text-slate-100 font-bold">
+                    <span className="text-slate-800 font-bold">
                       {formatCurrency(cat.total, currency)}
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-bold"

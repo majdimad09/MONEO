@@ -97,14 +97,14 @@ export const LogoWordmark: React.FC<LogoWordmarkProps> = ({
       <LogoIcon size={iconSize} />
       <div className="flex flex-col leading-none">
         <span
-          className="text-white leading-none"
-          style={{ fontFamily: BRAND_FONT, fontSize: cfg.cashly, fontWeight: 700, letterSpacing: '-0.01em' }}
+          className="leading-none"
+          style={{ fontFamily: BRAND_FONT, fontSize: cfg.cashly, fontWeight: 700, letterSpacing: '-0.01em', color: '#111827' }}
         >
           MONEO
         </span>
         <span
           className="font-semibold uppercase mt-1"
-          style={{ fontSize: cfg.tagline, letterSpacing: cfg.taglineSpacing, color: '#93c5fd' }}
+          style={{ fontSize: cfg.tagline, letterSpacing: cfg.taglineSpacing, color: '#6366f1' }}
         >
           By MJ/IA
         </span>

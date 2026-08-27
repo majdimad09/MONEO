@@ -141,7 +141,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between pt-1 mb-5">
         <div>
-          <h1 className="text-xl font-bold text-white">Community</h1>
+          <h1 className="text-xl font-bold text-slate-900">Community</h1>
           <p className="text-[11px] text-slate-500 mt-0.5">Improve finances together</p>
         </div>
         <div className="flex gap-2">
@@ -167,7 +167,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
       {/* Join panel */}
       {showJoin && (
         <div className="card-dark rounded-2xl p-4 mb-4 space-y-3" style={{ border: '1px solid rgba(59,130,246,0.25)' }}>
-          <p className="text-sm font-bold text-slate-200">Join a Community</p>
+          <p className="text-sm font-bold text-slate-700">Join a Community</p>
           <p className="text-xs text-slate-500">Ask the community admin for the 6-character invite code.</p>
           {joinSuccess ? (
             <div className="flex items-center gap-2 py-2">
@@ -206,14 +206,14 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                   style={{ background: 'rgba(139,92,246,0.15)' }}>
                   <Check size={22} style={{ color: '#a78bfa' }} />
                 </div>
-                <p className="text-base font-bold text-white mb-1">Community Created!</p>
+                <p className="text-base font-bold text-slate-900 mb-1">Community Created!</p>
                 <p className="text-xs text-slate-500 mb-4">Share this invite code with people you want to add.</p>
                 <div
                   className="flex items-center justify-center gap-3 rounded-2xl py-4 mb-3"
                   style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}
                 >
                   <span className="text-2xl font-bold tracking-[0.25em]" style={{ color: '#a78bfa' }}>{createdCode}</span>
-                  <button onClick={() => copyCode(createdCode)} className="cursor-pointer text-slate-500 hover:text-slate-300">
+                  <button onClick={() => copyCode(createdCode)} className="cursor-pointer text-slate-500 hover:text-slate-600">
                     {codeCopied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
                   </button>
                 </div>
@@ -226,7 +226,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
             <>
               <div className="flex items-center gap-2 mb-1">
                 <Crown size={14} style={{ color: '#a78bfa' }} />
-                <p className="text-sm font-bold text-slate-200">Create a Community</p>
+                <p className="text-sm font-bold text-slate-700">Create a Community</p>
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Name</label>
@@ -304,7 +304,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
         >
           <Crown size={16} style={{ color: '#a78bfa' }} />
           <div className="flex-1 text-left">
-            <p className="text-xs font-bold text-slate-300">Create your own community</p>
+            <p className="text-xs font-bold text-slate-600">Create your own community</p>
             <p className="text-[10px] text-slate-500">Premium · $1.99/month</p>
           </div>
           <ArrowRight size={14} style={{ color: '#a78bfa' }} />
@@ -330,7 +330,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
         >
           <Users size={28} style={{ color: '#a78bfa' }} />
         </div>
-        <h2 className="text-base font-bold text-white mb-2">Your financial community awaits</h2>
+        <h2 className="text-base font-bold text-slate-900 mb-2">Your financial community awaits</h2>
         <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
           Join a community to take on challenges together, compare Moneo Scores, and stay motivated.
           No private financial data is ever shared — only what you choose.
@@ -349,7 +349,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
               <Icon size={17} style={{ color }} />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-200">{title}</p>
+              <p className="text-sm font-bold text-slate-700">{title}</p>
               <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{desc}</p>
             </div>
           </div>
@@ -404,14 +404,14 @@ const CommunityCard: React.FC<{
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-slate-900"
             style={{ background: 'linear-gradient(135deg,rgba(99,102,241,0.4),rgba(139,92,246,0.4))', border: '1px solid rgba(139,92,246,0.3)' }}
           >
             {community.name.charAt(0).toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-bold text-slate-200">{community.name}</p>
+              <p className="text-sm font-bold text-slate-700">{community.name}</p>
               {isAdmin && (
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide"
                   style={{ background: 'rgba(139,92,246,0.15)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.25)' }}>

@@ -101,7 +101,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">Saving Goals</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Saving Goals</h2>
           <p className="text-sm text-slate-500 mt-1">Set financial goals and track your progress toward them.</p>
         </div>
         <button
@@ -116,7 +116,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
       {/* Add/Edit Form */}
       {showForm && (
         <div className="card-dark rounded-2xl p-6">
-          <h3 className="font-bold text-slate-100 mb-4">{editingId ? 'Edit Goal' : 'Add New Goal'}</h3>
+          <h3 className="font-bold text-slate-800 mb-4">{editingId ? 'Edit Goal' : 'Add New Goal'}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="sm:col-span-2">
               <label className="section-label mb-1.5 block">Goal Name *</label>
@@ -168,7 +168,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
               <Check className="w-4 h-4" />
               {editingId ? 'Save Changes' : 'Add Goal'}
             </button>
-            <button onClick={cancelForm} className="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 rounded-xl transition-colors">
+            <button onClick={cancelForm} className="px-4 py-2 text-sm text-slate-400 hover:text-slate-700 rounded-xl transition-colors">
               Cancel
             </button>
           </div>
@@ -182,7 +182,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
             style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <Flag className="w-7 h-7 text-blue-400" />
           </div>
-          <h3 className="font-bold text-slate-300 mb-1">No goals yet</h3>
+          <h3 className="font-bold text-slate-600 mb-1">No goals yet</h3>
           <p className="text-sm text-slate-500 mb-4">Create a saving goal to start tracking your progress.</p>
           <button onClick={() => setShowForm(true)} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer">
             + Add Your First Goal
@@ -208,7 +208,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
 
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h4 className="font-bold text-slate-100 text-sm">{goal.name}</h4>
+                    <h4 className="font-bold text-slate-800 text-sm">{goal.name}</h4>
                     <p className="text-xs text-slate-500 mt-0.5">Target: {getMonthLabel(goal.targetDate)}</p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -224,7 +224,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
                 {/* Progress */}
                 <div className="mb-3">
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="font-semibold text-slate-200">{formatCurrency(goal.currentAmount, currency)}</span>
+                    <span className="font-semibold text-slate-700">{formatCurrency(goal.currentAmount, currency)}</span>
                     <span className="text-slate-500">/ {formatCurrency(goal.targetAmount, currency)}</span>
                   </div>
                   <div className="progress-track h-2.5">
@@ -250,17 +250,17 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-lg p-2" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
                       <p className="text-slate-500 text-[10px] mb-0.5">Remaining</p>
-                      <p className="font-bold text-slate-200">{formatCurrency(remaining, currency)}</p>
+                      <p className="font-bold text-slate-700">{formatCurrency(remaining, currency)}</p>
                     </div>
                     <div className="rounded-lg p-2" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
                       <p className="text-slate-500 text-[10px] mb-0.5">Months left</p>
-                      <p className="font-bold text-slate-200">{monthsLeft}</p>
+                      <p className="font-bold text-slate-700">{monthsLeft}</p>
                     </div>
                     {monthlyNeeded !== null && (
                       <div className="col-span-2 rounded-lg p-2 text-center"
                         style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                         <p className="text-[10px] font-semibold mb-0.5" style={{ color }}>Recommended monthly saving</p>
-                        <p className="font-bold text-slate-100">{formatCurrency(monthlyNeeded, currency)}/mo</p>
+                        <p className="font-bold text-slate-800">{formatCurrency(monthlyNeeded, currency)}/mo</p>
                       </div>
                     )}
                   </div>
@@ -281,7 +281,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
                           onKeyDown={e => e.key === 'Enter' && handleAddMoney(goal.id)}
                         />
                         <button onClick={() => handleAddMoney(goal.id)} className="btn-blue px-3 py-1.5 rounded-lg text-xs cursor-pointer">Add</button>
-                        <button onClick={() => setAddMoneyId(null)} className="text-slate-500 hover:text-slate-300"><X className="w-4 h-4" /></button>
+                        <button onClick={() => setAddMoneyId(null)} className="text-slate-500 hover:text-slate-600"><X className="w-4 h-4" /></button>
                       </div>
                     ) : (
                       <button

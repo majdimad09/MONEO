@@ -123,7 +123,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Recurring</h2>
+        <h2 className="text-xl font-bold text-slate-900">Recurring</h2>
         {!showForm && (
           <button
             onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
@@ -139,7 +139,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
         <div className="grid grid-cols-3 gap-3">
           <div className="card-dark rounded-2xl p-3 text-center">
             <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Active</p>
-            <p className="text-base font-bold text-white">{active.length}</p>
+            <p className="text-base font-bold text-slate-900">{active.length}</p>
           </div>
           <div className="card-dark rounded-2xl p-3 text-center">
             <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Monthly</p>
@@ -147,7 +147,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
           </div>
           <div className="card-dark rounded-2xl p-3 text-center">
             <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Yearly</p>
-            <p className="text-sm font-bold text-slate-300">{formatCurrency(annualTotal, currency)}</p>
+            <p className="text-sm font-bold text-slate-600">{formatCurrency(annualTotal, currency)}</p>
           </div>
         </div>
       )}
@@ -155,7 +155,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
       {/* ── ADD / EDIT FORM ───────────────────────────── */}
       {showForm && (
         <div className="card-dark rounded-2xl p-5 space-y-4">
-          <p className="text-sm font-bold text-slate-200">{editingId ? 'Edit Recurring' : 'New Recurring Payment'}</p>
+          <p className="text-sm font-bold text-slate-700">{editingId ? 'Edit Recurring' : 'New Recurring Payment'}</p>
 
           {/* Name */}
           <div>
@@ -210,7 +210,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                     className="px-2 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all truncate"
                     style={form.category === c.name
                       ? { background: `${color}20`, border: `1px solid ${color}50`, color }
-                      : { background: '#111118', border: '1px solid #242434', color: '#475569' }}
+                      : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#475569' }}
                   >
                     {c.name}
                   </button>
@@ -243,7 +243,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
             </button>
             <button onClick={cancel}
               className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-              style={{ background: '#16161f' }}>
+              style={{ background: '#ffffff' }}>
               Cancel
             </button>
           </div>
@@ -257,7 +257,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
             style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <RefreshCw size={28} className="text-blue-400" />
           </div>
-          <h3 className="font-bold text-slate-300 mb-2">No recurring payments</h3>
+          <h3 className="font-bold text-slate-600 mb-2">No recurring payments</h3>
           <p className="text-sm text-slate-500 mb-5 leading-relaxed">
             Track subscriptions, rent, and regular bills here.
           </p>
@@ -285,7 +285,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                       <RefreshCw size={17} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-slate-100 truncate">{sub.name}</p>
+                      <p className="text-sm font-bold text-slate-800 truncate">{sub.name}</p>
                       <p className="text-[11px] text-slate-500 mt-0.5">{sub.category}</p>
                     </div>
                     {/* Toggle active */}
@@ -297,40 +297,40 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#111118', border: '1px solid #242434' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <DollarSign size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Amount</p>
                       </div>
-                      <p className="text-xs font-bold text-slate-200">{formatCurrency(sub.amount, currency)}</p>
+                      <p className="text-xs font-bold text-slate-700">{formatCurrency(sub.amount, currency)}</p>
                       <p className="text-[10px] text-slate-600 capitalize">{sub.frequency}</p>
                     </div>
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#111118', border: '1px solid #242434' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <RefreshCw size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Monthly</p>
                       </div>
                       <p className="text-xs font-bold text-red-400">{formatCurrency(monthly, currency)}</p>
                     </div>
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#111118', border: '1px solid #242434' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <Calendar size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Next</p>
                       </div>
-                      <p className="text-xs font-bold text-slate-200">{formatDate(sub.nextPaymentDate)}</p>
+                      <p className="text-xs font-bold text-slate-700">{formatDate(sub.nextPaymentDate)}</p>
                     </div>
                   </div>
 
                   {isConfirmDelete ? (
                     <div className="flex gap-2">
                       <button onClick={() => handleDelete(sub.id)}
-                        className="flex-1 py-2 rounded-xl text-xs font-bold text-white cursor-pointer"
+                        className="flex-1 py-2 rounded-xl text-xs font-bold text-slate-900 cursor-pointer"
                         style={{ background: '#dc2626' }}>
                         Yes, Delete
                       </button>
                       <button onClick={() => setShowDeleteId(null)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#16161f' }}>
+                        style={{ background: '#ffffff' }}>
                         Cancel
                       </button>
                     </div>
@@ -338,7 +338,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                     <div className="flex gap-2">
                       <button onClick={() => handleEdit(sub)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 flex items-center justify-center gap-1.5 cursor-pointer"
-                        style={{ background: '#111118', border: '1px solid #242434' }}>
+                        style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                         <Edit2 size={12} /> Edit
                       </button>
                       <button onClick={() => setShowDeleteId(sub.id)}

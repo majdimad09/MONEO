@@ -60,10 +60,10 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
 };
 
 const INSIGHT_COLORS: Record<string, { bg: string; border: string; icon: string; text: string }> = {
-  positive: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', icon: '#34d399', text: '#6ee7b7' },
-  warning:  { bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.2)',  icon: '#f87171', text: '#fca5a5' },
-  neutral:  { bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)', icon: '#60a5fa', text: '#93c5fd' },
-  info:     { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)', icon: '#a78bfa', text: '#c4b5fd' },
+  positive: { bg: 'rgba(16,185,129,0.07)', border: 'rgba(16,185,129,0.18)', icon: '#10b981', text: '#065f46' },
+  warning:  { bg: 'rgba(239,68,68,0.06)',  border: 'rgba(239,68,68,0.16)',  icon: '#ef4444', text: '#991b1b' },
+  neutral:  { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.16)', icon: '#3b82f6', text: '#1e40af' },
+  info:     { bg: 'rgba(139,92,246,0.07)', border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6', text: '#5b21b6' },
 };
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -117,8 +117,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── GREETING ─────────────────────────────────── */}
       <div className="px-4 pt-4 flex items-center justify-between">
         <div>
-          <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{monthLabel}</p>
-          <p className="text-lg font-bold text-white mt-0.5">{greeting}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>{monthLabel}</p>
+          <p className="text-lg font-bold mt-0.5" style={{ color: '#111827' }}>{greeting}</p>
         </div>
       </div>
 
@@ -261,10 +261,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="card-float-4">
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
-              <Sparkles size={14} className="text-blue-400" />
-              <h3 className="text-sm font-bold text-white">Moneo Insights</h3>
+              <Sparkles size={14} style={{ color: '#6366f1' }} />
+              <h3 className="text-sm font-bold" style={{ color: '#111827' }}>Moneo Insights</h3>
             </div>
-            <span className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Based on your data</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>Based on your data</span>
           </div>
           <div className="insights-scroll px-4">
             {insights.map((insight, i) => {
@@ -284,7 +284,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     style={{ background: colors.bg, border: `1px solid ${colors.border}` }}>
                     <Icon size={16} style={{ color: colors.icon }} />
                   </div>
-                  <p className="text-[12px] font-semibold leading-relaxed" style={{ color: '#e2e8f0' }}>
+                  <p className="text-[12px] font-semibold leading-relaxed" style={{ color: colors.text }}>
                     {insight.text}
                   </p>
                 </div>
@@ -302,8 +302,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <TrendingUp size={28} className="text-blue-400" />
             </div>
-            <p className="text-slate-200 font-bold text-base mb-2">No transactions yet</p>
-            <p className="text-slate-500 text-sm leading-relaxed mb-5">
+            <p className="font-bold text-base mb-2" style={{ color: '#111827' }}>No transactions yet</p>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: '#6b7280' }}>
               Add your first transaction and Moneo will start building your financial picture.
             </p>
             <button onClick={onAddExpense} className="btn-blue px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2">
@@ -317,8 +317,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {!isEmpty && (
         <div className="px-4 card-float-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold text-white">Recent Transactions</h3>
-            <button onClick={onViewAllTransactions} className="flex items-center gap-0.5 text-xs text-blue-400 font-semibold cursor-pointer">
+            <h3 className="text-sm font-bold" style={{ color: '#111827' }}>Recent Transactions</h3>
+            <button onClick={onViewAllTransactions} className="flex items-center gap-0.5 text-xs font-semibold cursor-pointer" style={{ color: '#6366f1' }}>
               See all <ChevronRight size={14} />
             </button>
           </div>
@@ -330,7 +330,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <div
                   key={tx.id}
                   className="tx-row"
-                  style={{ borderBottom: i < recentTx.length - 1 ? '1px solid #0a1828' : 'none' }}
+                  style={{ borderBottom: i < recentTx.length - 1 ? '1px solid #f4f5f9' : 'none' }}
                   onClick={() => onEdit(tx)}
                 >
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
@@ -338,7 +338,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <CategoryIcon category={tx.category} type={tx.type} size={16} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-slate-200 truncate">{tx.description}</p>
+                    <p className="text-[13px] font-semibold truncate" style={{ color: '#111827' }}>{tx.description}</p>
                     <p className="text-[11px] text-slate-500 mt-0.5">{formatDate(tx.date)} · {tx.category}</p>
                   </div>
                   <span className={`font-bold font-mono text-sm flex-shrink-0 ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
@@ -354,7 +354,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── BUDGET CATEGORIES ────────────────────────── */}
       {categoryLimits.length > 0 && !isEmpty && (
         <div className="px-4 card-float-6">
-          <h3 className="text-sm font-bold text-white mb-3">Category Budgets</h3>
+          <h3 className="text-sm font-bold mb-3" style={{ color: '#111827' }}>Category Budgets</h3>
           <div className="space-y-2.5">
             {categoryLimits.slice(0, 5).map(limit => {
               const spent = categorySpend[limit.category] || 0;
@@ -368,10 +368,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${color}18`, color }}>
                         <CategoryIcon category={limit.category} type="expense" size={15} />
                       </div>
-                      <span className="text-sm font-semibold text-slate-200">{limit.category}</span>
+                      <span className="text-sm font-semibold" style={{ color: '#111827' }}>{limit.category}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold" style={{ color: pct >= 100 ? '#ef4444' : '#f1f5f9' }}>
+                      <p className="text-sm font-bold" style={{ color: pct >= 100 ? '#ef4444' : '#111827' }}>
                         {formatCurrency(spent, currency)}
                       </p>
                       <p className="text-[10px] text-slate-500">/ {formatCurrency(limit.limit, currency)}</p>

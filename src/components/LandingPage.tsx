@@ -39,7 +39,7 @@ export const PhoneFrame: React.FC<{ children: React.ReactNode; className?: strin
 export const SectionHeader: React.FC<{ label: string; title: string; desc: string }> = ({ label, title, desc }) => (
   <div className="max-w-sm">
     <p className="section-label mb-3">{label}</p>
-    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">{title}</h2>
+    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 leading-tight">{title}</h2>
     <p className="text-slate-400 text-sm sm:text-base leading-relaxed">{desc}</p>
   </div>
 );
@@ -79,7 +79,7 @@ export const DashboardMockup: React.FC = () => (
             <div style={{ width: 5, height: 5, borderRadius: '50%', background: tx.dot }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 10, fontWeight: 600, color: '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.desc}</p>
+            <p style={{ fontSize: 10, fontWeight: 600, color: '#374151', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.desc}</p>
             <p style={{ fontSize: 8, color: '#475569' }}>{tx.cat}</p>
           </div>
           <span style={{ fontSize: 10, fontWeight: 700, color: tx.green ? '#34d399' : '#f87171', fontFamily: 'monospace', flexShrink: 0 }}>{tx.amt}</span>
@@ -170,7 +170,7 @@ export const AnalyticsMockup: React.FC = () => {
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
             <span style={{ flex: 1, fontSize: 9, color: '#94a3b8', fontWeight: 500 }}>{s.label}</span>
-            <span style={{ fontSize: 9, color: '#e2e8f0', fontWeight: 700 }}>{s.val}</span>
+            <span style={{ fontSize: 9, color: '#374151', fontWeight: 700 }}>{s.val}</span>
             <span style={{ fontSize: 8, color: '#475569', width: 22, textAlign: 'right' }}>{s.pct}%</span>
           </div>
         ))}
@@ -207,7 +207,7 @@ export const InsightsMockup: React.FC = () => {
               <div className="flex items-start gap-2">
                 <span style={{ fontSize: 14 }}>{ins.icon}</span>
                 <div>
-                  <p style={{ fontSize: 10, fontWeight: 700, color: '#e2e8f0', marginBottom: 2 }}>{ins.title}</p>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#374151', marginBottom: 2 }}>{ins.title}</p>
                   <p style={{ fontSize: 9, color: '#64748b', lineHeight: 1.4 }}>{ins.body}</p>
                 </div>
               </div>
@@ -295,7 +295,7 @@ export const RecurringMockup: React.FC = () => {
               <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.dot }} />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, color: '#e2e8f0' }}>{s.name}</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>{s.name}</p>
               <p style={{ fontSize: 8, color: '#475569' }}>{s.freq}</p>
             </div>
             <span style={{ fontSize: 10, fontWeight: 700, color: '#f87171', fontFamily: 'monospace' }}>{s.amt}</span>

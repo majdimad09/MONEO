@@ -185,7 +185,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     <div className="page-enter px-4 pt-3 pb-6 space-y-4">
 
       {/* ── VIEW MODE TABS ──────────────────────────── */}
-      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: '#111118', border: '1px solid #242434' }}>
+      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
         {(['week', 'month', 'year'] as ViewMode[]).map(m => (
           <button key={m} onClick={() => setViewMode(m)}
             className={`stat-filter-btn capitalize ${viewMode === m ? 'active' : ''}`}>
@@ -198,17 +198,17 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       <div className="flex items-center justify-between py-0.5 card-float-1">
         <button onClick={handlePrev} disabled={!canGoPrev}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#16161f', border: '1px solid #242434' }}>
-          <ChevronLeft size={16} className="text-slate-300" />
+          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
+          <ChevronLeft size={16} className="text-slate-600" />
         </button>
         <div className="text-center">
-          <p className="text-base font-bold text-white">{periodLabel}</p>
+          <p className="text-base font-bold text-slate-900">{periodLabel}</p>
           <p className="text-[11px] text-slate-500 mt-0.5">Spending overview</p>
         </div>
         <button onClick={handleNext} disabled={!canGoNext}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#16161f', border: '1px solid #242434' }}>
-          <ChevronRight size={16} className="text-slate-300" />
+          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
+          <ChevronRight size={16} className="text-slate-600" />
         </button>
       </div>
 
@@ -220,7 +220,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <TrendingUp size={28} className="text-blue-400" />
             </div>
-            <p className="text-slate-300 font-semibold text-sm">No expenses in {periodLabel}</p>
+            <p className="text-slate-600 font-semibold text-sm">No expenses in {periodLabel}</p>
             <p className="text-slate-600 text-xs mt-1">Navigate to another period or add expenses</p>
           </div>
         ) : (
@@ -235,7 +235,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         key={slice.category + i}
                         d={slice.d}
                         fill={slice.color}
-                        stroke="#16161f"
+                        stroke="#ffffff"
                         strokeWidth={isSelected ? 1 : 3}
                         style={{
                           filter: isSelected ? `drop-shadow(0 0 8px ${slice.color}80)` : `drop-shadow(0 0 3px ${slice.color}30)`,
@@ -254,7 +254,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                   {selectedCat ? (
                     <>
                       <span className="text-xs font-bold text-slate-400 mb-1">{selectedCat}</span>
-                      <span className="text-xl font-bold text-white leading-tight">
+                      <span className="text-xl font-bold text-slate-900 leading-tight">
                         {formatCurrency(categoryData.find(c => c.category === selectedCat)?.total || 0, currency)}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-1">
@@ -263,7 +263,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                     </>
                   ) : (
                     <>
-                      <span className="text-xl font-bold text-white leading-tight">
+                      <span className="text-xl font-bold text-slate-900 leading-tight">
                         {formatCurrency(totalExpenses, currency)}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-1">
@@ -307,12 +307,12 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-semibold text-slate-300 truncate">{cat.category}</span>
-                        <span className="text-xs font-bold text-slate-100 font-mono ml-2 flex-shrink-0">
+                        <span className="text-xs font-semibold text-slate-600 truncate">{cat.category}</span>
+                        <span className="text-xs font-bold text-slate-800 font-mono ml-2 flex-shrink-0">
                           {formatCurrency(cat.total, currency)}
                         </span>
                       </div>
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#242434' }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#e5e7eb' }}>
                         <div className="h-full rounded-full transition-all duration-700" style={{
                           width: `${cat.percentage}%`,
                           background: cat.color,
@@ -335,7 +335,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       {selectedCat && selectedCatTx.length > 0 && (
         <div className="card-dark rounded-2xl overflow-hidden expand-in">
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #0f1e38' }}>
-            <p className="text-sm font-bold text-slate-200">{selectedCat} breakdown</p>
+            <p className="text-sm font-bold text-slate-700">{selectedCat} breakdown</p>
             <button onClick={() => setSelectedCat(null)} className="text-slate-500 cursor-pointer">
               <X size={16} />
             </button>
@@ -344,7 +344,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
             <div key={tx.id} className="flex items-center justify-between px-4 py-2.5"
               style={{ borderBottom: i < selectedCatTx.length - 1 ? '1px solid #0a1828' : 'none' }}>
               <div>
-                <p className="text-[13px] font-semibold text-slate-200">{tx.description}</p>
+                <p className="text-[13px] font-semibold text-slate-700">{tx.description}</p>
                 <p className="text-[11px] text-slate-500">{formatDate(tx.date)}</p>
               </div>
               <span className="text-sm font-bold text-red-400 font-mono">−{formatCurrency(tx.amount, currency)}</span>
@@ -395,7 +395,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         <div className="card-float-4">
           <div className="flex items-center gap-2 mb-3">
             <Zap size={14} className="text-yellow-400" />
-            <h3 className="text-sm font-bold text-white">Spending Alerts</h3>
+            <h3 className="text-sm font-bold text-slate-900">Spending Alerts</h3>
           </div>
           <div className="space-y-2.5">
             {alerts.map((alert, i) => (

@@ -171,18 +171,18 @@ export const CommunityDetailScreen: React.FC<CommunityDetailScreenProps> = ({
     <div className="page-enter pb-8">
       {/* Header */}
       <div className="px-4 pt-3 mb-4">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 mb-3 cursor-pointer">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-600 mb-3 cursor-pointer">
           <ChevronLeft size={18} /> Back
         </button>
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-bold text-white"
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-bold text-slate-900"
               style={{ background: 'linear-gradient(135deg,rgba(99,102,241,0.5),rgba(139,92,246,0.5))', border: '1px solid rgba(139,92,246,0.4)' }}>
               {community.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-white">{community.name}</h1>
+                <h1 className="text-lg font-bold text-slate-900">{community.name}</h1>
                 {isAdmin && (
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                     style={{ background: 'rgba(139,92,246,0.15)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.25)' }}>
@@ -297,7 +297,7 @@ export const CommunityDetailScreen: React.FC<CommunityDetailScreenProps> = ({
             >
               <div className="flex items-center gap-3">
                 <Shield size={15} className="text-blue-400" />
-                <p className="text-sm font-semibold text-slate-200">Privacy Settings</p>
+                <p className="text-sm font-semibold text-slate-700">Privacy Settings</p>
               </div>
               {showPrivacy ? <ChevronUp size={15} className="text-slate-600" /> : <ChevronDown size={15} className="text-slate-600" />}
             </button>
@@ -311,7 +311,7 @@ export const CommunityDetailScreen: React.FC<CommunityDetailScreenProps> = ({
                   <div key={label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {value ? <Eye size={13} className="text-slate-500" /> : <EyeOff size={13} className="text-slate-600" />}
-                      <span className="text-xs text-slate-300">{label}</span>
+                      <span className="text-xs text-slate-600">{label}</span>
                     </div>
                     <button onClick={toggle} className="relative cursor-pointer" style={{ width: 40, height: 22 }}>
                       <div className="absolute inset-0 rounded-full transition-all"
@@ -439,7 +439,7 @@ export const CommunityDetailScreen: React.FC<CommunityDetailScreenProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-slate-200 truncate">
+                    <p className="text-sm font-semibold text-slate-700 truncate">
                       {member.displayName}{isMe ? ' (You)' : ''}
                     </p>
                     {member.role === 'admin' && (
@@ -502,7 +502,7 @@ const ChallengeRow: React.FC<{
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-bold text-slate-200 leading-tight">{challenge.name}</p>
+              <p className="text-sm font-bold text-slate-700 leading-tight">{challenge.name}</p>
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <div className="w-1.5 h-1.5 rounded-full" style={{ background: statusColor }} />
                 <span className="text-[10px] font-bold capitalize" style={{ color: statusColor }}>{status}</span>
@@ -581,7 +581,7 @@ const ChallengeRow: React.FC<{
                   className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer font-bold text-slate-400"
                   style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>−</button>
                 <div className="flex-1 text-center">
-                  <p className="text-lg font-bold text-white">{liveParticipant.manualDays ?? 0} / {total}</p>
+                  <p className="text-lg font-bold text-slate-900">{liveParticipant.manualDays ?? 0} / {total}</p>
                   <p className="text-[10px] text-slate-600">days marked</p>
                 </div>
                 <button onClick={() => onManual(true)}
@@ -655,7 +655,7 @@ const LeaderboardSection: React.FC<{
               className="flex items-center gap-3 px-4 py-3"
               style={{ borderBottom: i < ranked.length - 1 ? '1px solid #0c1a30' : 'none', background: isMe ? 'rgba(59,130,246,0.04)' : undefined }}>
               <span className="text-sm w-6 text-center flex-shrink-0">{medal}</span>
-              <p className="flex-1 text-sm font-semibold text-slate-200 truncate">
+              <p className="flex-1 text-sm font-semibold text-slate-700 truncate">
                 {member.displayName}{isMe ? ' (You)' : ''}
               </p>
               <p className="text-sm font-bold flex-shrink-0"
@@ -698,7 +698,7 @@ const CreateChallengePanel: React.FC<{
   return (
     <div className="card-dark rounded-2xl p-4 space-y-3" style={{ border: '1px solid rgba(139,92,246,0.25)' }}>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-slate-200">New Challenge</p>
+        <p className="text-sm font-bold text-slate-700">New Challenge</p>
         <button onClick={p.onCancel} className="text-slate-500 cursor-pointer"><X size={16} /></button>
       </div>
 

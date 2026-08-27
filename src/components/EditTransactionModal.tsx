@@ -120,12 +120,12 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
               ✏️
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-100">Edit Transaction</h3>
+              <h3 className="text-base font-bold text-slate-800">Edit Transaction</h3>
               <p className="text-xs text-slate-500">Update transaction details</p>
             </div>
           </div>
           <button type="button" onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-600 transition-colors"
             style={{ ':hover': { background: '#162040' } as any }}>
             <X className="w-5 h-5" />
           </button>
@@ -151,7 +151,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 type="button"
                 onClick={() => { setType('expense'); setCategory('Food'); }}
                 className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
-                  type === 'expense' ? 'text-red-400' : 'text-slate-500 hover:text-slate-300'
+                  type === 'expense' ? 'text-red-400' : 'text-slate-500 hover:text-slate-600'
                 }`}
                 style={type === 'expense' ? { background: '#0d1526', border: '1px solid #253659' } : {}}
               >
@@ -162,7 +162,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 type="button"
                 onClick={() => { setType('income'); setCategory('Salary'); }}
                 className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
-                  type === 'income' ? 'text-green-400' : 'text-slate-500 hover:text-slate-300'
+                  type === 'income' ? 'text-green-400' : 'text-slate-500 hover:text-slate-600'
                 }`}
                 style={type === 'income' ? { background: '#0d1526', border: '1px solid #253659' } : {}}
               >
@@ -262,7 +262,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                       type="button"
                       onClick={() => setCategory(cat.name)}
                       className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-all text-left truncate ${
-                        isSelected ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                        isSelected ? 'text-white' : 'text-slate-400 hover:text-slate-700'
                       }`}
                       style={isSelected
                         ? { background: 'linear-gradient(135deg, #2563eb, #3b82f6)', boxShadow: '0 0 10px rgba(59,130,246,0.3)' }
@@ -301,7 +301,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 rounded-xl transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-700 rounded-xl transition-colors"
             >
               Cancel
             </button>

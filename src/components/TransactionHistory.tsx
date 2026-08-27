@@ -70,18 +70,18 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   const hasActiveFilters = searchQuery !== '' || typeFilter !== 'all' || selectedCategory !== 'all';
 
   const selectStyle = {
-    background: '#111118',
-    border: '1px solid #242434',
+    background: '#f7f8fc',
+    border: '1px solid #e5e7eb',
     color: '#cbd5e1',
   };
 
   return (
     <div className="card-dark rounded-2xl overflow-hidden">
       {/* Header & Filters */}
-      <div className="p-5 sm:p-6 space-y-4" style={{ borderBottom: '1px solid #242434' }}>
+      <div className="p-5 sm:p-6 space-y-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-100 flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
               <span>Recent Transactions</span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full text-blue-400"
                 style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
@@ -95,7 +95,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
           {/* Type Filter */}
           <div className="flex items-center p-1 rounded-xl self-start sm:self-auto gap-0.5"
-            style={{ background: '#111118', border: '1px solid #242434' }}>
+            style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
             {(['all', 'income', 'expense'] as const).map((type) => (
               <button
                 key={type}
@@ -103,10 +103,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                 onClick={() => setTypeFilter(type)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all capitalize ${
                   typeFilter === type
-                    ? type === 'income' ? 'text-green-400' : type === 'expense' ? 'text-red-400' : 'text-slate-200'
-                    : 'text-slate-500 hover:text-slate-300'
+                    ? type === 'income' ? 'text-green-400' : type === 'expense' ? 'text-red-400' : 'text-slate-700'
+                    : 'text-slate-500 hover:text-slate-600'
                 }`}
-                style={typeFilter === type ? { background: '#16161f', border: '1px solid #2d2d3e' } : {}}
+                style={typeFilter === type ? { background: '#ffffff', border: '1px solid #e5e7eb' } : {}}
               >
                 {type === 'income' && <ArrowUpRight className="w-3.5 h-3.5 text-green-500" />}
                 {type === 'expense' && <ArrowDownRight className="w-3.5 h-3.5 text-red-500" />}
@@ -135,7 +135,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-600"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -176,7 +176,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
       {filteredTransactions.length === 0 ? (
         <div className="p-12 text-center flex flex-col items-center justify-center">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
-            style={{ background: '#111118', border: '1px solid #242434' }}>
+            style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
             <Inbox className="w-7 h-7 text-slate-600" />
           </div>
           <h4 className="text-sm sm:text-base font-bold text-slate-400 mb-1">
@@ -205,7 +205,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="text-[11px] font-bold uppercase tracking-wider text-slate-600"
-                  style={{ borderBottom: '1px solid #242434', background: '#111118' }}>
+                  style={{ borderBottom: '1px solid #e5e7eb', background: '#f7f8fc' }}>
                   <th className="py-3 px-6">Type</th>
                   <th className="py-3 px-6">Description</th>
                   <th className="py-3 px-6">Category</th>
@@ -214,7 +214,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                   <th className="py-3 px-6 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="text-xs divide-y divide-[#242434]">
+              <tbody className="text-xs divide-y divide-[#e5e7eb]">
                 {filteredTransactions.map((item) => {
                   const isIncome = item.type === 'income';
                   const catColor = getCategoryColor(item.category, item.type);
@@ -223,7 +223,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                     <tr
                       key={item.id}
                       className="transition-colors group"
-                      style={{ ':hover': { background: '#16161f' } as any }}
+                      style={{ ':hover': { background: '#ffffff' } as any }}
                       onMouseEnter={e => (e.currentTarget.style.background = '#0f1d35')}
                       onMouseLeave={e => (e.currentTarget.style.background = '')}
                     >
@@ -242,13 +242,13 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-6 font-semibold text-slate-200 max-w-xs truncate">
+                      <td className="py-3.5 px-6 font-semibold text-slate-700 max-w-xs truncate">
                         {item.description}
                       </td>
 
                       <td className="py-3.5 px-6">
                         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-slate-400 font-medium"
-                          style={{ background: '#111118', border: '1px solid #242434' }}>
+                          style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: catColor }} />
                           <CategoryIcon category={item.category} type={item.type} size={12} className="text-slate-500" />
                           <span>{item.category}</span>
@@ -294,7 +294,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-[#242434]">
+          <div className="md:hidden divide-y divide-[#e5e7eb]">
             {filteredTransactions.map((item) => {
               const isIncome = item.type === 'income';
 
@@ -314,7 +314,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                     </div>
 
                     <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-slate-200 truncate">
+                      <h4 className="text-xs font-bold text-slate-700 truncate">
                         {item.description}
                       </h4>
                       <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">

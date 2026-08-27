@@ -62,13 +62,13 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-3 pb-1">
           <div>
-            <p className="text-base font-bold text-white">What would you like to do?</p>
+            <p className="text-base font-bold text-slate-900">What would you like to do?</p>
             <p className="text-xs text-slate-500 mt-0.5">Choose an action to get started</p>
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl cursor-pointer"
-            style={{ background: '#16161f', border: '1px solid #242434', color: '#64748b' }}
+            style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#64748b' }}
           >
             <X size={16} />
           </button>
@@ -98,7 +98,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
                 >
                   <Icon size={20} style={{ color: action.color }} strokeWidth={2.2} />
                 </div>
-                <p className="text-sm font-bold text-slate-100 leading-tight">{action.label}</p>
+                <p className="text-sm font-bold text-slate-800 leading-tight">{action.label}</p>
                 <p className="text-[11px] text-slate-500 mt-1 leading-tight">{action.desc}</p>
               </button>
             );

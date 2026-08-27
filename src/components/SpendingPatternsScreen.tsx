@@ -81,13 +81,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#6060a0' }}
+          style={{ color: '#9ca3af' }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#f0f0f8' }}>Spending Patterns</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#6060a0' }}>Trends across months and categories</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Spending Patterns</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>Trends across months and categories</p>
         </div>
       </div>
 
@@ -99,15 +99,15 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
       >
         {/* Category trends */}
         <div className="mb-5">
-          <p className="text-xs font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
+          <p className="text-xs font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
             Category Trends (Last 6 Months)
           </p>
           {patterns.catTrends.length === 0 ? (
             <div
               className="rounded-2xl p-5 text-center"
-              style={{ background: '#16161f', border: '1px solid #242434' }}
+              style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
             >
-              <p className="text-sm" style={{ color: '#50506a' }}>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>
                 Add more transactions to see category trends.
               </p>
             </div>
@@ -117,7 +117,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
                 <div
                   key={cat}
                   className="rounded-2xl px-4 py-3 flex items-center gap-3"
-                  style={{ background: '#16161f', border: '1px solid #242434' }}
+                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
                 >
                   <div
                     className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -134,13 +134,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
                       : <Minus size={13} style={{ color: '#818cf8' }} />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate" style={{ color: '#f0f0f8' }}>{cat}</p>
-                    <p className="text-[11px] mt-0.5" style={{ color: '#50506a' }}>
+                    <p className="text-sm font-semibold truncate" style={{ color: '#111827' }}>{cat}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#9ca3af' }}>
                       Avg {formatCurrency(avg, currency)}/mo
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold" style={{ color: '#f0f0f8' }}>
+                    <p className="text-sm font-bold" style={{ color: '#111827' }}>
                       {formatCurrency(lastMonth, currency)}
                     </p>
                     {Math.abs(changePct) >= 5 && (
@@ -161,11 +161,11 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
         {/* Day of week chart */}
         <div
           className="rounded-2xl p-4 mb-5"
-          style={{ background: '#16161f', border: '1px solid #242434' }}
+          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Calendar size={13} style={{ color: '#818cf8' }} />
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#50506a' }}>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
               Avg Spend by Day of Week
             </p>
           </div>
@@ -192,14 +192,14 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
               <div key={i} className="flex-1 text-center">
                 <p
                   className="text-[9px]"
-                  style={{ color: (i === 0 || i === 6) ? '#fbbf24' : '#50506a' }}
+                  style={{ color: (i === 0 || i === 6) ? '#fbbf24' : '#9ca3af' }}
                 >
                   {d}
                 </p>
               </div>
             ))}
           </div>
-          <p className="text-[10px] mt-2 text-center" style={{ color: '#50506a' }}>
+          <p className="text-[10px] mt-2 text-center" style={{ color: '#9ca3af' }}>
             <span style={{ color: '#fbbf24' }}>■</span> Weekend &nbsp;
             <span style={{ color: '#818cf8' }}>■</span> Weekday
           </p>
@@ -208,11 +208,11 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
         {/* Time of month */}
         <div
           className="rounded-2xl p-4"
-          style={{ background: '#16161f', border: '1px solid #242434' }}
+          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Clock size={13} style={{ color: '#818cf8' }} />
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#50506a' }}>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
               Spending by Time of Month
             </p>
           </div>
@@ -226,13 +226,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
               return (
                 <div key={label}>
                   <div className="flex justify-between text-xs mb-1.5">
-                    <span style={{ color: '#9090a8' }}>{label}</span>
+                    <span style={{ color: '#6b7280' }}>{label}</span>
                     <div className="flex items-center gap-2">
-                      <span style={{ color: '#50506a' }}>{formatCurrency(amount, currency)}</span>
-                      <span className="font-bold" style={{ color: '#f0f0f8' }}>{pct.toFixed(0)}%</span>
+                      <span style={{ color: '#9ca3af' }}>{formatCurrency(amount, currency)}</span>
+                      <span className="font-bold" style={{ color: '#111827' }}>{pct.toFixed(0)}%</span>
                     </div>
                   </div>
-                  <div className="h-2 rounded-full" style={{ background: '#242434' }}>
+                  <div className="h-2 rounded-full" style={{ background: '#e5e7eb' }}>
                     <div
                       className="h-full rounded-full transition-all"
                       style={{ width: `${pct}%`, background: '#6366f1' }}

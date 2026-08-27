@@ -52,12 +52,11 @@ function NavBtn({ label, Icon, active, onClick }: {
       <Icon
         size={21}
         style={{
-          color: active ? '#a5b4fc' : '#404058',
-          filter: active ? 'drop-shadow(0 0 6px rgba(165,180,252,0.55))' : undefined,
-          transition: 'color 0.18s ease, filter 0.18s ease',
+          color: active ? '#6366f1' : '#c4c7d0',
+          transition: 'color 0.18s ease',
         }}
       />
-      <span className="text-[10px] font-bold transition-colors" style={{ color: active ? '#a5b4fc' : '#404058' }}>
+      <span className="text-[10px] font-bold transition-colors" style={{ color: active ? '#6366f1' : '#c4c7d0' }}>
         {label}
       </span>
     </button>

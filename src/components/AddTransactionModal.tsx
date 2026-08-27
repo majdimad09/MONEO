@@ -36,11 +36,11 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-3 pb-2">
-          <h2 className="text-base font-bold text-white">Add Transaction</h2>
+          <h2 className="text-base font-bold text-slate-900">Add Transaction</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-            style={{ background: '#16161f' }}
+            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-600 transition-colors cursor-pointer"
+            style={{ background: '#ffffff' }}
           >
             <X size={16} />
           </button>

@@ -113,7 +113,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white">Budget</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Budget</h2>
         <p className="text-sm text-slate-500 mt-1">Track your monthly budget and category spending limits.</p>
       </div>
 
@@ -126,7 +126,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
               <Target className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-sm">Monthly Budget</h3>
+              <h3 className="font-bold text-slate-800 text-sm">Monthly Budget</h3>
               <p className="text-xs text-slate-500">{getCurrentMonthLabel()}</p>
             </div>
           </div>
@@ -152,7 +152,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
               onKeyDown={e => e.key === 'Enter' && handleSaveBudget()}
             />
             <button onClick={handleSaveBudget} className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer">Save</button>
-            <button onClick={() => setEditingBudget(false)} className="p-2 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">
+            <button onClick={() => setEditingBudget(false)} className="p-2 text-slate-500 hover:text-slate-600 rounded-lg transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -163,7 +163,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
             <div className="grid grid-cols-3 gap-4 mb-5">
               <div className="rounded-xl p-3 text-center" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Budget</p>
-                <p className="text-sm font-bold text-slate-100">{formatCurrency(monthlyBudget, currency)}</p>
+                <p className="text-sm font-bold text-slate-800">{formatCurrency(monthlyBudget, currency)}</p>
               </div>
               <div className="rounded-xl p-3 text-center" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Spent</p>
@@ -222,7 +222,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
       {/* Category Limits */}
       <div className="card-dark rounded-2xl p-6">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-slate-100">Category Spending Limits</h3>
+          <h3 className="font-bold text-slate-800">Category Spending Limits</h3>
           <button
             onClick={() => setShowAddLimit(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-400 transition-colors"
@@ -255,7 +255,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
               onKeyDown={e => e.key === 'Enter' && handleAddLimit()}
             />
             <button onClick={handleAddLimit} className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer">Add</button>
-            <button onClick={() => setShowAddLimit(false)} className="p-2 text-slate-500 hover:text-slate-300">
+            <button onClick={() => setShowAddLimit(false)} className="p-2 text-slate-500 hover:text-slate-600">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -279,7 +279,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: catColor }} />
-                      <span className="text-sm font-semibold text-slate-200">{cat}</span>
+                      <span className="text-sm font-semibold text-slate-700">{cat}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -295,7 +295,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
                               autoFocus
                             />
                             <button onClick={handleSaveEditLimit} className="btn-blue px-2 py-1 rounded-lg text-xs cursor-pointer">OK</button>
-                            <button onClick={() => setEditingLimit(null)} className="text-slate-500 hover:text-slate-300"><X className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => setEditingLimit(null)} className="text-slate-500 hover:text-slate-600"><X className="w-3.5 h-3.5" /></button>
                           </div>
                         ) : (
                           <>

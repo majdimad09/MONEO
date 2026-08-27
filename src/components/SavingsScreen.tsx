@@ -108,7 +108,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
             </div>
             <div className="card-dark rounded-2xl p-3 text-center">
               <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Target</p>
-              <p className="text-sm font-bold text-white">{formatCurrency(totalTarget, currency)}</p>
+              <p className="text-sm font-bold text-slate-900">{formatCurrency(totalTarget, currency)}</p>
             </div>
             <div className="card-dark rounded-2xl p-3 text-center">
               <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Done</p>
@@ -121,7 +121,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
       {/* Add / Edit form */}
       {showForm && (
         <div className="card-dark rounded-2xl p-5">
-          <h3 className="font-bold text-slate-100 mb-4 text-sm">{editingId ? 'Edit Goal' : 'New Saving Goal'}</h3>
+          <h3 className="font-bold text-slate-800 mb-4 text-sm">{editingId ? 'Edit Goal' : 'New Saving Goal'}</h3>
           <div className="space-y-3">
             <div>
               <label className="section-label mb-1.5 block">Goal Name *</label>
@@ -160,7 +160,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
               <Check size={15} /> {editingId ? 'Save Changes' : 'Add Goal'}
             </button>
             <button onClick={cancelForm} className="px-4 py-2.5 text-sm text-slate-400 rounded-xl cursor-pointer"
-              style={{ background: '#16161f' }}>
+              style={{ background: '#ffffff' }}>
               Cancel
             </button>
           </div>
@@ -174,7 +174,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
             style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <Flag size={28} className="text-blue-400" />
           </div>
-          <h3 className="font-bold text-slate-300 mb-2">No saving goals yet</h3>
+          <h3 className="font-bold text-slate-600 mb-2">No saving goals yet</h3>
           <p className="text-sm text-slate-500 mb-5 leading-relaxed">
             Set a financial goal to start tracking your progress toward it.
           </p>
@@ -207,7 +207,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
                         <Target size={18} style={{ color }} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-100 text-sm">{goal.name}</h4>
+                        <h4 className="font-bold text-slate-800 text-sm">{goal.name}</h4>
                         <p className="text-[11px] text-slate-500 mt-0.5">Target: {getMonthLabel(goal.targetDate)}</p>
                       </div>
                     </div>
@@ -224,7 +224,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
                   {/* Progress */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg font-bold text-slate-100">{formatCurrency(goal.currentAmount, currency)}</span>
+                      <span className="text-lg font-bold text-slate-800">{formatCurrency(goal.currentAmount, currency)}</span>
                       <span className="text-sm text-slate-500 font-medium">/ {formatCurrency(goal.targetAmount, currency)}</span>
                     </div>
                     <div className="progress-track h-3">
@@ -254,19 +254,19 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2.5 mb-3">
-                      <div className="rounded-xl p-2.5" style={{ background: '#111118', border: '1px solid #242434' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Remaining</p>
-                        <p className="text-sm font-bold text-slate-200">{formatCurrency(remaining, currency)}</p>
+                        <p className="text-sm font-bold text-slate-700">{formatCurrency(remaining, currency)}</p>
                       </div>
-                      <div className="rounded-xl p-2.5" style={{ background: '#111118', border: '1px solid #242434' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Months left</p>
-                        <p className="text-sm font-bold text-slate-200">{monthsLeft}</p>
+                        <p className="text-sm font-bold text-slate-700">{monthsLeft}</p>
                       </div>
                       {monthlyNeeded !== null && (
                         <div className="col-span-2 rounded-xl p-2.5 text-center"
                           style={{ background: `${color}12`, border: `1px solid ${color}28` }}>
                           <p className="text-[10px] font-bold" style={{ color }}>Recommended monthly saving</p>
-                          <p className="text-sm font-bold text-slate-100 mt-0.5">{formatCurrency(monthlyNeeded, currency)}/mo</p>
+                          <p className="text-sm font-bold text-slate-800 mt-0.5">{formatCurrency(monthlyNeeded, currency)}/mo</p>
                         </div>
                       )}
                     </div>

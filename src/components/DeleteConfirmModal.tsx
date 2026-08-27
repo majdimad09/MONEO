@@ -35,13 +35,13 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 text-slate-500 hover:text-slate-300 rounded-lg transition-colors"
+            className="p-1 text-slate-500 hover:text-slate-600 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <h3 className="text-base font-bold text-slate-100 mb-1">
+        <h3 className="text-base font-bold text-slate-800 mb-1">
           Delete Transaction?
         </h3>
         <p className="text-xs text-slate-500 mb-4 leading-relaxed">
@@ -51,7 +51,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
         {/* Transaction Preview */}
         <div className="rounded-xl p-3 mb-5 space-y-1 text-xs"
           style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
-          <div className="flex items-center justify-between font-bold text-slate-200 text-xs sm:text-sm">
+          <div className="flex items-center justify-between font-bold text-slate-700 text-xs sm:text-sm">
             <span className="truncate">{transaction.description}</span>
             <span className={`font-mono flex-shrink-0 ${transaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
               {transaction.type === 'income' ? '+' : '-'}
@@ -69,7 +69,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 rounded-lg transition-colors"
+            className="px-3.5 py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 rounded-lg transition-colors"
           >
             Cancel
           </button>

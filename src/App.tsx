@@ -385,10 +385,10 @@ export default function App() {
 
   if (authLoading || cloudLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b0b0f' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f4f5f9' }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(99,102,241,0.2)', borderTopColor: '#6366f1' }} />
-          <span className="text-xs" style={{ color: '#50506a' }}>Loading Moneo…</span>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(99,102,241,0.15)', borderTopColor: '#6366f1' }} />
+          <span className="text-xs" style={{ color: '#9ca3af' }}>Loading Moneo…</span>
         </div>
       </div>
     );
@@ -727,15 +727,15 @@ export default function App() {
           className="fixed bottom-24 left-1/2 z-50 text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2"
           style={{
             transform: 'translateX(-50%)',
-            background: '#1c1c2a',
-            border: '1px solid rgba(99,102,241,0.35)',
-            boxShadow: '0 0 24px rgba(99,102,241,0.2), 0 4px 16px rgba(0,0,0,0.5)',
-            color: '#f0f0f8',
+            background: '#ffffff',
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06)',
+            color: '#111827',
             animation: 'pageEnter 0.25s ease forwards',
             whiteSpace: 'nowrap',
           }}
         >
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#818cf8', boxShadow: '0 0 6px rgba(129,140,248,0.8)' }} />
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6366f1' }} />
           {toastMessage}
         </div>
       )}

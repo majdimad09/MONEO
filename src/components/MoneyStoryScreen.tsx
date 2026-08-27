@@ -123,13 +123,13 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#6060a0' }}
+          style={{ color: '#9ca3af' }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#f0f0f8' }}>Monthly Story</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#6060a0' }}>A narrative recap of your finances</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Monthly Story</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>A narrative recap of your finances</p>
         </div>
       </div>
 
@@ -145,18 +145,18 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
             onClick={() => setIdx(i => Math.min(i + 1, months.length - 1))}
             disabled={idx >= months.length - 1}
             className="p-2 rounded-xl cursor-pointer disabled:opacity-30 transition-opacity"
-            style={{ background: '#16161f', border: '1px solid #242434' }}
+            style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
           >
             <ChevronLeft size={16} style={{ color: '#818cf8' }} />
           </button>
-          <p className="flex-1 text-center text-sm font-bold" style={{ color: '#f0f0f8' }}>
+          <p className="flex-1 text-center text-sm font-bold" style={{ color: '#111827' }}>
             {monthLabel(selected)}
           </p>
           <button
             onClick={() => setIdx(i => Math.max(i - 1, 0))}
             disabled={idx <= 0}
             className="p-2 rounded-xl cursor-pointer disabled:opacity-30 transition-opacity"
-            style={{ background: '#16161f', border: '1px solid #242434' }}
+            style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
           >
             <ChevronRight size={16} style={{ color: '#818cf8' }} />
           </button>
@@ -173,12 +173,12 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
               <div
                 key={label}
                 className="rounded-2xl p-3 text-center"
-                style={{ background: '#16161f', border: '1px solid #242434' }}
+                style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
               >
                 <p className="text-sm font-bold" style={{ color }}>
                   {value < 0 ? '-' : ''}{formatCurrency(Math.abs(value), currency)}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: '#50506a' }}>{label}</p>
+                <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>{label}</p>
               </div>
             ))}
           </div>
@@ -206,7 +206,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 style={{
                   color: p.tone === 'positive' ? '#6ee7b7'
                     : p.tone === 'negative' ? '#fca5a5'
-                    : '#c0c0d8',
+                    : '#4b5563',
                 }}
               >
                 {p.text}
@@ -218,7 +218,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
         {/* Top categories */}
         {story.topCats.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#50506a' }}>
+            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
               Top Categories This Month
             </p>
             {story.topCats.map(([cat, amt], i) => {
@@ -228,20 +228,20 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 <div
                   key={cat}
                   className="rounded-2xl px-4 py-3"
-                  style={{ background: '#16161f', border: '1px solid #242434' }}
+                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold" style={{ color: '#50506a' }}>
+                      <span className="text-xs font-bold" style={{ color: '#9ca3af' }}>
                         #{i + 1}
                       </span>
-                      <span className="text-sm font-semibold" style={{ color: '#f0f0f8' }}>{cat}</span>
+                      <span className="text-sm font-semibold" style={{ color: '#111827' }}>{cat}</span>
                     </div>
                     <span className="text-sm font-bold" style={{ color: '#f87171' }}>
                       {formatCurrency(amt, currency)}
                     </span>
                   </div>
-                  <div className="h-1.5 rounded-full" style={{ background: '#242434' }}>
+                  <div className="h-1.5 rounded-full" style={{ background: '#e5e7eb' }}>
                     <div
                       className="h-full rounded-full"
                       style={{
@@ -250,7 +250,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                       }}
                     />
                   </div>
-                  <p className="text-[10px] mt-1" style={{ color: '#50506a' }}>
+                  <p className="text-[10px] mt-1" style={{ color: '#9ca3af' }}>
                     {pct.toFixed(0)}% of total spending
                   </p>
                 </div>

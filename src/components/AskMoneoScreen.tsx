@@ -128,13 +128,13 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#6060a0' }}
+          style={{ color: '#9ca3af' }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#f0f0f8' }}>Ask Moneo</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#6060a0' }}>Query your finances in plain language</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Ask Moneo</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>Query your finances in plain language</p>
         </div>
       </div>
 
@@ -148,7 +148,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle size={13} style={{ color: '#818cf8' }} />
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#50506a' }}>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
               Suggested Questions
             </p>
           </div>
@@ -158,7 +158,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                 key={q}
                 onClick={() => handleAsk(q)}
                 className="w-full text-left rounded-2xl px-4 py-3 text-sm font-medium cursor-pointer transition-all"
-                style={{ background: '#16161f', border: '1px solid #242434', color: '#c0c0d8' }}
+                style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#4b5563' }}
               >
                 {q}
               </button>
@@ -180,9 +180,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
             placeholder="Ask anything about your finances…"
             className="flex-1 px-4 py-3 rounded-2xl text-sm"
             style={{
-              background: '#16161f',
-              border: '1px solid #242434',
-              color: '#f0f0f8',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
+              color: '#111827',
               outline: 'none',
             }}
           />
@@ -199,7 +199,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         {/* Conversation */}
         {messages.length > 0 && (
           <div className="space-y-4">
-            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#50506a' }}>
+            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
               Answers
             </p>
             {messages.map(({ q, a }, i) => (
@@ -213,7 +213,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                       border: '1px solid rgba(99,102,241,0.25)',
                     }}
                   >
-                    <p className="text-sm font-medium" style={{ color: '#c7d2fe' }}>{q}</p>
+                    <p className="text-sm font-medium" style={{ color: '#4338ca' }}>{q}</p>
                   </div>
                 </div>
                 {/* Moneo response */}
@@ -226,9 +226,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                   </div>
                   <div
                     className="flex-1 rounded-2xl rounded-bl-sm px-4 py-3"
-                    style={{ background: '#1c1c26', border: '1px solid #2d2d3e' }}
+                    style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}
                   >
-                    <p className="text-sm leading-relaxed" style={{ color: '#d4d4e0' }}>{a}</p>
+                    <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>{a}</p>
                   </div>
                 </div>
               </div>

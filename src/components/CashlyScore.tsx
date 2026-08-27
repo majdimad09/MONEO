@@ -26,7 +26,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
       style={{
         animation: 'cardFloat 0.35s 0.08s ease both',
         WebkitTapHighlightColor: 'transparent',
-        border: result.hasEnoughData ? `1px solid ${result.color}25` : '1px solid #242434',
+        border: result.hasEnoughData ? `1px solid ${result.color}25` : '1px solid #e5e7eb',
       }}
     >
       {/* Title row */}
@@ -36,7 +36,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
           <p className="text-[11px] text-slate-600 mt-0.5">Personal money management score</p>
         </div>
         {onViewDetails && (
-          <span className="flex items-center gap-0.5 text-xs text-blue-400 font-semibold">
+          <span className="flex items-center gap-0.5 text-xs font-semibold" style={{ color: '#6366f1' }}>
             View Details <ChevronRight size={13} />
           </span>
         )}
@@ -48,7 +48,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
           <div className="flex items-center gap-5 mb-4">
             <div className="relative flex-shrink-0" style={{ width: svgSize, height: svgSize }}>
               <svg width={svgSize} height={svgSize} style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx={cx} cy={cx} r={r} fill="none" stroke="#242434" strokeWidth={stroke} />
+                <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
                 <circle
                   cx={cx} cy={cx} r={r} fill="none"
                   stroke={result.color} strokeWidth={stroke} strokeLinecap="round"
@@ -83,7 +83,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
                     <span className="text-[11px] text-slate-500">{f.label}</span>
                     <span className="text-[11px] font-semibold font-mono" style={{ color: f.color }}>{f.points}/{f.maxPoints}</span>
                   </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#111118' }}>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#f7f8fc' }}>
                     <div className="h-full rounded-full"
                       style={{ width: `${pct}%`, background: f.color, boxShadow: `0 0 4px ${f.color}50` }} />
                   </div>
@@ -93,7 +93,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
           </div>
 
           {onViewDetails && (
-            <div className="mt-4 pt-3" style={{ borderTop: '1px solid #242434' }}>
+            <div className="mt-4 pt-3" style={{ borderTop: '1px solid #e5e7eb' }}>
               <p className="text-[11px] text-center text-slate-600">
                 Tap to see full Moneo Score report →
               </p>
@@ -108,7 +108,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
             <ShieldCheck size={26} className="text-blue-400" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-bold text-slate-200 mb-1">Build Your Moneo Score</p>
+            <p className="text-sm font-bold text-slate-700 mb-1">Build Your Moneo Score</p>
             <p className="text-xs text-slate-500 leading-relaxed mb-3">
               Add {result.missingDataHints.length > 0 ? result.missingDataHints[0].toLowerCase() : 'more transactions'} to unlock your personal finance score.
             </p>

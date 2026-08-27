@@ -39,7 +39,7 @@ export const PremiumGate: React.FC<PremiumGateProps> = ({
         </span>
       </div>
 
-      <h2 className="text-xl font-bold text-white mb-3" style={{ letterSpacing: '-0.01em' }}>
+      <h2 className="text-xl font-bold text-slate-900 mb-3" style={{ letterSpacing: '-0.01em' }}>
         Unlock {feature}
       </h2>
       <p className="text-sm text-slate-400 leading-relaxed max-w-xs mb-8">
@@ -48,7 +48,7 @@ export const PremiumGate: React.FC<PremiumGateProps> = ({
 
       <button
         onClick={onUpgrade}
-        className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white cursor-pointer transition-all"
+        className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-slate-900 cursor-pointer transition-all"
         style={{
           background: 'linear-gradient(135deg, #7c3aed, #8b5cf6)',
           boxShadow: '0 4px 20px rgba(139,92,246,0.4)',

@@ -68,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
                 key={view}
                 onClick={() => onNavigate(view)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  active ? 'text-blue-300 nav-active' : 'text-slate-500 hover:text-slate-300'
+                  active ? 'text-blue-300 nav-active' : 'text-slate-500 hover:text-slate-600'
                 }`}
                 style={active ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' } : {}}
               >
@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-300 rounded-lg transition-all focus:outline-none cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 rounded-lg transition-all focus:outline-none cursor-pointer"
               style={{ background: '#0d1526', border: '1px solid #253659' }}
             >
               <span className="font-mono text-blue-400 font-bold">{selectedCurrencyObj.symbol}</span>
@@ -110,11 +110,11 @@ export const Header: React.FC<HeaderProps> = ({
                         value={currencySearch}
                         onChange={e => setCurrencySearch(e.target.value)}
                         className="w-full pl-8 pr-7 py-1.5 text-xs font-medium rounded-lg focus:outline-none"
-                        style={{ background: '#0a1424', border: '1px solid #1e2d4a', color: '#f1f5f9' }}
+                        style={{ background: '#0a1424', border: '1px solid #1e2d4a', color: '#111827' }}
                       />
                       {currencySearch && (
                         <button type="button" onClick={() => setCurrencySearch('')}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600">
                           <X className="w-3 h-3" />
                         </button>
                       )}
@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
                             key={curr.code}
                             onClick={() => { onCurrencyChange(curr.code); setShowCurrencyDropdown(false); }}
                             className={`w-full flex items-center justify-between px-3 py-2 text-left text-xs transition-colors cursor-pointer ${
-                              isSelected ? 'text-blue-300 font-semibold' : 'text-slate-400 hover:text-slate-200'
+                              isSelected ? 'text-blue-300 font-semibold' : 'text-slate-400 hover:text-slate-700'
                             }`}
                             style={isSelected ? { background: 'rgba(59,130,246,0.12)' } : undefined}
                           >
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onExportCSV}
                 title="Export Transactions to CSV"
-                className="hidden sm:flex p-2 sm:px-3 sm:py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 rounded-lg transition-colors items-center gap-1.5 cursor-pointer"
+                className="hidden sm:flex p-2 sm:px-3 sm:py-1.5 text-xs font-medium text-slate-400 hover:text-slate-700 rounded-lg transition-colors items-center gap-1.5 cursor-pointer"
                 style={{ background: '#0d1526', border: '1px solid #253659' }}
               >
                 <Download className="w-3.5 h-3.5" />
@@ -190,11 +190,11 @@ export const Header: React.FC<HeaderProps> = ({
                       onClick={() => setShowClearConfirm(false)} />
                     <div className="absolute right-0 mt-2 w-72 rounded-2xl p-4 z-50"
                       style={{ background: '#0d1526', border: '1px solid #253659', boxShadow: '0 16px 48px rgba(0,0,0,0.6)' }}>
-                      <p className="text-sm font-bold text-slate-100 mb-1">Reset all data?</p>
+                      <p className="text-sm font-bold text-slate-800 mb-1">Reset all data?</p>
                       <p className="text-xs text-slate-500 mb-3 leading-relaxed">This will erase all your logged income and expenses.</p>
                       <div className="flex items-center justify-end gap-2">
                         <button type="button" onClick={() => setShowClearConfirm(false)}
-                          className="px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 rounded-lg transition-colors cursor-pointer">
+                          className="px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-700 rounded-lg transition-colors cursor-pointer">
                           Cancel
                         </button>
                         <button type="button"
@@ -212,7 +212,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden p-2 text-slate-400 hover:text-slate-200 transition-colors rounded-lg cursor-pointer"
+            className="lg:hidden p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-lg cursor-pointer"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
           >
             <Menu className="w-5 h-5" />

@@ -28,10 +28,10 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
   'fire': Flame, 'zap': Zap,
 };
 const INSIGHT_COLORS: Record<InsightType, { bg: string; border: string; icon: string }> = {
-  positive: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)',  icon: '#34d399' },
-  warning:  { bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.2)',   icon: '#f87171' },
-  neutral:  { bg: 'rgba(99,102,241,0.07)', border: 'rgba(99,102,241,0.18)', icon: '#a5b4fc' },
-  info:     { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)',  icon: '#a78bfa' },
+  positive: { bg: 'rgba(16,185,129,0.07)', border: 'rgba(16,185,129,0.18)', icon: '#10b981' },
+  warning:  { bg: 'rgba(239,68,68,0.06)',  border: 'rgba(239,68,68,0.16)',  icon: '#ef4444' },
+  neutral:  { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.16)', icon: '#3b82f6' },
+  info:     { bg: 'rgba(139,92,246,0.07)', border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6' },
 };
 
 interface ToolLink {
@@ -56,7 +56,7 @@ const TOOL_LINKS: ToolLink[] = [
 const PremiumBadge = () => (
   <span
     className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide flex-shrink-0"
-    style={{ background: 'rgba(139,92,246,0.15)', color: '#c4b5fd', border: '1px solid rgba(139,92,246,0.3)' }}
+    style={{ background: 'rgba(139,92,246,0.1)', color: '#7c3aed', border: '1px solid rgba(139,92,246,0.2)' }}
   >
     Premium
   </span>
@@ -69,23 +69,20 @@ const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView
   return (
     <button
       onClick={() => onNavigate(view)}
-      className="w-full rounded-2xl flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-left"
-      style={locked
-        ? { background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.2)' }
-        : { background: '#16161f', border: '1px solid #242434' }}
+      className="card-dark w-full rounded-2xl flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-left"
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: `${color}14` }}>
-        <Icon size={16} style={{ color }} />
+        <Icon size={16} style={{ color: locked ? '#d1d5db' : color }} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-bold text-slate-200 truncate">{label}</p>
+          <p className="text-sm font-bold truncate" style={{ color: locked ? '#9ca3af' : '#111827' }}>{label}</p>
           {locked && <PremiumBadge />}
         </div>
-        <p className="text-xs text-slate-500 mt-0.5 truncate">{desc}</p>
+        <p className="text-xs mt-0.5 truncate" style={{ color: '#9ca3af' }}>{desc}</p>
       </div>
-      <ChevronRight size={14} className="text-slate-600 flex-shrink-0" />
+      <ChevronRight size={14} style={{ color: '#d1d5db' }} className="flex-shrink-0" />
     </button>
   );
 };
@@ -110,7 +107,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
-      <h1 className="text-xl font-bold text-white pt-1">Insights</h1>
+      <h1 className="text-xl font-bold pt-1" style={{ color: '#111827' }}>Insights</h1>
 
       {/* ── Moneo Score Card ─────────────────────────────────── */}
       <button
@@ -121,7 +118,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           {/* Mini ring */}
           <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
             <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={36} cy={36} r={28} fill="none" stroke="#242434" strokeWidth={7} />
+              <circle cx={36} cy={36} r={28} fill="none" stroke="#e5e7eb" strokeWidth={7} />
               <circle
                 cx={36} cy={36} r={28} fill="none"
                 stroke={level.color} strokeWidth={7} strokeLinecap="round"
@@ -144,10 +141,10 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
                 Moneo Score
               </span>
             </div>
-            <p className="text-base font-bold text-white">{level.name}</p>
-            <p className="text-xs text-slate-500 mt-0.5 leading-tight">{scoreResult.summary}</p>
+            <p className="text-base font-bold" style={{ color: '#111827' }}>{level.name}</p>
+            <p className="text-xs mt-0.5 leading-tight" style={{ color: '#6b7280' }}>{scoreResult.summary}</p>
           </div>
-          <ChevronRight size={16} className="text-slate-600 flex-shrink-0" />
+          <ChevronRight size={16} style={{ color: '#d1d5db' }} className="flex-shrink-0" />
         </div>
       </button>
 
@@ -156,13 +153,13 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Lightbulb size={14} style={{ color: '#fbbf24' }} />
-            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#50506a' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
               Money Coach
             </p>
           </div>
           <button
             onClick={() => onNavigate('money-coach')}
-            className="text-[11px] text-blue-400 font-semibold hover:text-blue-300 cursor-pointer"
+            className="text-[11px] font-semibold cursor-pointer" style={{ color: '#6366f1' }}
           >
             See all
           </button>
@@ -171,10 +168,10 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         {insights.length === 0 ? (
           <div
             className="rounded-2xl px-4 py-5 text-center"
-            style={{ background: '#16161f', border: '1px solid #242434' }}
+            style={{ background: '#f7f8fc', border: '1px solid #ececf0' }}
           >
-            <Lightbulb size={24} className="mx-auto mb-2 text-slate-600" />
-            <p className="text-sm text-slate-500">Add more transactions to get personalized insights.</p>
+            <Lightbulb size={24} className="mx-auto mb-2" style={{ color: '#d1d5db' }} />
+            <p className="text-sm" style={{ color: '#9ca3af' }}>Add more transactions to get personalized insights.</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -188,7 +185,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
                   style={{ background: colors.bg, border: `1px solid ${colors.border}` }}
                 >
                   <Icon size={15} className="flex-shrink-0 mt-0.5" style={{ color: colors.icon }} />
-                  <p className="text-xs text-slate-300 leading-relaxed">{ins.text}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{ins.text}</p>
                 </div>
               );
             })}
@@ -202,19 +199,19 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         className="card-dark w-full rounded-2xl flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all text-left"
       >
         <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(96,165,250,0.12)' }}>
-          <BarChart2 size={17} className="text-blue-400" />
+          style={{ background: 'rgba(59,130,246,0.09)' }}>
+          <BarChart2 size={17} style={{ color: '#3b82f6' }} />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-slate-200">Statistics</p>
-          <p className="text-xs text-slate-500 mt-0.5">Charts, categories, monthly view</p>
+          <p className="text-sm font-bold" style={{ color: '#111827' }}>Statistics</p>
+          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>Charts, categories, monthly view</p>
         </div>
-        <ChevronRight size={15} className="text-slate-600" />
+        <ChevronRight size={15} style={{ color: '#d1d5db' }} />
       </button>
 
       {/* ── Quick tools grid ─────────────────────────────────── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#50506a' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#9ca3af' }}>
           Tools
         </p>
         <div className="space-y-2">

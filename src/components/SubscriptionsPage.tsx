@@ -127,7 +127,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">Subscriptions</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Subscriptions</h2>
           <p className="text-sm text-slate-500 mt-1">Track your recurring payments and never miss a billing date.</p>
         </div>
         <button
@@ -143,12 +143,12 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div className="card-dark rounded-2xl p-4 sm:col-span-1">
           <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Monthly Cost</p>
-          <p className="text-xl font-bold text-white">{formatCurrency(monthlyTotal, currency)}</p>
+          <p className="text-xl font-bold text-slate-900">{formatCurrency(monthlyTotal, currency)}</p>
           <p className="text-xs text-slate-500 mt-0.5">{activeOnly.length} active subscriptions</p>
         </div>
         <div className="card-dark rounded-2xl p-4 sm:col-span-1">
           <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Yearly Cost</p>
-          <p className="text-xl font-bold text-white">{formatCurrency(yearlyTotal, currency)}</p>
+          <p className="text-xl font-bold text-slate-900">{formatCurrency(yearlyTotal, currency)}</p>
           <p className="text-xs text-slate-500 mt-0.5">Total annual spend</p>
         </div>
         {upcoming.length > 0 && (
@@ -160,7 +160,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
             </div>
             {upcoming.slice(0, 2).map(s => (
               <div key={s.id} className="flex justify-between text-xs mt-1">
-                <span className="text-slate-300 font-medium truncate">{s.name}</span>
+                <span className="text-slate-600 font-medium truncate">{s.name}</span>
                 <span className="text-yellow-400 font-semibold ml-2 flex-shrink-0">{formatNextPayment(s.nextPaymentDate)}</span>
               </div>
             ))}
@@ -174,7 +174,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
       {/* Add/Edit Form */}
       {showForm && (
         <div className="card-dark rounded-2xl p-6">
-          <h3 className="font-bold text-slate-100 mb-4">{editingId ? 'Edit Subscription' : 'Add Subscription'}</h3>
+          <h3 className="font-bold text-slate-800 mb-4">{editingId ? 'Edit Subscription' : 'Add Subscription'}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="sm:col-span-2">
               <label className="section-label mb-1.5 block">Subscription Name *</label>
@@ -244,7 +244,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
               <Check className="w-4 h-4" />
               {editingId ? 'Save Changes' : 'Add Subscription'}
             </button>
-            <button onClick={cancelForm} className="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 rounded-xl transition-colors">
+            <button onClick={cancelForm} className="px-4 py-2 text-sm text-slate-400 hover:text-slate-700 rounded-xl transition-colors">
               Cancel
             </button>
           </div>
@@ -258,7 +258,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
             style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <RefreshCw className="w-7 h-7 text-blue-400" />
           </div>
-          <h3 className="font-bold text-slate-300 mb-1">No subscriptions yet</h3>
+          <h3 className="font-bold text-slate-600 mb-1">No subscriptions yet</h3>
           <p className="text-sm text-slate-500 mb-4">Add your recurring payments to track monthly costs.</p>
           <button onClick={() => setShowForm(true)} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer">
             + Add First Subscription
@@ -284,7 +284,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-slate-200 text-sm truncate">{sub.name}</span>
+                      <span className="font-semibold text-slate-700 text-sm truncate">{sub.name}</span>
                       {!sub.isActive && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded font-semibold text-slate-500"
                           style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>Paused</span>
@@ -309,7 +309,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
 
                   {/* Amount */}
                   <div className="text-right flex-shrink-0 mr-2">
-                    <p className="font-bold text-slate-100 text-sm">{formatCurrency(sub.amount, currency)}</p>
+                    <p className="font-bold text-slate-800 text-sm">{formatCurrency(sub.amount, currency)}</p>
                     {sub.frequency !== 'monthly' && (
                       <p className="text-[10px] text-slate-500">{formatCurrency(monthly, currency)}/mo</p>
                     )}

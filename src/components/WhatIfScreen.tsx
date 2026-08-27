@@ -96,11 +96,11 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('insights')} className="cursor-pointer text-slate-500 hover:text-slate-300">
+        <button onClick={() => onNavigate('insights')} className="cursor-pointer text-slate-500 hover:text-slate-600">
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold text-white leading-none">What If?</h1>
+          <h1 className="text-base font-bold text-slate-900 leading-none">What If?</h1>
           <p className="text-[10px] text-slate-500 mt-0.5">Simulate decisions — nothing changes in your real data</p>
         </div>
       </div>
@@ -114,7 +114,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
 
         {/* Simulation type selector */}
         <div className="space-y-2 mb-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
             What would happen if…
           </p>
           {([
@@ -129,7 +129,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-left"
               style={simType === opt.id
                 ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                : { background: '#16161f', border: '1px solid #242434' }}
+                : { background: '#ffffff', border: '1px solid #e5e7eb' }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -137,7 +137,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
               >
                 <opt.icon size={15} style={{ color: opt.color }} />
               </div>
-              <span className="text-sm font-semibold text-slate-200">{opt.label}</span>
+              <span className="text-sm font-semibold text-slate-700">{opt.label}</span>
             </button>
           ))}
         </div>
@@ -160,9 +160,9 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                       className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-left"
                       style={cancelSubId === s.id
                         ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                        : { background: '#111118', border: '1px solid #242434' }}
+                        : { background: '#f7f8fc', border: '1px solid #e5e7eb' }}
                     >
-                      <span className="text-xs font-semibold text-slate-200">{s.name}</span>
+                      <span className="text-xs font-semibold text-slate-700">{s.name}</span>
                       <span className="text-xs text-slate-400">{formatCurrency(s.amount, currency)}/mo</span>
                     </button>
                   ))}
@@ -197,7 +197,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
         {/* Results */}
         {simulated && result && diff && (
           <div className="space-y-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: '#50506a' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
               Simulated Impact
             </p>
 
@@ -236,7 +236,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="text-center">
                     <p className="text-[10px] text-slate-600 mb-0.5">Now</p>
-                    <p className="text-base font-bold text-slate-300">{row.baseline}</p>
+                    <p className="text-base font-bold text-slate-600">{row.baseline}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     {row.delta !== 0 && (
@@ -251,7 +251,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                   </div>
                   <div className="text-center">
                     <p className="text-[10px] text-slate-600 mb-0.5">Simulated</p>
-                    <p className="text-base font-bold text-white">{row.result}</p>
+                    <p className="text-base font-bold text-slate-900">{row.result}</p>
                   </div>
                 </div>
               </div>

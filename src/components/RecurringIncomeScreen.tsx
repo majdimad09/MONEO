@@ -83,11 +83,11 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('more')} className="cursor-pointer text-slate-500 hover:text-slate-300">
+        <button onClick={() => onNavigate('more')} className="cursor-pointer text-slate-500 hover:text-slate-600">
           <ChevronLeft size={20} />
         </button>
         <div className="flex-1">
-          <h1 className="text-base font-bold text-white leading-none">Recurring Income</h1>
+          <h1 className="text-base font-bold text-slate-900 leading-none">Recurring Income</h1>
           <p className="text-[10px] text-slate-500 mt-0.5">Set up salary & income you receive regularly</p>
         </div>
         <button
@@ -106,7 +106,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
         >
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Expected Monthly</p>
-            <p className="text-2xl font-bold text-white mt-0.5">{formatCurrency(totalMonthly, currency)}</p>
+            <p className="text-2xl font-bold text-slate-900 mt-0.5">{formatCurrency(totalMonthly, currency)}</p>
           </div>
           <DollarSign size={28} style={{ color: 'rgba(52,211,153,0.4)' }} />
         </div>
@@ -119,8 +119,8 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
           style={{ border: '1px solid rgba(59,130,246,0.3)' }}
         >
           <div className="flex items-center justify-between mb-1">
-            <p className="text-sm font-bold text-slate-200">{editId ? 'Edit Income' : 'New Recurring Income'}</p>
-            <button onClick={() => setShowForm(false)} className="cursor-pointer text-slate-500 hover:text-slate-300">
+            <p className="text-sm font-bold text-slate-700">{editId ? 'Edit Income' : 'New Recurring Income'}</p>
+            <button onClick={() => setShowForm(false)} className="cursor-pointer text-slate-500 hover:text-slate-600">
               <X size={16} />
             </button>
           </div>
@@ -199,7 +199,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
       {items.length === 0 && !showForm ? (
         <div
           className="rounded-2xl px-4 py-10 text-center"
-          style={{ background: '#16161f', border: '1px solid #242434' }}
+          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
         >
           <DollarSign size={28} className="mx-auto mb-3 text-slate-600" />
           <p className="text-sm font-semibold text-slate-400 mb-1">No recurring income yet</p>
@@ -228,13 +228,13 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <button
                         onClick={() => setDeleteId(null)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#16161f', border: '1px solid #242434' }}
+                        style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
                       >
                         Cancel
                       </button>
                       <button
                         onClick={() => deleteItem(item.id)}
-                        className="flex-1 py-2 rounded-xl text-xs font-bold text-white cursor-pointer"
+                        className="flex-1 py-2 rounded-xl text-xs font-bold text-slate-900 cursor-pointer"
                         style={{ background: '#dc2626' }}
                       >
                         Remove
@@ -252,7 +252,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                           <DollarSign size={16} style={{ color: '#34d399' }} />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-200">{item.name}</p>
+                          <p className="text-sm font-bold text-slate-700">{item.name}</p>
                           <p className="text-xs text-slate-500 mt-0.5">
                             {frequencyLabel(item.frequency)}
                             {item.frequency !== 'monthly' && ` · ${formatCurrency(monthly, currency)}/mo`}
@@ -273,7 +273,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <button
                         onClick={() => openEdit(item)}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#111118', border: '1px solid #242434' }}
+                        style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}
                       >
                         <Edit2 size={11} /> Edit
                       </button>

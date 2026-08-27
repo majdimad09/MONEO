@@ -116,7 +116,7 @@ export function AuthScreen({
   };
 
   const inputBase =
-    'w-full bg-[#0d1526] border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all';
+    'w-full bg-[#0d1526] border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all';
 
   const subtitle: Record<AuthMode, string> = {
     signin: t('welcomeBack'),
@@ -140,7 +140,7 @@ export function AuthScreen({
       {onGoBack && !isRecoveryMode && (
         <button
           onClick={onGoBack}
-          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
         >
           <ChevronLeft size={16} />
           Back
@@ -186,7 +186,7 @@ export function AuthScreen({
                   disabled={loading}
                 />
                 <button type="button" tabIndex={-1}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 transition-colors"
                   onClick={() => setShowPass(v => !v)}>
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -269,7 +269,7 @@ export function AuthScreen({
                           className={`py-2 px-1 rounded-xl text-[11px] font-semibold text-center transition-all cursor-pointer ${
                             signupLang === l.code
                               ? 'text-blue-300'
-                              : 'text-slate-500 hover:text-slate-300'
+                              : 'text-slate-500 hover:text-slate-600'
                           }`}
                           style={signupLang === l.code
                             ? { background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.35)' }
@@ -312,7 +312,7 @@ export function AuthScreen({
                     disabled={loading}
                   />
                   <button type="button" tabIndex={-1}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 transition-colors"
                     onClick={() => setShowPass(v => !v)}>
                     {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
@@ -350,7 +350,7 @@ export function AuthScreen({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 mt-1"
+            className="w-full py-3 rounded-xl text-sm font-semibold text-slate-900 transition-all flex items-center justify-center gap-2 mt-1"
             style={{
               background: loading ? 'rgba(59,130,246,0.5)' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
               boxShadow: loading ? 'none' : '0 4px 20px rgba(59,130,246,0.3)',
@@ -369,7 +369,7 @@ export function AuthScreen({
           <div className="flex flex-col items-center gap-3">
             {mode === 'forgot' ? (
               <button
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 transition-colors"
                 onClick={() => reset('signin')}
               >
                 <ArrowLeft size={13} /> {t('backToSignIn')}

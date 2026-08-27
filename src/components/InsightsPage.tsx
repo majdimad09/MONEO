@@ -140,7 +140,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-10">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white">Insights</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Insights</h2>
         <p className="text-sm text-slate-500 mt-1">Compare spending across months and detect unusual patterns.</p>
       </div>
 
@@ -148,7 +148,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
       <section>
         <div className="flex items-center gap-2 mb-4">
           <Zap className="w-4 h-4 text-yellow-400" />
-          <h3 className="font-bold text-slate-100">Spending Alerts</h3>
+          <h3 className="font-bold text-slate-800">Spending Alerts</h3>
           <span className="text-xs text-slate-500">— {getMonthLabel(currentMonthPrefix)}</span>
         </div>
 
@@ -159,7 +159,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
               <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200 text-sm">All good! No unusual spending detected.</p>
+              <p className="font-semibold text-slate-700 text-sm">All good! No unusual spending detected.</p>
               <p className="text-xs text-slate-500 mt-0.5">Your spending patterns look normal compared to past months.</p>
             </div>
           </div>
@@ -202,7 +202,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
       <section>
         <div className="flex items-center gap-2 mb-4">
           <BarChart2 className="w-4 h-4 text-blue-400" />
-          <h3 className="font-bold text-slate-100">Monthly Comparison</h3>
+          <h3 className="font-bold text-slate-800">Monthly Comparison</h3>
         </div>
 
         {/* Month selectors */}
@@ -240,7 +240,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <p className="section-label mb-1">{getMonthLabel(monthA)}</p>
-              <p className="text-xl font-bold text-white">{formatCurrency(totalA, currency)}</p>
+              <p className="text-xl font-bold text-slate-900">{formatCurrency(totalA, currency)}</p>
             </div>
             <div className="flex flex-col items-center justify-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
@@ -264,7 +264,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
             </div>
             <div>
               <p className="section-label mb-1">{getMonthLabel(monthB)}</p>
-              <p className="text-xl font-bold text-white">{formatCurrency(totalB, currency)}</p>
+              <p className="text-xl font-bold text-slate-900">{formatCurrency(totalB, currency)}</p>
             </div>
           </div>
         </div>
@@ -299,7 +299,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ transactions, curren
               return (
                 <div key={cat}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-semibold text-slate-300">{cat}</span>
+                    <span className="text-xs font-semibold text-slate-600">{cat}</span>
                     <div className="flex items-center gap-2 text-[11px]">
                       {diff !== 0 && (
                         <span className={diff > 0 ? 'text-red-400' : 'text-green-400'}>

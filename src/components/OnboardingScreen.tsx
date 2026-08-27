@@ -34,7 +34,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
           </button>
           <button
             onClick={onFinish}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-600 transition-colors cursor-pointer"
             aria-label="Skip"
           >
             <X size={18} />
@@ -51,7 +51,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
             Welcome to Moneo
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight tracking-tight">
             Here's what Moneo<br />does for you
           </h1>
           <p className="text-slate-400 text-base leading-relaxed">
@@ -128,7 +128,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
       {/* Final CTA */}
       <section className="px-6 sm:px-12 py-20 text-center">
         <div className="max-w-lg mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
             Ready to start tracking?
           </h2>
           <p className="text-slate-400 text-sm mb-8 leading-relaxed">

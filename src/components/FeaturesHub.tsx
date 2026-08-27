@@ -58,14 +58,14 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
 
       {/* Header */}
       <div className="flex items-center justify-between pt-1 pb-1">
-        <h1 className="text-xl font-bold text-white">More</h1>
+        <h1 className="text-xl font-bold" style={{ color: '#111827' }}>More</h1>
         <button
           onClick={() => onNavigate('settings')}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all"
-          style={{ background: '#16161f', border: '1px solid #242434' }}
+          style={{ background: '#f4f5f9', border: '1px solid #e5e7eb' }}
         >
-          <Settings2 size={14} style={{ color: '#64748b' }} />
-          <span className="text-xs font-semibold text-slate-500">Settings</span>
+          <Settings2 size={14} style={{ color: '#9ca3af' }} />
+          <span className="text-xs font-semibold" style={{ color: '#6b7280' }}>Settings</span>
         </button>
       </div>
 
@@ -75,25 +75,25 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
           onClick={() => onNavigate('premium')}
           className="w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
           style={{
-            background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(139,92,246,0.08))',
-            border: '1px solid rgba(139,92,246,0.3)',
-            boxShadow: '0 0 24px rgba(139,92,246,0.08)',
+            background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
+            border: '1px solid rgba(139,92,246,0.25)',
+            boxShadow: '0 2px 12px rgba(139,92,246,0.1)',
           }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(139,92,246,0.2)' }}
+                style={{ background: 'rgba(139,92,246,0.15)' }}
               >
-                <Crown size={18} style={{ color: '#a78bfa' }} />
+                <Crown size={18} style={{ color: '#7c3aed' }} />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">Upgrade to Premium</p>
-                <p className="text-xs text-slate-500">$1.99/month · Unlock all features</p>
+                <p className="text-sm font-bold" style={{ color: '#111827' }}>Upgrade to Premium</p>
+                <p className="text-xs" style={{ color: '#7c3aed' }}>$1.99/month · Unlock all features</p>
               </div>
             </div>
-            <Sparkles size={16} style={{ color: '#a78bfa' }} />
+            <Sparkles size={16} style={{ color: '#8b5cf6' }} />
           </div>
         </button>
       )}
@@ -101,7 +101,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
       {/* Feature sections */}
       {SECTIONS.map(section => (
         <div key={section.title}>
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
             {section.title}
           </p>
           <div className="grid grid-cols-2 gap-2.5">
@@ -119,7 +119,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
 
       {/* Settings row */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
           Account
         </p>
         <button
@@ -127,12 +127,12 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
           className="card-dark w-full rounded-2xl flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all text-left"
         >
           <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(100,116,139,0.12)', border: '1px solid rgba(100,116,139,0.2)' }}>
+            style={{ background: 'rgba(100,116,139,0.09)', border: '1px solid rgba(100,116,139,0.15)' }}>
             <Settings2 size={16} style={{ color: '#64748b' }} />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-200">Settings</p>
-            <p className="text-xs text-slate-500">Account, preferences, security</p>
+            <p className="text-sm font-semibold" style={{ color: '#111827' }}>Settings</p>
+            <p className="text-xs" style={{ color: '#9ca3af' }}>Account, preferences, security</p>
           </div>
         </button>
       </div>
@@ -153,29 +153,29 @@ const FeatureCardButton: React.FC<{
     <button
       onClick={onClick}
       className="card-dark rounded-2xl p-3.5 text-left cursor-pointer transition-all flex flex-col gap-2.5"
-      style={locked ? { opacity: 0.85 } : undefined}
+      style={locked ? { opacity: 0.75 } : undefined}
     >
       <div className="flex items-start justify-between">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: card.iconBg }}
         >
-          <Icon size={17} style={{ color: locked ? '#475569' : card.iconColor }} />
+          <Icon size={17} style={{ color: locked ? '#c4c7d0' : card.iconColor }} />
         </div>
         {card.badge ? (
           <span
             className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
-            style={{ background: 'rgba(59,130,246,0.12)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' }}
+            style={{ background: 'rgba(59,130,246,0.09)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}
           >
             {card.badge}
           </span>
         ) : locked ? (
-          <Crown size={12} style={{ color: '#a78bfa' }} />
+          <Crown size={12} style={{ color: '#8b5cf6' }} />
         ) : null}
       </div>
       <div>
-        <p className="text-xs font-bold text-slate-200">{card.label}</p>
-        <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{card.desc}</p>
+        <p className="text-xs font-bold" style={{ color: locked ? '#9ca3af' : '#111827' }}>{card.label}</p>
+        <p className="text-[10px] mt-0.5 leading-tight" style={{ color: '#9ca3af' }}>{card.desc}</p>
       </div>
     </button>
   );

@@ -75,7 +75,7 @@ export const PremiumUpgradeScreen: React.FC<PremiumUpgradeScreenProps> = ({
 
       {/* Back */}
       <div className="px-4 pt-3 mb-2">
-        <button onClick={onGoBack} className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 cursor-pointer transition-colors">
+        <button onClick={onGoBack} className="flex items-center gap-1.5 text-sm cursor-pointer transition-colors" style={{ color: '#6b7280' }}>
           <ChevronLeft size={16} /> Back
         </button>
       </div>
@@ -110,15 +110,15 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
           <Crown size={13} style={{ color: '#a78bfa' }} />
           <span className="text-xs font-bold tracking-widest" style={{ color: '#c4b5fd' }}>MONEO PREMIUM</span>
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2" style={{ letterSpacing: '-0.02em' }}>
+        <h1 className="text-2xl font-bold mb-2" style={{ letterSpacing: '-0.02em', color: '#111827' }}>
           Unlock everything<br />in Moneo
         </h1>
-        <p className="text-sm text-slate-400 mb-4">Advanced tools, deeper insights, community leadership</p>
+        <p className="text-sm mb-4" style={{ color: '#6b7280' }}>Advanced tools, deeper insights, community leadership</p>
         <div className="flex items-baseline justify-center gap-1">
-          <span className="text-4xl font-bold text-white">$1.99</span>
-          <span className="text-slate-400 text-sm">/month</span>
+          <span className="text-4xl font-bold" style={{ color: '#111827' }}>$1.99</span>
+          <span className="text-sm" style={{ color: '#9ca3af' }}>/month</span>
         </div>
-        <p className="text-xs text-slate-600 mt-1">Cancel anytime · No commitment</p>
+        <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Cancel anytime · No commitment</p>
       </div>
 
       {/* CTA */}
@@ -136,13 +136,13 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
           : <><Crown size={16} /> Upgrade to Premium <ArrowRight size={15} /></>}
       </button>
 
-      <p className="text-center text-[11px] text-slate-600">
+      <p className="text-center text-[11px]" style={{ color: '#9ca3af' }}>
         Payment processing will be connected in a future update.
       </p>
 
       {/* Premium features */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
           What you unlock
         </p>
         <div className="space-y-2">
@@ -150,19 +150,19 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
             <div
               key={f.label}
               className="flex items-center gap-3 rounded-2xl px-4 py-3"
-              style={{ background: '#16161f', border: '1px solid #242434' }}
+              style={{ background: '#ffffff', border: '1px solid #ececf0', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: `${f.color}14` }}
+                style={{ background: `${f.color}12` }}
               >
                 <f.icon size={15} style={{ color: f.color }} />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-200">{f.label}</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">{f.desc}</p>
+                <p className="text-xs font-bold" style={{ color: '#111827' }}>{f.label}</p>
+                <p className="text-[11px] mt-0.5" style={{ color: '#9ca3af' }}>{f.desc}</p>
               </div>
-              <Sparkles size={12} className="ml-auto flex-shrink-0" style={{ color: '#a78bfa' }} />
+              <Sparkles size={12} className="ml-auto flex-shrink-0" style={{ color: '#8b5cf6' }} />
             </div>
           ))}
         </div>
@@ -170,14 +170,14 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
 
       {/* Free features */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
           Always free
         </p>
         <div className="card-dark rounded-2xl px-4 py-3 space-y-2">
           {FREE_FEATURES.map(f => (
             <div key={f} className="flex items-center gap-2.5">
-              <Check size={13} className="text-emerald-400 flex-shrink-0" />
-              <span className="text-xs text-slate-400">{f}</span>
+              <Check size={13} style={{ color: '#10b981' }} className="flex-shrink-0" />
+              <span className="text-xs" style={{ color: '#4b5563' }}>{f}</span>
             </div>
           ))}
         </div>
@@ -215,44 +215,44 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
       <div
         className="rounded-3xl p-5 text-center"
         style={{
-          background: 'linear-gradient(135deg,rgba(124,58,237,0.18),rgba(139,92,246,0.1))',
-          border: '1px solid rgba(139,92,246,0.35)',
-          boxShadow: '0 0 40px rgba(139,92,246,0.12)',
+          background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
+          border: '1px solid rgba(139,92,246,0.2)',
+          boxShadow: '0 4px 20px rgba(139,92,246,0.1)',
         }}
       >
         <div
           className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4"
-          style={{ background: 'rgba(139,92,246,0.2)' }}
+          style={{ background: 'rgba(139,92,246,0.15)' }}
         >
-          <Crown size={28} style={{ color: '#a78bfa' }} />
+          <Crown size={28} style={{ color: '#7c3aed' }} />
         </div>
         <div
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
-          style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}
+          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
         >
-          <div className="w-2 h-2 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 6px #34d399' }} />
-          <span className="text-xs font-bold text-emerald-400">Active</span>
+          <div className="w-2 h-2 rounded-full" style={{ background: '#10b981' }} />
+          <span className="text-xs font-bold" style={{ color: '#059669' }}>Active</span>
         </div>
-        <h1 className="text-2xl font-bold text-white mb-1">Moneo Premium</h1>
-        <p className="text-sm text-slate-400">All features unlocked</p>
-        {startDate && <p className="text-xs text-slate-600 mt-2">Member since {startDate}</p>}
+        <h1 className="text-2xl font-bold mb-1" style={{ color: '#111827' }}>Moneo Premium</h1>
+        <p className="text-sm" style={{ color: '#6b7280' }}>All features unlocked</p>
+        {startDate && <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>Member since {startDate}</p>}
       </div>
 
       {/* Billing info */}
       <div className="card-dark rounded-2xl overflow-hidden">
-        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e2c' }}>
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Subscription</p>
+        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #f4f5f9' }}>
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>Subscription</p>
         </div>
         {[
           { label: 'Plan', value: 'Moneo Premium' },
           { label: 'Price', value: '$1.99 / month' },
-          { label: 'Status', value: 'Active', valueColor: '#34d399' },
+          { label: 'Status', value: 'Active', valueColor: '#10b981' },
           { label: 'Started', value: startDate ?? '—' },
           { label: 'Billing', value: 'Payment processing coming soon', small: true },
         ].map(({ label, value, valueColor, small }) => (
-          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #1e1e2c' }}>
-            <span className="text-sm text-slate-400">{label}</span>
-            <span className={`${small ? 'text-[11px]' : 'text-sm'} font-semibold`} style={{ color: valueColor ?? '#e2e8f0' }}>
+          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #f4f5f9' }}>
+            <span className="text-sm" style={{ color: '#6b7280' }}>{label}</span>
+            <span className={`${small ? 'text-[11px]' : 'text-sm'} font-semibold`} style={{ color: valueColor ?? '#111827' }}>
               {value}
             </span>
           </div>
@@ -261,15 +261,15 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
 
       {/* Feature list */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
           Your Premium features
         </p>
         <div className="card-dark rounded-2xl px-4 py-3 space-y-2.5">
           {PREMIUM_FEATURES.map(f => (
             <div key={f.label} className="flex items-center gap-3">
               <f.icon size={14} style={{ color: f.color }} className="flex-shrink-0" />
-              <span className="text-xs text-slate-300 font-medium">{f.label}</span>
-              <Check size={12} className="ml-auto text-emerald-400 flex-shrink-0" />
+              <span className="text-xs font-medium" style={{ color: '#374151' }}>{f.label}</span>
+              <Check size={12} className="ml-auto flex-shrink-0" style={{ color: '#10b981' }} />
             </div>
           ))}
         </div>
@@ -279,34 +279,34 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
       {!showCancel ? (
         <button
           onClick={onShowCancel}
-          className="w-full py-3 rounded-2xl text-sm text-slate-500 cursor-pointer transition-colors hover:text-slate-400"
-          style={{ background: '#111118', border: '1px solid #242434' }}
+          className="w-full py-3 rounded-2xl text-sm cursor-pointer transition-colors"
+          style={{ background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#9ca3af' }}
         >
           Cancel subscription
         </button>
       ) : (
         <div
           className="rounded-2xl p-4 space-y-3"
-          style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.2)' }}
+          style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.18)' }}
         >
           <div className="flex items-start gap-2">
             <AlertCircle size={15} className="text-red-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-bold text-red-400 mb-1">Cancel your subscription?</p>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-sm font-bold text-red-500 mb-1">Cancel your subscription?</p>
+              <p className="text-xs leading-relaxed" style={{ color: '#6b7280' }}>
                 You'll keep Premium access until the end of your current billing period, then revert to Moneo Free. Your data is never deleted.
               </p>
             </div>
           </div>
           <div className="flex gap-2">
             <button onClick={onHideCancel}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-400 cursor-pointer"
-              style={{ background: '#16161f', border: '1px solid #242434' }}>
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold cursor-pointer"
+              style={{ background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#6b7280' }}>
               Keep Premium
             </button>
             <button onClick={onCancel} disabled={cancelling}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white cursor-pointer disabled:opacity-60"
-              style={{ background: '#dc2626' }}>
+              style={{ background: '#ef4444' }}>
               {cancelling ? '…' : 'Yes, Cancel'}
             </button>
           </div>

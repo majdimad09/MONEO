@@ -69,7 +69,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Recent transactions preview */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-slate-200 text-sm">Recent Transactions</h3>
+          <h3 className="font-bold text-slate-700 text-sm">Recent Transactions</h3>
           {transactions.length > 8 && (
             <button
               onClick={onNavigateTransactions}

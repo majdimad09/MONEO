@@ -58,16 +58,16 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   return (
     <div
       className="flex items-center justify-between px-4 flex-shrink-0"
-      style={{ height: 56, borderBottom: '1px solid #1e1e2c', background: '#0f0f14' }}
+      style={{ height: 56, borderBottom: '1px solid #f0f1f5', background: '#ffffff' }}
     >
       {/* Left: logo or back */}
       {backInfo ? (
         <button
           onClick={() => onNavigate(backInfo.dest)}
-          className="flex items-center gap-2 text-sm font-bold text-slate-300 cursor-pointer"
-          style={{ WebkitTapHighlightColor: 'transparent' }}
+          className="flex items-center gap-2 text-sm font-bold cursor-pointer"
+          style={{ color: '#374151', WebkitTapHighlightColor: 'transparent' }}
         >
-          <ArrowLeft size={18} className="text-blue-400" />
+          <ArrowLeft size={18} style={{ color: '#6366f1' }} />
           <span>{backInfo.label}</span>
         </button>
       ) : (
@@ -82,14 +82,16 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             <button
               onClick={onExportCSV}
               title="Export CSV"
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg transition-colors cursor-pointer"
+              style={{ color: '#9ca3af' }}
             >
               <Download size={15} />
             </button>
             <div className="relative">
               <button
                 onClick={() => setShowClear(true)}
-                className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg transition-colors cursor-pointer"
+                style={{ color: '#9ca3af' }}
               >
                 <RotateCcw size={15} />
               </button>
@@ -97,14 +99,14 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowClear(false)} />
                   <div className="absolute right-0 mt-2 w-64 rounded-2xl p-4 z-50"
-                    style={{ background: '#16161f', border: '1px solid #2d2d3e', boxShadow: '0 20px 60px rgba(0,0,0,0.8)' }}>
-                    <p className="text-sm font-bold text-slate-100 mb-1">Reset all data?</p>
-                    <p className="text-xs text-slate-500 mb-3 leading-relaxed">This will erase all your transactions.</p>
+                    style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+                    <p className="text-sm font-bold mb-1" style={{ color: '#111827' }}>Reset all data?</p>
+                    <p className="text-xs mb-3 leading-relaxed" style={{ color: '#6b7280' }}>This will erase all your transactions.</p>
                     <div className="flex gap-2 justify-end">
                       <button onClick={() => setShowClear(false)}
-                        className="px-3 py-1.5 text-xs font-medium text-slate-400 rounded-lg cursor-pointer">Cancel</button>
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: '#6b7280' }}>Cancel</button>
                       <button onClick={() => { onClearAllData(); setShowClear(false); }}
-                        className="px-3 py-1.5 text-xs font-bold text-white bg-red-600 rounded-lg cursor-pointer">Reset</button>
+                        className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg cursor-pointer">Reset</button>
                     </div>
                   </div>
                 </>
@@ -118,31 +120,31 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           <button
             onClick={() => setShowCurrency(!showCurrency)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer"
-            style={{ background: '#16161f', border: '1px solid #242434', color: '#a5b4fc' }}
+            style={{ background: '#f4f5f9', border: '1px solid #e5e7eb', color: '#6366f1' }}
           >
-            <span className="font-mono" style={{ color: '#a5b4fc' }}>{selected.symbol}</span>
-            <span className="hidden sm:inline" style={{ color: '#9090a8' }}>{selected.code}</span>
-            <ChevronDown size={11} className={`text-slate-500 transition-transform ${showCurrency ? 'rotate-180' : ''}`} />
+            <span className="font-mono" style={{ color: '#6366f1' }}>{selected.symbol}</span>
+            <span className="hidden sm:inline" style={{ color: '#6b7280' }}>{selected.code}</span>
+            <ChevronDown size={11} className={`transition-transform ${showCurrency ? 'rotate-180' : ''}`} style={{ color: '#9ca3af' }} />
           </button>
 
           {showCurrency && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowCurrency(false)} />
               <div className="absolute right-0 mt-2 w-60 rounded-2xl z-50 overflow-hidden"
-                style={{ background: '#16161f', border: '1px solid #2d2d3e', boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 24px rgba(99,102,241,0.1)' }}>
-                <div className="p-2" style={{ borderBottom: '1px solid #242434' }}>
+                style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 16px 48px rgba(0,0,0,0.12)' }}>
+                <div className="p-2" style={{ borderBottom: '1px solid #f0f1f5' }}>
                   <div className="relative">
-                    <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#505068' }} />
+                    <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#9ca3af' }} />
                     <input
                       ref={searchRef}
                       value={search}
                       onChange={e => setSearch(e.target.value)}
                       placeholder="Search currency..."
                       className="w-full pl-7 pr-6 py-1.5 text-xs rounded-lg"
-                      style={{ background: '#111118', border: '1px solid #242434', color: '#f0f0f8' }}
+                      style={{ background: '#f4f5f9', border: '1px solid #e5e7eb', color: '#111827' }}
                     />
                     {search && (
-                      <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500">
+                      <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
                         <X size={11} />
                       </button>
                     )}
@@ -153,17 +155,16 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                     <button
                       key={c.code}
                       onClick={() => { onCurrencyChange(c.code); setShowCurrency(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs transition-colors cursor-pointer ${
-                        c.code === currentCurrency ? 'font-semibold' : 'hover:text-slate-200'
-                      }`}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs cursor-pointer"
                       style={{
-                        color: c.code === currentCurrency ? '#a5b4fc' : '#9090a8',
-                        background: c.code === currentCurrency ? 'rgba(99,102,241,0.12)' : undefined,
+                        color: c.code === currentCurrency ? '#6366f1' : '#4b5563',
+                        background: c.code === currentCurrency ? 'rgba(99,102,241,0.07)' : undefined,
+                        fontWeight: c.code === currentCurrency ? 700 : 400,
                       }}
                     >
-                      <span className="w-6 font-mono font-bold text-xs flex-shrink-0" style={{ color: '#818cf8' }}>{c.symbol}</span>
+                      <span className="w-6 font-mono font-bold text-xs flex-shrink-0" style={{ color: '#6366f1' }}>{c.symbol}</span>
                       <span className="flex-1 truncate">{c.name}</span>
-                      <span className="font-mono" style={{ color: '#505068' }}>{c.code}</span>
+                      <span className="font-mono" style={{ color: '#9ca3af' }}>{c.code}</span>
                     </button>
                   ))}
                 </div>

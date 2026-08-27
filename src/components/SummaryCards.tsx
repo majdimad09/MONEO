@@ -43,7 +43,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
           <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
             Total Income
           </p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight break-all">
+          <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight break-all">
             {formatCurrency(totalIncome, currency)}
           </h3>
         </div>
@@ -61,7 +61,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
           <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
             Total Spent
           </p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight break-all">
+          <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight break-all">
             {formatCurrency(totalExpenses, currency)}
           </h3>
         </div>
@@ -107,7 +107,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
           </p>
           {biggestCategory && biggestCategory.total > 0 ? (
             <div>
-              <h3 className="text-2xl font-bold text-slate-100 truncate">
+              <h3 className="text-2xl font-bold text-slate-800 truncate">
                 {biggestCategory.category}
               </h3>
               <span className="text-slate-400 text-base font-medium">
