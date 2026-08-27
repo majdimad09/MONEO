@@ -43,7 +43,7 @@ function getYearLabel(offset: number): string {
 }
 
 export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions, currency }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [monthIdx, setMonthIdx] = useState(0);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -283,8 +283,16 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                 <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
                   diff > 0 ? 'text-red-400' : diff < 0 ? 'text-green-400' : 'text-slate-400'
                 }`} style={{
-                  background: diff > 0 ? 'rgba(239,68,68,0.08)' : diff < 0 ? 'rgba(16,185,129,0.08)' : 'rgba(100,116,139,0.08)',
-                  border: diff > 0 ? '1px solid rgba(239,68,68,0.2)' : diff < 0 ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(100,116,139,0.2)',
+                  background: diff > 0
+                    ? (isDark ? 'rgba(239,68,68,0.18)'     : 'rgba(239,68,68,0.08)')
+                    : diff < 0
+                    ? (isDark ? 'rgba(16,185,129,0.16)'    : 'rgba(16,185,129,0.08)')
+                    : (isDark ? 'rgba(100,116,139,0.18)'   : 'rgba(100,116,139,0.08)'),
+                  border: diff > 0
+                    ? (isDark ? '1px solid rgba(239,68,68,0.32)'     : '1px solid rgba(239,68,68,0.2)')
+                    : diff < 0
+                    ? (isDark ? '1px solid rgba(16,185,129,0.3)'     : '1px solid rgba(16,185,129,0.2)')
+                    : (isDark ? '1px solid rgba(100,116,139,0.32)'   : '1px solid rgba(100,116,139,0.2)'),
                 }}>
                   {diff > 0 ? <TrendingUp size={12} /> : diff < 0 ? <TrendingDown size={12} /> : <Minus size={12} />}
                   <span>{diff === 0 ? `Same as ${prevLabel}` : `${diff > 0 ? '+' : ''}${formatCurrency(Math.abs(diff), currency)} vs ${prevLabel}`}</span>
@@ -402,7 +410,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
           <div className="space-y-2.5">
             {alerts.map((alert, i) => (
               <div key={i} className="rounded-2xl p-4 flex items-start gap-3"
-                style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)' }}>
+                style={{ background: isDark ? 'rgba(234,179,8,0.16)' : 'rgba(234,179,8,0.06)', border: isDark ? '1px solid rgba(234,179,8,0.32)' : '1px solid rgba(234,179,8,0.2)' }}>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.25)' }}>
                   <AlertTriangle size={14} className="text-yellow-400" />

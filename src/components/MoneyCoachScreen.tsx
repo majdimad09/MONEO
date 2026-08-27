@@ -26,12 +26,14 @@ const ICON_MAP: Record<InsightIcon, React.ElementType> = {
   'info': Info, 'sparkle': Sparkles, 'calendar': CalendarDays, 'piggy': PiggyBank,
   'fire': Flame, 'zap': Zap,
 };
-const COLORS: Record<InsightType, { bg: string; border: string; icon: string; text: string }> = {
-  positive: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)',  icon: '#34d399', text: '#6ee7b7' },
-  warning:  { bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.2)',   icon: '#f87171', text: '#fca5a5' },
-  neutral:  { bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)', icon: '#60a5fa', text: '#93c5fd' },
-  info:     { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)',  icon: '#a78bfa', text: '#c4b5fd' },
-};
+function getColors(isDark: boolean): Record<InsightType, { bg: string; border: string; icon: string; text: string }> {
+  return {
+    positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.08)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.2)',   icon: '#34d399', text: '#6ee7b7' },
+    warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.07)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.2)',    icon: '#f87171', text: '#fca5a5' },
+    neutral:  { bg: isDark ? 'rgba(59,130,246,0.15)'  : 'rgba(59,130,246,0.07)',  border: isDark ? 'rgba(59,130,246,0.30)'  : 'rgba(59,130,246,0.18)',  icon: '#60a5fa', text: '#93c5fd' },
+    info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.2)',   icon: '#a78bfa', text: '#c4b5fd' },
+  };
+}
 
 function daysUntil(dateStr: string): number {
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -43,7 +45,8 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, recurringIncome, onNavigate,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
+  const COLORS = getColors(isDark);
   const insights = useMemo(
     () => generateInsights(transactions, currency, subscriptions),
     [transactions, currency, subscriptions],
@@ -112,7 +115,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
               <div
                 key={r.id}
                 className="rounded-2xl px-4 py-3 flex items-center gap-3"
-                style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+                style={{ background: isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.07)', border: isDark ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(16,185,129,0.2)' }}
               >
                 <DollarSign size={15} className="flex-shrink-0" style={{ color: '#34d399' }} />
                 <div className="flex-1">
@@ -128,7 +131,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
               <div
                 key={s.id}
                 className="rounded-2xl px-4 py-3 flex items-center gap-3"
-                style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}
+                style={{ background: isDark ? 'rgba(239,68,68,0.15)' : 'rgba(239,68,68,0.06)', border: isDark ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(239,68,68,0.18)' }}
               >
                 <CreditCard size={15} className="flex-shrink-0" style={{ color: '#f87171' }} />
                 <div className="flex-1">

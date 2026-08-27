@@ -28,7 +28,7 @@ const BLANK: Omit<RecurringIncome, 'id' | 'createdAt'> = {
 export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
   items, currency, onSave, onNavigate,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...BLANK, amount: '' as string | number });
@@ -104,7 +104,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
       {items.length > 0 && (
         <div
           className="rounded-2xl p-4 mb-5 flex items-center justify-between"
-          style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.07)', border: isDark ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(16,185,129,0.2)' }}
         >
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Expected Monthly</p>

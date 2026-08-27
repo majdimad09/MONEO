@@ -35,7 +35,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   monthlyBudget, categoryLimits, transactions, currency,
   onSaveBudget, onSaveLimits, onNavigateRecurring, onNavigateSavings,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const [editBudget, setEditBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? String(monthlyBudget) : '');
 
@@ -172,7 +172,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                 <p className="text-sm font-bold text-red-400">{formatCurrency(thisMonthExpenses, currency)}</p>
               </div>
               <div className="rounded-2xl p-3 text-center"
-                style={{ background: budgetRemaining < 0 ? 'rgba(239,68,68,0.08)' : colors.bgSecondary, border: `1px solid ${budgetRemaining < 0 ? 'rgba(239,68,68,0.2)' : colors.borderStrong}` }}>
+                style={{ background: budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)') : colors.bgSecondary, border: `1px solid ${budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.35)' : 'rgba(239,68,68,0.2)') : colors.borderStrong}` }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? 'Over' : 'Left'}</p>
                 <p className="text-sm font-bold" style={{ color: budgetRemaining < 0 ? '#ef4444' : '#34d399' }}>
                   {formatCurrency(Math.abs(budgetRemaining), currency)}
@@ -204,7 +204,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         ) : (
           <div
             className="rounded-2xl p-5 text-center"
-            style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.15)' }}
+            style={{ background: isDark ? 'rgba(59,130,246,0.14)' : 'rgba(59,130,246,0.05)', border: isDark ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(59,130,246,0.15)' }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
               style={{ background: 'rgba(59,130,246,0.12)' }}>

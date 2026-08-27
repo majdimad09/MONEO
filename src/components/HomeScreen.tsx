@@ -62,10 +62,10 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
 
 function getInsightColors(isDark: boolean) {
   return {
-    positive: { bg: 'rgba(16,185,129,0.07)',  border: 'rgba(16,185,129,0.18)', icon: '#10b981', text: isDark ? '#34d399' : '#065f46' },
-    warning:  { bg: 'rgba(239,68,68,0.06)',   border: 'rgba(239,68,68,0.16)', icon: '#ef4444', text: isDark ? '#f87171' : '#991b1b' },
-    neutral:  { bg: 'rgba(59,130,246,0.06)',  border: 'rgba(59,130,246,0.16)', icon: '#3b82f6', text: isDark ? '#93c5fd' : '#1e40af' },
-    info:     { bg: 'rgba(139,92,246,0.07)',  border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6', text: isDark ? '#c4b5fd' : '#5b21b6' },
+    positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.07)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.18)',  icon: '#10b981', text: isDark ? '#34d399' : '#065f46' },
+    warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.06)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.16)',   icon: '#ef4444', text: isDark ? '#f87171' : '#991b1b' },
+    neutral:  { bg: isDark ? 'rgba(59,130,246,0.15)'  : 'rgba(59,130,246,0.06)',  border: isDark ? 'rgba(59,130,246,0.30)'  : 'rgba(59,130,246,0.16)',  icon: '#3b82f6', text: isDark ? '#93c5fd' : '#1e40af' },
+    info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.07)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.18)',  icon: '#8b5cf6', text: isDark ? '#c4b5fd' : '#5b21b6' },
   };
 }
 
@@ -187,7 +187,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
               <p className="text-sm font-bold text-white">{formatCurrency(totalIncome, currency)}</p>
             </div>
-            <div className="rounded-2xl p-3" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.18)' }}>
+            <div className="rounded-2xl p-3" style={{ background: isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)', border: isDark ? '1px solid rgba(239,68,68,0.32)' : '1px solid rgba(239,68,68,0.18)' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <ArrowDownRight size={12} className="text-red-400" />
                 <span className="text-[10px] text-red-400 font-bold uppercase tracking-wide">Expenses</span>

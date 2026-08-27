@@ -28,7 +28,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
   onCommunitiesChange, onSelectCommunity, onNavigate,
   onCreateCommunity, onJoinByCode,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   // Join flow
   const [showJoin, setShowJoin]     = useState(false);
   const [joinCode, setJoinCode]     = useState('');
@@ -212,7 +212,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 <p className="text-xs text-slate-500 mb-4">Share this invite code with people you want to add.</p>
                 <div
                   className="flex items-center justify-center gap-3 rounded-2xl py-4 mb-3"
-                  style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}
+                  style={{ background: isDark ? 'rgba(139,92,246,0.18)' : 'rgba(139,92,246,0.08)', border: isDark ? '1px solid rgba(139,92,246,0.35)' : '1px solid rgba(139,92,246,0.2)' }}
                 >
                   <span className="text-2xl font-bold tracking-[0.25em]" style={{ color: '#a78bfa' }}>{createdCode}</span>
                   <button onClick={() => copyCode(createdCode)} className="cursor-pointer text-slate-500 hover:text-slate-600">
@@ -302,7 +302,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
         <button
           onClick={() => onNavigate('premium')}
           className="mt-4 w-full rounded-2xl p-3.5 flex items-center gap-3 cursor-pointer transition-all"
-          style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}
+          style={{ background: isDark ? 'rgba(139,92,246,0.16)' : 'rgba(139,92,246,0.07)', border: isDark ? '1px solid rgba(139,92,246,0.32)' : '1px solid rgba(139,92,246,0.2)' }}
         >
           <Crown size={16} style={{ color: '#a78bfa' }} />
           <div className="flex-1 text-left">
@@ -319,13 +319,13 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
 const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: () => void }> = ({ isPremium, onJoin, onCreate }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   return (
     <div className="space-y-4">
       {/* Hero */}
       <div
         className="rounded-3xl p-6 text-center"
-        style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.12)' }}
+        style={{ background: isDark ? 'rgba(59,130,246,0.14)' : 'rgba(59,130,246,0.05)', border: isDark ? '1px solid rgba(59,130,246,0.28)' : '1px solid rgba(59,130,246,0.12)' }}
       >
         <div
           className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4"

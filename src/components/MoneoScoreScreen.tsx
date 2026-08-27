@@ -100,7 +100,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <h2 className="text-xl font-bold text-slate-900 mb-2">Build Your Moneo Score</h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-6">
             Moneo Score is a personal money-management score that shows how well you're managing your finances.
-            It is <span className="text-slate-900 font-semibold">not a credit score</span> and has no effect on your credit or borrowing.
+            It is <span className="font-semibold" style={{ color: colors.textPrimary }}>not a credit score</span> and has no effect on your credit or borrowing.
           </p>
 
           <div className="space-y-3 text-left">
@@ -283,13 +283,13 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       {/* Score info footer */}
       <div className="px-4">
         <div className="rounded-2xl p-4"
-          style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.18)' }}>
+          style={{ background: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.07)', border: `1px solid ${isDark ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.18)'}` }}>
           <div className="flex items-start gap-3">
             <AlertCircle size={15} className="text-indigo-400 flex-shrink-0 mt-0.5" />
             <p className="text-[11px] text-slate-400 leading-relaxed">
               <span className="text-indigo-300 font-semibold">Moneo Score</span> is Moneo's own personal money-management score.
               It is calculated entirely from your Moneo data and is{' '}
-              <span className="text-slate-900 font-semibold">not a credit score</span> — it has no connection to lenders, credit bureaus, or your ability to borrow money.
+              <span className="font-semibold" style={{ color: colors.textPrimary }}>not a credit score</span> — it has no connection to lenders, credit bureaus, or your ability to borrow money.
             </p>
           </div>
         </div>

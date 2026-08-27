@@ -36,7 +36,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, isPremium, onNavigate, onUpgrade,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
   const [custom, setCustom] = useState('');
 
@@ -215,7 +215,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                       border: '1px solid rgba(99,102,241,0.25)',
                     }}
                   >
-                    <p className="text-sm font-medium" style={{ color: '#4338ca' }}>{q}</p>
+                    <p className="text-sm font-medium" style={{ color: isDark ? '#a5b4fc' : '#4338ca' }}>{q}</p>
                   </div>
                 </div>
                 {/* Moneo response */}

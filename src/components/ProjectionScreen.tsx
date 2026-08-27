@@ -63,7 +63,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
   }, [transactions, subscriptions]);
 
   const maxCumulative = Math.max(...projections.futureMonths.map(m => m.cumulative), 1);
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
 
   return (
     <div className="page-enter px-4 pt-3 pb-8">
@@ -179,7 +179,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
         {!projections.hasData && (
           <div
             className="rounded-2xl p-4 flex items-start gap-3"
-            style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.2)' }}
+            style={{ background: isDark ? 'rgba(99,102,241,0.16)' : 'rgba(99,102,241,0.06)', border: isDark ? '1px solid rgba(99,102,241,0.32)' : '1px solid rgba(99,102,241,0.2)' }}
           >
             <DollarSign size={15} style={{ color: '#818cf8' }} className="flex-shrink-0 mt-0.5" />
             <p className="text-sm leading-relaxed" style={{ color: '#a5b4fc' }}>

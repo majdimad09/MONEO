@@ -16,7 +16,7 @@ interface SafeToSpendProps {
 export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
   transactions, subscriptions, currency, monthlyBudget, onNavigate,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const result = useMemo(
     () => calculateSafeToSpend(transactions, subscriptions),
     [transactions, subscriptions],
@@ -179,7 +179,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
       {result.safeAmount <= 0 && (
         <div
           className="rounded-2xl p-4 flex items-start gap-3"
-          style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}
+          style={{ background: isDark ? 'rgba(239,68,68,0.16)' : 'rgba(239,68,68,0.06)', border: isDark ? '1px solid rgba(239,68,68,0.32)' : '1px solid rgba(239,68,68,0.2)' }}
         >
           <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#f87171' }} />
           <p className="text-sm leading-relaxed" style={{ color: '#fca5a5' }}>

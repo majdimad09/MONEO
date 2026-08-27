@@ -447,8 +447,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left cursor-pointer transition-colors"
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: isPremium ? 'rgba(139,92,246,0.15)' : 'rgba(100,116,139,0.1)', border: `1px solid ${isPremium ? 'rgba(139,92,246,0.3)' : '#e5e7eb'}` }}>
-              <Crown size={17} style={{ color: isPremium ? '#a78bfa' : '#64748b' }} />
+              style={{ background: isPremium ? 'rgba(139,92,246,0.15)' : 'rgba(100,116,139,0.1)', border: `1px solid ${isPremium ? 'rgba(139,92,246,0.3)' : colors.borderStrong}` }}>
+              <Crown size={17} style={{ color: isPremium ? '#a78bfa' : colors.textSecondary }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-slate-700">

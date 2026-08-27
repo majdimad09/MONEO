@@ -42,7 +42,7 @@ type Para = { text: string; tone: 'positive' | 'negative' | 'neutral' };
 export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
   transactions, currency, isPremium, onNavigate, onUpgrade,
 }) => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   const months = useMemo(() => availableMonths(transactions), [transactions]);
   const [idx, setIdx] = useState(0);
   const selected = months[idx] ?? mp();
@@ -190,8 +190,10 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
         <div
           className="rounded-3xl p-5 mb-5"
           style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.04))',
-            border: '1px solid rgba(99,102,241,0.2)',
+            background: isDark
+              ? 'linear-gradient(135deg, rgba(99,102,241,0.18), rgba(139,92,246,0.12))'
+              : 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.04))',
+            border: isDark ? '1px solid rgba(99,102,241,0.32)' : '1px solid rgba(99,102,241,0.2)',
           }}
         >
           <div className="flex items-center gap-2 mb-4">
@@ -267,11 +269,11 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
             className="mt-4 rounded-2xl px-4 py-3 flex items-center gap-3"
             style={{
               background: story.momChange > 0
-                ? 'rgba(248,113,113,0.06)'
-                : 'rgba(52,211,153,0.06)',
+                ? (isDark ? 'rgba(248,113,113,0.16)' : 'rgba(248,113,113,0.06)')
+                : (isDark ? 'rgba(52,211,153,0.14)'  : 'rgba(52,211,153,0.06)'),
               border: story.momChange > 0
-                ? '1px solid rgba(248,113,113,0.2)'
-                : '1px solid rgba(52,211,153,0.2)',
+                ? (isDark ? '1px solid rgba(248,113,113,0.32)' : '1px solid rgba(248,113,113,0.2)')
+                : (isDark ? '1px solid rgba(52,211,153,0.28)'  : '1px solid rgba(52,211,153,0.2)'),
             }}
           >
             {story.momChange > 0

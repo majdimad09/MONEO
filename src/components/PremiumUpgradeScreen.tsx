@@ -211,16 +211,18 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
   onHideCancel: () => void;
   onCancel: () => void;
 }) {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
   return (
     <div className="px-4 space-y-4">
       {/* Status card */}
       <div
         className="rounded-3xl p-5 text-center"
         style={{
-          background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
-          border: '1px solid rgba(139,92,246,0.2)',
-          boxShadow: '0 4px 20px rgba(139,92,246,0.1)',
+          background: isDark
+            ? 'linear-gradient(135deg, rgba(139,92,246,0.18), rgba(109,40,217,0.12))'
+            : 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
+          border: isDark ? '1px solid rgba(139,92,246,0.35)' : '1px solid rgba(139,92,246,0.2)',
+          boxShadow: isDark ? '0 4px 20px rgba(139,92,246,0.25)' : '0 4px 20px rgba(139,92,246,0.1)',
         }}
       >
         <div
@@ -231,10 +233,10 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
         </div>
         <div
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
-          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: isDark ? 'rgba(16,185,129,0.18)' : 'rgba(16,185,129,0.1)', border: isDark ? '1px solid rgba(16,185,129,0.35)' : '1px solid rgba(16,185,129,0.2)' }}
         >
           <div className="w-2 h-2 rounded-full" style={{ background: '#10b981' }} />
-          <span className="text-xs font-bold" style={{ color: '#059669' }}>Active</span>
+          <span className="text-xs font-bold" style={{ color: isDark ? '#34d399' : '#059669' }}>Active</span>
         </div>
         <h1 className="text-2xl font-bold mb-1" style={{ color: colors.textPrimary }}>Moneo Premium</h1>
         <p className="text-sm" style={{ color: colors.textSecondary }}>All features unlocked</p>
@@ -290,7 +292,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
       ) : (
         <div
           className="rounded-2xl p-4 space-y-3"
-          style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.18)' }}
+          style={{ background: isDark ? 'rgba(239,68,68,0.14)' : 'rgba(239,68,68,0.04)', border: isDark ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(239,68,68,0.18)' }}
         >
           <div className="flex items-start gap-2">
             <AlertCircle size={15} className="text-red-400 flex-shrink-0 mt-0.5" />

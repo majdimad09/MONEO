@@ -28,12 +28,14 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
   'info': Info, 'sparkle': Sparkles, 'calendar': CalendarDays, 'piggy': PiggyBank,
   'fire': Flame, 'zap': Zap,
 };
-const INSIGHT_COLORS: Record<InsightType, { bg: string; border: string; icon: string }> = {
-  positive: { bg: 'rgba(16,185,129,0.07)', border: 'rgba(16,185,129,0.18)', icon: '#10b981' },
-  warning:  { bg: 'rgba(239,68,68,0.06)',  border: 'rgba(239,68,68,0.16)',  icon: '#ef4444' },
-  neutral:  { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.16)', icon: '#3b82f6' },
-  info:     { bg: 'rgba(139,92,246,0.07)', border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6' },
-};
+function getInsightColors(isDark: boolean): Record<InsightType, { bg: string; border: string; icon: string }> {
+  return {
+    positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.07)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.18)',  icon: '#10b981' },
+    warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.06)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.16)',   icon: '#ef4444' },
+    neutral:  { bg: isDark ? 'rgba(59,130,246,0.15)'  : 'rgba(59,130,246,0.06)',  border: isDark ? 'rgba(59,130,246,0.30)'  : 'rgba(59,130,246,0.16)',  icon: '#3b82f6' },
+    info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.07)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.18)',  icon: '#8b5cf6' },
+  };
+}
 
 interface ToolLink {
   view: AppView;
@@ -84,7 +86,7 @@ const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView
         </div>
         <p className="text-xs mt-0.5 truncate" style={{ color: colors.textMuted }}>{desc}</p>
       </div>
-      <ChevronRight size={14} style={{ color: colors.border }} className="flex-shrink-0" />
+      <ChevronRight size={14} style={{ color: colors.textMuted }} className="flex-shrink-0" />
     </button>
   );
 };
@@ -102,7 +104,8 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
     [transactions, currency, subscriptions],
   );
 
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
+  const INSIGHT_COLORS = getInsightColors(isDark);
   const level = getScoreLevel(scoreResult.score);
   const r = scoreResult.score / 100;
   const circumference = 2 * Math.PI * 36;
@@ -147,7 +150,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
             <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{level.name}</p>
             <p className="text-xs mt-0.5 leading-tight" style={{ color: colors.textSecondary }}>{scoreResult.summary}</p>
           </div>
-          <ChevronRight size={16} style={{ color: '#d1d5db' }} className="flex-shrink-0" />
+          <ChevronRight size={16} style={{ color: colors.textSecondary }} className="flex-shrink-0" />
         </div>
       </button>
 
@@ -209,7 +212,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Statistics</p>
           <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>Charts, categories, monthly view</p>
         </div>
-        <ChevronRight size={15} style={{ color: colors.border }} />
+        <ChevronRight size={15} style={{ color: colors.textMuted }} />
       </button>
 
       {/* ── Quick tools grid ─────────────────────────────────── */}
