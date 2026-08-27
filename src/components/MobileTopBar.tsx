@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search, X, Download, RotateCcw, ArrowLeft } from 'lucide-react';
 import { LogoWordmark } from './Logo';
 import { SUPPORTED_CURRENCIES, AppView } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
 
 interface MobileTopBarProps {
   currentView: AppView;
@@ -19,6 +20,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   onLoadSampleData, onClearAllData, onExportCSV,
   transactionCount, onNavigate,
 }) => {
+  const { colors } = useTheme();
   const [showCurrency, setShowCurrency] = useState(false);
   const [showClear, setShowClear] = useState(false);
   const [search, setSearch] = useState('');
@@ -58,14 +60,14 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   return (
     <div
       className="flex items-center justify-between px-4 flex-shrink-0"
-      style={{ height: 56, borderBottom: '1px solid #f0f1f5', background: '#ffffff' }}
+      style={{ height: 56, borderBottom: `1px solid ${colors.topBarBorder}`, background: colors.topBarBg }}
     >
       {/* Left: logo or back */}
       {backInfo ? (
         <button
           onClick={() => onNavigate(backInfo.dest)}
           className="flex items-center gap-2 text-sm font-bold cursor-pointer"
-          style={{ color: '#374151', WebkitTapHighlightColor: 'transparent' }}
+          style={{ color: colors.textSecondary, WebkitTapHighlightColor: 'transparent' }}
         >
           <ArrowLeft size={18} style={{ color: '#6366f1' }} />
           <span>{backInfo.label}</span>
@@ -99,9 +101,9 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowClear(false)} />
                   <div className="absolute right-0 mt-2 w-64 rounded-2xl p-4 z-50"
-                    style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
-                    <p className="text-sm font-bold mb-1" style={{ color: '#111827' }}>Reset all data?</p>
-                    <p className="text-xs mb-3 leading-relaxed" style={{ color: '#6b7280' }}>This will erase all your transactions.</p>
+                    style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+                    <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>Reset all data?</p>
+                    <p className="text-xs mb-3 leading-relaxed" style={{ color: colors.textSecondary }}>This will erase all your transactions.</p>
                     <div className="flex gap-2 justify-end">
                       <button onClick={() => setShowClear(false)}
                         className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: '#6b7280' }}>Cancel</button>
@@ -120,7 +122,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           <button
             onClick={() => setShowCurrency(!showCurrency)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer"
-            style={{ background: '#f4f5f9', border: '1px solid #e5e7eb', color: '#6366f1' }}
+            style={{ background: colors.inputBg, border: `1px solid ${colors.borderStrong}`, color: '#6366f1' }}
           >
             <span className="font-mono" style={{ color: '#6366f1' }}>{selected.symbol}</span>
             <span className="hidden sm:inline" style={{ color: '#6b7280' }}>{selected.code}</span>
@@ -131,8 +133,8 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowCurrency(false)} />
               <div className="absolute right-0 mt-2 w-60 rounded-2xl z-50 overflow-hidden"
-                style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 16px 48px rgba(0,0,0,0.12)' }}>
-                <div className="p-2" style={{ borderBottom: '1px solid #f0f1f5' }}>
+                style={{ background: colors.dropdownBg, border: `1px solid ${colors.borderStrong}`, boxShadow: '0 16px 48px rgba(0,0,0,0.25)' }}>
+                <div className="p-2" style={{ borderBottom: `1px solid ${colors.border}` }}>
                   <div className="relative">
                     <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#9ca3af' }} />
                     <input
@@ -141,7 +143,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                       onChange={e => setSearch(e.target.value)}
                       placeholder="Search currency..."
                       className="w-full pl-7 pr-6 py-1.5 text-xs rounded-lg"
-                      style={{ background: '#f4f5f9', border: '1px solid #e5e7eb', color: '#111827' }}
+                      style={{ background: colors.inputBg, border: `1px solid ${colors.border}`, color: colors.textPrimary }}
                     />
                     {search && (
                       <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
@@ -157,7 +159,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                       onClick={() => { onCurrencyChange(c.code); setShowCurrency(false); }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs cursor-pointer"
                       style={{
-                        color: c.code === currentCurrency ? '#6366f1' : '#4b5563',
+                        color: c.code === currentCurrency ? '#6366f1' : colors.textSecondary,
                         background: c.code === currentCurrency ? 'rgba(99,102,241,0.07)' : undefined,
                         fontWeight: c.code === currentCurrency ? 700 : 400,
                       }}

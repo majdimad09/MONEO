@@ -5,6 +5,7 @@ import {
   BarChart2, ShieldCheck, Zap, Flame, PiggyBank, CalendarDays,
   Info, Plus,
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome } from '../types/finance';
 import { monthlyEquivalent } from '../utils/recurringUtils';
 import { formatCurrency, formatDate } from '../utils/formatters';
@@ -59,12 +60,14 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
   'zap': Zap,
 };
 
-const INSIGHT_COLORS: Record<string, { bg: string; border: string; icon: string; text: string }> = {
-  positive: { bg: 'rgba(16,185,129,0.07)', border: 'rgba(16,185,129,0.18)', icon: '#10b981', text: '#065f46' },
-  warning:  { bg: 'rgba(239,68,68,0.06)',  border: 'rgba(239,68,68,0.16)',  icon: '#ef4444', text: '#991b1b' },
-  neutral:  { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.16)', icon: '#3b82f6', text: '#1e40af' },
-  info:     { bg: 'rgba(139,92,246,0.07)', border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6', text: '#5b21b6' },
-};
+function getInsightColors(isDark: boolean) {
+  return {
+    positive: { bg: 'rgba(16,185,129,0.07)',  border: 'rgba(16,185,129,0.18)', icon: '#10b981', text: isDark ? '#34d399' : '#065f46' },
+    warning:  { bg: 'rgba(239,68,68,0.06)',   border: 'rgba(239,68,68,0.16)', icon: '#ef4444', text: isDark ? '#f87171' : '#991b1b' },
+    neutral:  { bg: 'rgba(59,130,246,0.06)',  border: 'rgba(59,130,246,0.16)', icon: '#3b82f6', text: isDark ? '#93c5fd' : '#1e40af' },
+    info:     { bg: 'rgba(139,92,246,0.07)',  border: 'rgba(139,92,246,0.18)', icon: '#8b5cf6', text: isDark ? '#c4b5fd' : '#5b21b6' },
+  };
+}
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
@@ -72,6 +75,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onViewAllTransactions, onEdit, onLoadSample,
   onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
 }) => {
+  const { isDark, toggleTheme, colors } = useTheme();
+  const INSIGHT_COLORS = getInsightColors(isDark);
   const [balanceExpanded, setBalanceExpanded] = useState(false);
   const prefix = getCurrentMonthPrefix();
   const greeting = getGreeting(userName || undefined);
@@ -117,9 +122,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── GREETING ─────────────────────────────────── */}
       <div className="px-4 pt-4 flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>{monthLabel}</p>
-          <p className="text-lg font-bold mt-0.5" style={{ color: '#111827' }}>{greeting}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: colors.textMuted }}>{monthLabel}</p>
+          <p className="text-lg font-bold mt-0.5" style={{ color: colors.textPrimary }}>{greeting}</p>
         </div>
+        {/* ── THEME TOGGLE ── */}
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="flex items-center rounded-full p-0.5 transition-all cursor-pointer"
+          style={{ background: colors.bgHover, border: `1px solid ${colors.border}` }}
+        >
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: !isDark ? colors.bgCard : 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 15, transition: 'all 0.2s ease',
+            boxShadow: !isDark ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
+          }}>☀️</div>
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: isDark ? colors.border : 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 15, transition: 'all 0.2s ease',
+            boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
+          }}>🌙</div>
+        </button>
       </div>
 
       {/* ── BALANCE CARD ─────────────────────────────── */}
@@ -262,7 +289,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
               <Sparkles size={14} style={{ color: '#6366f1' }} />
-              <h3 className="text-sm font-bold" style={{ color: '#111827' }}>Moneo Insights</h3>
+              <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>Moneo Insights</h3>
             </div>
             <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>Based on your data</span>
           </div>
@@ -302,8 +329,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <TrendingUp size={28} className="text-blue-400" />
             </div>
-            <p className="font-bold text-base mb-2" style={{ color: '#111827' }}>No transactions yet</p>
-            <p className="text-sm leading-relaxed mb-5" style={{ color: '#6b7280' }}>
+            <p className="font-bold text-base mb-2" style={{ color: colors.textPrimary }}>No transactions yet</p>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: colors.textSecondary }}>
               Add your first transaction and Moneo will start building your financial picture.
             </p>
             <button onClick={onAddExpense} className="btn-blue px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2">
@@ -317,7 +344,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {!isEmpty && (
         <div className="px-4 card-float-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold" style={{ color: '#111827' }}>Recent Transactions</h3>
+            <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>Recent Transactions</h3>
             <button onClick={onViewAllTransactions} className="flex items-center gap-0.5 text-xs font-semibold cursor-pointer" style={{ color: '#6366f1' }}>
               See all <ChevronRight size={14} />
             </button>
@@ -330,7 +357,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <div
                   key={tx.id}
                   className="tx-row"
-                  style={{ borderBottom: i < recentTx.length - 1 ? '1px solid #f4f5f9' : 'none' }}
+                  style={{ borderBottom: i < recentTx.length - 1 ? `1px solid ${colors.divider}` : 'none' }}
                   onClick={() => onEdit(tx)}
                 >
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
@@ -338,7 +365,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     <CategoryIcon category={tx.category} type={tx.type} size={16} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold truncate" style={{ color: '#111827' }}>{tx.description}</p>
+                    <p className="text-[13px] font-semibold truncate" style={{ color: colors.textPrimary }}>{tx.description}</p>
                     <p className="text-[11px] text-slate-500 mt-0.5">{formatDate(tx.date)} · {tx.category}</p>
                   </div>
                   <span className={`font-bold font-mono text-sm flex-shrink-0 ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
@@ -354,7 +381,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── BUDGET CATEGORIES ────────────────────────── */}
       {categoryLimits.length > 0 && !isEmpty && (
         <div className="px-4 card-float-6">
-          <h3 className="text-sm font-bold mb-3" style={{ color: '#111827' }}>Category Budgets</h3>
+          <h3 className="text-sm font-bold mb-3" style={{ color: colors.textPrimary }}>Category Budgets</h3>
           <div className="space-y-2.5">
             {categoryLimits.slice(0, 5).map(limit => {
               const spent = categorySpend[limit.category] || 0;
@@ -368,10 +395,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${color}18`, color }}>
                         <CategoryIcon category={limit.category} type="expense" size={15} />
                       </div>
-                      <span className="text-sm font-semibold" style={{ color: '#111827' }}>{limit.category}</span>
+                      <span className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{limit.category}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold" style={{ color: pct >= 100 ? '#ef4444' : '#111827' }}>
+                      <p className="text-sm font-bold" style={{ color: pct >= 100 ? '#ef4444' : colors.textPrimary }}>
                         {formatCurrency(spent, currency)}
                       </p>
                       <p className="text-[10px] text-slate-500">/ {formatCurrency(limit.limit, currency)}</p>
