@@ -116,7 +116,7 @@ export function AuthScreen({
   };
 
   const inputBase =
-    'w-full bg-[#0d1526] border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all';
+    'w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all';
 
   const subtitle: Record<AuthMode, string> = {
     signin: t('welcomeBack'),
@@ -135,12 +135,13 @@ export function AuthScreen({
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 relative"
-      style={{ background: 'radial-gradient(ellipse at top, #0d1e3f 0%, #060b18 60%)' }}
+      style={{ background: 'linear-gradient(145deg, #e8eaf6 0%, #f4f5f9 40%, #e8f5e9 100%)' }}
     >
       {onGoBack && !isRecoveryMode && (
         <button
           onClick={onGoBack}
-          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
+          style={{ color: '#6b7280' }}
         >
           <ChevronLeft size={16} />
           Back
@@ -148,22 +149,22 @@ export function AuthScreen({
       )}
       <div
         className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
-        style={{ background: '#0d1526', border: '1px solid rgba(255,255,255,0.07)' }}
+        style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)' }}
       >
         {/* Logo */}
         <div className="flex flex-col items-center gap-2 pt-2">
           <LogoWordmark iconSize={36} textSize="md" />
-          <p className="text-xs text-slate-500 mt-1">{subtitle[mode]}</p>
+          <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{subtitle[mode]}</p>
         </div>
 
         {/* Success / Error */}
         {successMsg && (
-          <div className="rounded-xl px-4 py-3 text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
+          <div className="rounded-xl px-4 py-3 text-xs" style={{ color: '#065f46', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
             {successMsg}
           </div>
         )}
         {error && (
-          <div className="rounded-xl px-4 py-3 text-xs text-red-300 bg-red-500/10 border border-red-500/20">
+          <div className="rounded-xl px-4 py-3 text-xs" style={{ color: '#991b1b', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
             {error}
           </div>
         )}
@@ -242,7 +243,7 @@ export function AuthScreen({
                       onChange={e => setSignupStatus(e.target.value)}
                       className={inputBase + ' appearance-none'}
                       style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'right 10px center',
                         backgroundSize: '16px',
@@ -266,14 +267,10 @@ export function AuthScreen({
                           type="button"
                           onClick={() => { setSignupLang(l.code); setLanguage(l.code); }}
                           disabled={loading}
-                          className={`py-2 px-1 rounded-xl text-[11px] font-semibold text-center transition-all cursor-pointer ${
-                            signupLang === l.code
-                              ? 'text-blue-300'
-                              : 'text-slate-500 hover:text-slate-600'
-                          }`}
+                          className="py-2 px-1 rounded-xl text-[11px] font-semibold text-center transition-all cursor-pointer"
                           style={signupLang === l.code
-                            ? { background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.35)' }
-                            : { background: '#0a1424', border: '1px solid #1e2d4a' }
+                            ? { background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.3)', color: '#6366f1' }
+                            : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#6b7280' }
                           }
                         >
                           {l.nativeName}
@@ -338,7 +335,8 @@ export function AuthScreen({
               {/* Forgot link */}
               {mode === 'signin' && (
                 <button type="button"
-                  className="text-xs text-blue-400 hover:text-blue-300 self-end -mt-1 transition-colors"
+                  className="text-xs self-end -mt-1 transition-colors cursor-pointer"
+                  style={{ color: '#6366f1' }}
                   onClick={() => reset('forgot')}>
                   {t('forgotPassword')}
                 </button>
@@ -350,10 +348,10 @@ export function AuthScreen({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-semibold text-slate-900 transition-all flex items-center justify-center gap-2 mt-1"
+            className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer disabled:opacity-60"
             style={{
-              background: loading ? 'rgba(59,130,246,0.5)' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-              boxShadow: loading ? 'none' : '0 4px 20px rgba(59,130,246,0.3)',
+              background: loading ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              boxShadow: loading ? 'none' : '0 4px 20px rgba(99,102,241,0.35)',
             }}
           >
             {loading && <Loader2 size={15} className="animate-spin" />}
@@ -369,16 +367,18 @@ export function AuthScreen({
           <div className="flex flex-col items-center gap-3">
             {mode === 'forgot' ? (
               <button
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 transition-colors"
+                className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
+                style={{ color: '#6b7280' }}
                 onClick={() => reset('signin')}
               >
                 <ArrowLeft size={13} /> {t('backToSignIn')}
               </button>
             ) : (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs" style={{ color: '#9ca3af' }}>
                 {mode === 'signin' ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
                 <button
-                  className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                  className="font-semibold transition-colors cursor-pointer"
+                  style={{ color: '#6366f1' }}
                   onClick={() => reset(mode === 'signin' ? 'signup' : 'signin')}
                 >
                   {mode === 'signin' ? t('signUpLink') : t('signInLink')}
