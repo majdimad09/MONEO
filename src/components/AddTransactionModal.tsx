@@ -2,6 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { AddTransactionForm } from './AddTransactionForm';
 import { TransactionType } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface AddTransactionModalProps {
 export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   isOpen, onClose, onAddTransaction, currency, defaultType,
 }) => {
+  const { colors } = useTheme();
   if (!isOpen) return null;
 
   const handleAdd = (data: {
@@ -40,7 +42,7 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-600 transition-colors cursor-pointer"
-            style={{ background: '#ffffff' }}
+            style={{ background: colors.bgCard }}
           >
             <X size={16} />
           </button>

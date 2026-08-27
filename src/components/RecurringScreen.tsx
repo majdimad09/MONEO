@@ -6,6 +6,7 @@ import {
 import { Subscription, SubscriptionFrequency, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { getCategoryColor } from './CategoryIcon';
+import { useTheme } from '../context/ThemeContext';
 
 interface RecurringScreenProps {
   subscriptions: Subscription[];
@@ -42,6 +43,7 @@ const emptyForm = {
 export const RecurringScreen: React.FC<RecurringScreenProps> = ({
   subscriptions, currency, onSaveSubscriptions,
 }) => {
+  const { colors } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -210,7 +212,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                     className="px-2 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all truncate"
                     style={form.category === c.name
                       ? { background: `${color}20`, border: `1px solid ${color}50`, color }
-                      : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#475569' }}
+                      : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                   >
                     {c.name}
                   </button>
@@ -243,7 +245,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
             </button>
             <button onClick={cancel}
               className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-              style={{ background: '#ffffff' }}>
+              style={{ background: colors.bgCard }}>
               Cancel
             </button>
           </div>
@@ -297,7 +299,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <DollarSign size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Amount</p>
@@ -305,14 +307,14 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                       <p className="text-xs font-bold text-slate-700">{formatCurrency(sub.amount, currency)}</p>
                       <p className="text-[10px] text-slate-600 capitalize">{sub.frequency}</p>
                     </div>
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <RefreshCw size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Monthly</p>
                       </div>
                       <p className="text-xs font-bold text-red-400">{formatCurrency(monthly, currency)}</p>
                     </div>
-                    <div className="rounded-xl p-2.5 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                    <div className="rounded-xl p-2.5 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                       <div className="flex items-center justify-center gap-1 mb-0.5">
                         <Calendar size={10} className="text-slate-600" />
                         <p className="text-[10px] text-slate-500 font-bold uppercase">Next</p>
@@ -330,7 +332,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                       </button>
                       <button onClick={() => setShowDeleteId(null)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#ffffff' }}>
+                        style={{ background: colors.bgCard }}>
                         Cancel
                       </button>
                     </div>
@@ -338,7 +340,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
                     <div className="flex gap-2">
                       <button onClick={() => handleEdit(sub)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 flex items-center justify-center gap-1.5 cursor-pointer"
-                        style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                        style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                         <Edit2 size={12} /> Edit
                       </button>
                       <button onClick={() => setShowDeleteId(sub.id)}

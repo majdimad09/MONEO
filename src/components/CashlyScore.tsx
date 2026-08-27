@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { ScoreResult, getScoreLevel } from '../utils/insights';
+import { useTheme } from '../context/ThemeContext';
 
 interface CashlyScoreProps {
   result: ScoreResult;
@@ -8,6 +9,7 @@ interface CashlyScoreProps {
 }
 
 export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails }) => {
+  const { colors } = useTheme();
   const r = 46;
   const stroke = 8;
   const svgSize = (r + stroke) * 2;
@@ -83,7 +85,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
                     <span className="text-[11px] text-slate-500">{f.label}</span>
                     <span className="text-[11px] font-semibold font-mono" style={{ color: f.color }}>{f.points}/{f.maxPoints}</span>
                   </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#f7f8fc' }}>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
                     <div className="h-full rounded-full"
                       style={{ width: `${pct}%`, background: f.color, boxShadow: `0 0 4px ${f.color}50` }} />
                   </div>
@@ -93,7 +95,7 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
           </div>
 
           {onViewDetails && (
-            <div className="mt-4 pt-3" style={{ borderTop: '1px solid #e5e7eb' }}>
+            <div className="mt-4 pt-3" style={{ borderTop: `1px solid ${colors.borderStrong}` }}>
               <p className="text-[11px] text-center text-slate-600">
                 Tap to see full Moneo Score report →
               </p>

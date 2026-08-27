@@ -10,6 +10,7 @@ import {
   calculateCashlyScore, generateInsights, getScoreLevel,
   InsightIcon, InsightType,
 } from '../utils/insights';
+import { useTheme } from '../context/ThemeContext';
 
 interface InsightsHubProps {
   transactions: Transaction[];
@@ -65,6 +66,7 @@ const PremiumBadge = () => (
 const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView) => void }> = ({
   view, icon: Icon, color, label, desc, premium, isPremium, onNavigate,
 }) => {
+  const { colors } = useTheme();
   const locked = premium && !isPremium;
   return (
     <button
@@ -73,16 +75,16 @@ const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: `${color}14` }}>
-        <Icon size={16} style={{ color: locked ? '#d1d5db' : color }} />
+        <Icon size={16} style={{ color: locked ? colors.textMuted : color }} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-bold truncate" style={{ color: locked ? '#9ca3af' : '#111827' }}>{label}</p>
+          <p className="text-sm font-bold truncate" style={{ color: locked ? colors.textMuted : colors.textPrimary }}>{label}</p>
           {locked && <PremiumBadge />}
         </div>
-        <p className="text-xs mt-0.5 truncate" style={{ color: '#9ca3af' }}>{desc}</p>
+        <p className="text-xs mt-0.5 truncate" style={{ color: colors.textMuted }}>{desc}</p>
       </div>
-      <ChevronRight size={14} style={{ color: '#d1d5db' }} className="flex-shrink-0" />
+      <ChevronRight size={14} style={{ color: colors.border }} className="flex-shrink-0" />
     </button>
   );
 };
@@ -100,6 +102,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
     [transactions, currency, subscriptions],
   );
 
+  const { colors } = useTheme();
   const level = getScoreLevel(scoreResult.score);
   const r = scoreResult.score / 100;
   const circumference = 2 * Math.PI * 36;
@@ -107,7 +110,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
-      <h1 className="text-xl font-bold pt-1" style={{ color: '#111827' }}>Insights</h1>
+      <h1 className="text-xl font-bold pt-1" style={{ color: colors.textPrimary }}>Insights</h1>
 
       {/* ── Moneo Score Card ─────────────────────────────────── */}
       <button
@@ -118,7 +121,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           {/* Mini ring */}
           <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
             <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={36} cy={36} r={28} fill="none" stroke="#e5e7eb" strokeWidth={7} />
+              <circle cx={36} cy={36} r={28} fill="none" stroke={colors.borderStrong} strokeWidth={7} />
               <circle
                 cx={36} cy={36} r={28} fill="none"
                 stroke={level.color} strokeWidth={7} strokeLinecap="round"
@@ -141,8 +144,8 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
                 Moneo Score
               </span>
             </div>
-            <p className="text-base font-bold" style={{ color: '#111827' }}>{level.name}</p>
-            <p className="text-xs mt-0.5 leading-tight" style={{ color: '#6b7280' }}>{scoreResult.summary}</p>
+            <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{level.name}</p>
+            <p className="text-xs mt-0.5 leading-tight" style={{ color: colors.textSecondary }}>{scoreResult.summary}</p>
           </div>
           <ChevronRight size={16} style={{ color: '#d1d5db' }} className="flex-shrink-0" />
         </div>
@@ -153,7 +156,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Lightbulb size={14} style={{ color: '#fbbf24' }} />
-            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
               Money Coach
             </p>
           </div>
@@ -168,24 +171,24 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         {insights.length === 0 ? (
           <div
             className="rounded-2xl px-4 py-5 text-center"
-            style={{ background: '#f7f8fc', border: '1px solid #ececf0' }}
+            style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
           >
-            <Lightbulb size={24} className="mx-auto mb-2" style={{ color: '#d1d5db' }} />
-            <p className="text-sm" style={{ color: '#9ca3af' }}>Add more transactions to get personalized insights.</p>
+            <Lightbulb size={24} className="mx-auto mb-2" style={{ color: colors.textMuted }} />
+            <p className="text-sm" style={{ color: colors.textMuted }}>Add more transactions to get personalized insights.</p>
           </div>
         ) : (
           <div className="space-y-2">
             {insights.slice(0, 3).map(ins => {
-              const colors = INSIGHT_COLORS[ins.type];
+              const ic = INSIGHT_COLORS[ins.type];
               const Icon = INSIGHT_ICON_MAP[ins.icon];
               return (
                 <div
                   key={ins.id}
                   className="rounded-2xl px-4 py-3 flex items-start gap-3"
-                  style={{ background: colors.bg, border: `1px solid ${colors.border}` }}
+                  style={{ background: ic.bg, border: `1px solid ${ic.border}` }}
                 >
-                  <Icon size={15} className="flex-shrink-0 mt-0.5" style={{ color: colors.icon }} />
-                  <p className="text-xs leading-relaxed" style={{ color: '#374151' }}>{ins.text}</p>
+                  <Icon size={15} className="flex-shrink-0 mt-0.5" style={{ color: ic.icon }} />
+                  <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{ins.text}</p>
                 </div>
               );
             })}
@@ -203,15 +206,15 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           <BarChart2 size={17} style={{ color: '#3b82f6' }} />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold" style={{ color: '#111827' }}>Statistics</p>
-          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>Charts, categories, monthly view</p>
+          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Statistics</p>
+          <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>Charts, categories, monthly view</p>
         </div>
-        <ChevronRight size={15} style={{ color: '#d1d5db' }} />
+        <ChevronRight size={15} style={{ color: colors.border }} />
       </button>
 
       {/* ── Quick tools grid ─────────────────────────────────── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#9ca3af' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>
           Tools
         </p>
         <div className="space-y-2">

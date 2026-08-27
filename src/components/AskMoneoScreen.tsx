@@ -6,6 +6,7 @@ import {
 import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend, calculateCashlyScore } from '../utils/insights';
 import { PremiumGate } from './PremiumGate';
+import { useTheme } from '../context/ThemeContext';
 
 interface AskMoneoProps {
   transactions: Transaction[];
@@ -35,6 +36,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, isPremium, onNavigate, onUpgrade,
 }) => {
+  const { colors } = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
   const [custom, setCustom] = useState('');
 
@@ -133,7 +135,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Ask Moneo</h1>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Ask Moneo</h1>
           <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>Query your finances in plain language</p>
         </div>
       </div>
@@ -158,7 +160,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                 key={q}
                 onClick={() => handleAsk(q)}
                 className="w-full text-left rounded-2xl px-4 py-3 text-sm font-medium cursor-pointer transition-all"
-                style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#4b5563' }}
+                style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
               >
                 {q}
               </button>
@@ -180,9 +182,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
             placeholder="Ask anything about your finances…"
             className="flex-1 px-4 py-3 rounded-2xl text-sm"
             style={{
-              background: '#ffffff',
-              border: '1px solid #e5e7eb',
-              color: '#111827',
+              background: colors.bgCard,
+              border: `1px solid ${colors.borderStrong}`,
+              color: colors.textPrimary,
               outline: 'none',
             }}
           />
@@ -226,9 +228,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                   </div>
                   <div
                     className="flex-1 rounded-2xl rounded-bl-sm px-4 py-3"
-                    style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}
+                    style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
                   >
-                    <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>{a}</p>
+                    <p className="text-sm leading-relaxed" style={{ color: colors.textSecondary }}>{a}</p>
                   </div>
                 </div>
               </div>

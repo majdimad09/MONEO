@@ -8,6 +8,7 @@ import { formatCurrency } from '../utils/formatters';
 import { calculateCashlyScore, calculateSafeToSpend } from '../utils/insights';
 import { PremiumGate } from './PremiumGate';
 import { AppView } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
 
 interface WhatIfScreenProps {
   transactions: Transaction[];
@@ -90,6 +91,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
   } : null;
 
   const activeSubs = subscriptions.filter(s => s.isActive);
+  const { colors } = useTheme();
 
   return (
     <div className="page-enter px-4 pt-3 pb-8">
@@ -129,7 +131,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-left"
               style={simType === opt.id
                 ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                : { background: '#ffffff', border: '1px solid #e5e7eb' }}
+                : { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -160,7 +162,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                       className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-left"
                       style={cancelSubId === s.id
                         ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                        : { background: '#f7f8fc', border: '1px solid #e5e7eb' }}
+                        : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
                     >
                       <span className="text-xs font-semibold text-slate-700">{s.name}</span>
                       <span className="text-xs text-slate-400">{formatCurrency(s.amount, currency)}/mo</span>

@@ -8,6 +8,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LANGUAGES, LangCode } from '../i18n/translations';
 import { saveProfile } from '../lib/supabaseService';
+import { useTheme } from '../context/ThemeContext';
 
 interface SettingsScreenProps {
   transactionCount: number;
@@ -32,9 +33,10 @@ interface SettingsScreenProps {
 const STATUSES = ['School', 'University', 'Working', 'Unemployed'];
 
 function SectionHeader({ label }: { label: string }) {
+  const { colors } = useTheme();
   return (
     <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2"
-      style={{ color: '#9ca3af' }}>
+      style={{ color: colors.textMuted }}>
       {label}
     </p>
   );
@@ -63,12 +65,13 @@ function RowButton({
   rightEl?: React.ReactNode;
   noBorder?: boolean;
 }) {
+  const { colors } = useTheme();
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer disabled:opacity-40"
-      style={{ borderBottom: noBorder ? 'none' : '1px solid #f0f1f5' }}
+      style={{ borderBottom: noBorder ? 'none' : `1px solid ${colors.divider}` }}
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: iconBg }}>
@@ -90,6 +93,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   isPremium = false, membershipStartedAt, onNavigatePremium,
 }) => {
   const { t, lang, setLanguage } = useLanguage();
+  const { colors } = useTheme();
 
   // ── Account state ──────────────────────────────────────────────────────
   const [nameInput, setNameInput] = useState(userName);
@@ -170,7 +174,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       style={{ width: 44, height: 26 }}
     >
       <div className="absolute inset-0 rounded-full transition-all"
-        style={{ background: on ? 'rgba(59,130,246,0.8)' : 'rgba(30,45,74,1)', border: '1px solid ' + (on ? 'rgba(59,130,246,0.5)' : '#e5e7eb') }} />
+        style={{ background: on ? 'rgba(59,130,246,0.8)' : colors.bgHover, border: '1px solid ' + (on ? 'rgba(59,130,246,0.5)' : colors.border) }} />
       <div className="absolute top-1 transition-all rounded-full bg-white"
         style={{ width: 18, height: 18, left: on ? 22 : 4, transition: 'left 0.18s ease' }} />
     </button>
@@ -185,7 +189,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         <div className="card-dark rounded-2xl overflow-hidden">
 
           {/* Avatar + email header */}
-          <div className="flex items-center gap-3.5 px-4 pt-4 pb-3" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="flex items-center gap-3.5 px-4 pt-4 pb-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold text-base text-blue-300"
               style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.25)', letterSpacing: 0.5 }}>
               {initials}
@@ -197,7 +201,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </div>
 
           {/* Name */}
-          <div className="px-4 py-3" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('nameField')}</label>
             <div className="flex items-center gap-2">
               <User size={14} className="text-slate-600 flex-shrink-0" />
@@ -212,7 +216,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </div>
 
           {/* Email (read-only) */}
-          <div className="px-4 py-3" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('emailField')}</label>
             <div className="flex items-center gap-2">
               <Mail size={14} className="text-slate-600 flex-shrink-0" />
@@ -221,14 +225,14 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 value={userEmail}
                 readOnly
                 className="flex-1 px-3 py-2 rounded-xl text-sm text-slate-500 cursor-not-allowed"
-                style={{ background: '#07101f', border: '1px solid #0f1e38' }}
+                style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
               />
             </div>
             <p className="text-[10px] text-slate-600 mt-1 ml-5">{t('emailCannotChange')}</p>
           </div>
 
           {/* Age */}
-          <div className="px-4 py-3" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('ageField')}</label>
             <div className="flex items-center gap-2">
               <Hash size={14} className="text-slate-600 flex-shrink-0" />
@@ -244,7 +248,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </div>
 
           {/* Status */}
-          <div className="px-4 py-3" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('statusField')}</label>
             <div className="flex items-center gap-2">
               <Briefcase size={14} className="text-slate-600 flex-shrink-0" />
@@ -256,7 +260,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     className="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all"
                     style={statusInput === s
                       ? { background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.4)', color: '#93c5fd' }
-                      : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#475569' }}
+                      : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                   >
                     {s}
                   </button>
@@ -289,7 +293,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <button
             onClick={() => setShowLangPicker(v => !v)}
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
-            style={{ borderBottom: '1px solid #f0f1f5' }}
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.2)' }}>
@@ -304,7 +308,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </button>
 
           {showLangPicker && (
-            <div className="px-4 pb-3 pt-2 grid grid-cols-2 gap-2" style={{ borderBottom: '1px solid #f0f1f5' }}>
+            <div className="px-4 pb-3 pt-2 grid grid-cols-2 gap-2" style={{ borderBottom: `1px solid ${colors.divider}` }}>
               {LANGUAGES.map(l => (
                 <button
                   key={l.code}
@@ -312,7 +316,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer"
                   style={lang === l.code
                     ? { background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#93c5fd' }
-                    : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#475569' }}
+                    : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                 >
                   {lang === l.code && <Check size={13} className="text-blue-400 flex-shrink-0" />}
                   <span className="truncate">{l.nativeName}</span>
@@ -322,7 +326,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           )}
 
           {/* App notifications */}
-          <div className="flex items-center gap-3.5 px-4 py-3.5" style={{ borderBottom: '1px solid #f0f1f5' }}>
+          <div className="flex items-center gap-3.5 px-4 py-3.5" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
               {appNotifs ? <Bell size={17} className="text-yellow-400" /> : <BellOff size={17} className="text-slate-500" />}
@@ -358,7 +362,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <button
             onClick={() => { setShowChangePwd(v => !v); setPwdError(''); setPwdSuccess(false); }}
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
-            style={{ borderBottom: '1px solid #f0f1f5' }}
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
@@ -373,7 +377,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </button>
 
           {showChangePwd && (
-            <div className="px-4 py-3 space-y-2.5" style={{ borderBottom: '1px solid #f0f1f5' }}>
+            <div className="px-4 py-3 space-y-2.5" style={{ borderBottom: `1px solid ${colors.divider}` }}>
               {pwdSuccess ? (
                 <p className="text-sm text-emerald-400 font-semibold flex items-center gap-2">
                   <Check size={15} /> {t('passwordChangedOk')}
@@ -511,7 +515,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 <button
                   onClick={() => setShowResetConfirm(false)}
                   className="flex-1 py-2.5 rounded-xl text-sm text-slate-400 font-semibold cursor-pointer"
-                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                  style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
                 >
                   {t('cancel')}
                 </button>
@@ -537,7 +541,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <button
             onClick={() => setShowAbout(v => !v)}
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
-            style={{ borderBottom: '1px solid #f0f1f5' }}
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
@@ -552,7 +556,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </button>
 
           {showAbout && (
-            <div className="px-4 py-3 space-y-1" style={{ borderBottom: '1px solid #f0f1f5' }}>
+            <div className="px-4 py-3 space-y-1" style={{ borderBottom: `1px solid ${colors.divider}` }}>
               <p className="text-xs text-slate-400 font-semibold">{t('appVersion')}</p>
               <p className="text-xs text-slate-500">{t('appInfoText')}</p>
               <p className="text-[10px] text-slate-600 pt-1">{t('moneoBrand')}</p>
@@ -611,7 +615,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="flex-1 py-2.5 rounded-xl text-sm text-slate-400 font-semibold cursor-pointer"
-                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                  style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
                 >
                   {t('cancel')}
                 </button>

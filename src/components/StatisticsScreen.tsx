@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus, AlertTriang
 import { Transaction } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { getCategoryColor, CategoryIcon } from './CategoryIcon';
+import { useTheme } from '../context/ThemeContext';
 
 interface StatisticsScreenProps {
   transactions: Transaction[];
@@ -42,6 +43,7 @@ function getYearLabel(offset: number): string {
 }
 
 export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions, currency }) => {
+  const { colors } = useTheme();
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [monthIdx, setMonthIdx] = useState(0);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -185,7 +187,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     <div className="page-enter px-4 pt-3 pb-6 space-y-4">
 
       {/* ── VIEW MODE TABS ──────────────────────────── */}
-      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
         {(['week', 'month', 'year'] as ViewMode[]).map(m => (
           <button key={m} onClick={() => setViewMode(m)}
             className={`stat-filter-btn capitalize ${viewMode === m ? 'active' : ''}`}>
@@ -198,7 +200,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       <div className="flex items-center justify-between py-0.5 card-float-1">
         <button onClick={handlePrev} disabled={!canGoPrev}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}>
           <ChevronLeft size={16} className="text-slate-600" />
         </button>
         <div className="text-center">
@@ -207,7 +209,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         </div>
         <button onClick={handleNext} disabled={!canGoNext}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}>
           <ChevronRight size={16} className="text-slate-600" />
         </button>
       </div>
@@ -312,7 +314,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                           {formatCurrency(cat.total, currency)}
                         </span>
                       </div>
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#e5e7eb' }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: colors.borderStrong }}>
                         <div className="h-full rounded-full transition-all duration-700" style={{
                           width: `${cat.percentage}%`,
                           background: cat.color,
@@ -334,7 +336,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       {/* ── CATEGORY BREAKDOWN (when cat selected) ──── */}
       {selectedCat && selectedCatTx.length > 0 && (
         <div className="card-dark rounded-2xl overflow-hidden expand-in">
-          <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #0f1e38' }}>
+          <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
             <p className="text-sm font-bold text-slate-700">{selectedCat} breakdown</p>
             <button onClick={() => setSelectedCat(null)} className="text-slate-500 cursor-pointer">
               <X size={16} />
@@ -342,7 +344,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
           </div>
           {selectedCatTx.map((tx, i) => (
             <div key={tx.id} className="flex items-center justify-between px-4 py-2.5"
-              style={{ borderBottom: i < selectedCatTx.length - 1 ? '1px solid #0a1828' : 'none' }}>
+              style={{ borderBottom: i < selectedCatTx.length - 1 ? `1px solid ${colors.divider}` : 'none' }}>
               <div>
                 <p className="text-[13px] font-semibold text-slate-700">{tx.description}</p>
                 <p className="text-[11px] text-slate-500">{formatDate(tx.date)}</p>

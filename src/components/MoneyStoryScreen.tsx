@@ -5,6 +5,7 @@ import {
 import { Transaction, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { PremiumGate } from './PremiumGate';
+import { useTheme } from '../context/ThemeContext';
 
 interface MoneyStoryProps {
   transactions: Transaction[];
@@ -41,6 +42,7 @@ type Para = { text: string; tone: 'positive' | 'negative' | 'neutral' };
 export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
   transactions, currency, isPremium, onNavigate, onUpgrade,
 }) => {
+  const { colors } = useTheme();
   const months = useMemo(() => availableMonths(transactions), [transactions]);
   const [idx, setIdx] = useState(0);
   const selected = months[idx] ?? mp();
@@ -128,7 +130,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Monthly Story</h1>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Monthly Story</h1>
           <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>A narrative recap of your finances</p>
         </div>
       </div>
@@ -145,18 +147,18 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
             onClick={() => setIdx(i => Math.min(i + 1, months.length - 1))}
             disabled={idx >= months.length - 1}
             className="p-2 rounded-xl cursor-pointer disabled:opacity-30 transition-opacity"
-            style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+            style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
           >
             <ChevronLeft size={16} style={{ color: '#818cf8' }} />
           </button>
-          <p className="flex-1 text-center text-sm font-bold" style={{ color: '#111827' }}>
+          <p className="flex-1 text-center text-sm font-bold" style={{ color: colors.textPrimary }}>
             {monthLabel(selected)}
           </p>
           <button
             onClick={() => setIdx(i => Math.max(i - 1, 0))}
             disabled={idx <= 0}
             className="p-2 rounded-xl cursor-pointer disabled:opacity-30 transition-opacity"
-            style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+            style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
           >
             <ChevronRight size={16} style={{ color: '#818cf8' }} />
           </button>
@@ -173,7 +175,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
               <div
                 key={label}
                 className="rounded-2xl p-3 text-center"
-                style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
               >
                 <p className="text-sm font-bold" style={{ color }}>
                   {value < 0 ? '-' : ''}{formatCurrency(Math.abs(value), currency)}
@@ -206,7 +208,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 style={{
                   color: p.tone === 'positive' ? '#6ee7b7'
                     : p.tone === 'negative' ? '#fca5a5'
-                    : '#4b5563',
+                    : colors.textSecondary,
                 }}
               >
                 {p.text}
@@ -228,20 +230,20 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 <div
                   key={cat}
                   className="rounded-2xl px-4 py-3"
-                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                  style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold" style={{ color: '#9ca3af' }}>
                         #{i + 1}
                       </span>
-                      <span className="text-sm font-semibold" style={{ color: '#111827' }}>{cat}</span>
+                      <span className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{cat}</span>
                     </div>
                     <span className="text-sm font-bold" style={{ color: '#f87171' }}>
                       {formatCurrency(amt, currency)}
                     </span>
                   </div>
-                  <div className="h-1.5 rounded-full" style={{ background: '#e5e7eb' }}>
+                  <div className="h-1.5 rounded-full" style={{ background: colors.borderStrong }}>
                     <div
                       className="h-full rounded-full"
                       style={{

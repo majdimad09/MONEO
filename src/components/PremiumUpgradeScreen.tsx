@@ -4,6 +4,7 @@ import {
   Zap, BarChart2, GitBranch, BookOpen, TrendingUp,
   Target, Users, Brain, AlertCircle,
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface PremiumUpgradeScreenProps {
   isPremium: boolean;
@@ -99,6 +100,7 @@ export const PremiumUpgradeScreen: React.FC<PremiumUpgradeScreenProps> = ({
 // ─── Upgrade (free user) view ─────────────────────────────────────────────────
 
 function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: () => void }) {
+  const { colors } = useTheme();
   return (
     <div className="px-4 space-y-5">
       {/* Hero */}
@@ -110,12 +112,12 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
           <Crown size={13} style={{ color: '#a78bfa' }} />
           <span className="text-xs font-bold tracking-widest" style={{ color: '#c4b5fd' }}>MONEO PREMIUM</span>
         </div>
-        <h1 className="text-2xl font-bold mb-2" style={{ letterSpacing: '-0.02em', color: '#111827' }}>
+        <h1 className="text-2xl font-bold mb-2" style={{ letterSpacing: '-0.02em', color: colors.textPrimary }}>
           Unlock everything<br />in Moneo
         </h1>
-        <p className="text-sm mb-4" style={{ color: '#6b7280' }}>Advanced tools, deeper insights, community leadership</p>
+        <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>Advanced tools, deeper insights, community leadership</p>
         <div className="flex items-baseline justify-center gap-1">
-          <span className="text-4xl font-bold" style={{ color: '#111827' }}>$1.99</span>
+          <span className="text-4xl font-bold" style={{ color: colors.textPrimary }}>$1.99</span>
           <span className="text-sm" style={{ color: '#9ca3af' }}>/month</span>
         </div>
         <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Cancel anytime · No commitment</p>
@@ -150,7 +152,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
             <div
               key={f.label}
               className="flex items-center gap-3 rounded-2xl px-4 py-3"
-              style={{ background: '#ffffff', border: '1px solid #ececf0', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
+              style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -159,8 +161,8 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
                 <f.icon size={15} style={{ color: f.color }} />
               </div>
               <div>
-                <p className="text-xs font-bold" style={{ color: '#111827' }}>{f.label}</p>
-                <p className="text-[11px] mt-0.5" style={{ color: '#9ca3af' }}>{f.desc}</p>
+                <p className="text-xs font-bold" style={{ color: colors.textPrimary }}>{f.label}</p>
+                <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{f.desc}</p>
               </div>
               <Sparkles size={12} className="ml-auto flex-shrink-0" style={{ color: '#8b5cf6' }} />
             </div>
@@ -177,7 +179,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
           {FREE_FEATURES.map(f => (
             <div key={f} className="flex items-center gap-2.5">
               <Check size={13} style={{ color: '#10b981' }} className="flex-shrink-0" />
-              <span className="text-xs" style={{ color: '#4b5563' }}>{f}</span>
+              <span className="text-xs" style={{ color: colors.textSecondary }}>{f}</span>
             </div>
           ))}
         </div>
@@ -209,6 +211,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
   onHideCancel: () => void;
   onCancel: () => void;
 }) {
+  const { colors } = useTheme();
   return (
     <div className="px-4 space-y-4">
       {/* Status card */}
@@ -233,14 +236,14 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
           <div className="w-2 h-2 rounded-full" style={{ background: '#10b981' }} />
           <span className="text-xs font-bold" style={{ color: '#059669' }}>Active</span>
         </div>
-        <h1 className="text-2xl font-bold mb-1" style={{ color: '#111827' }}>Moneo Premium</h1>
-        <p className="text-sm" style={{ color: '#6b7280' }}>All features unlocked</p>
+        <h1 className="text-2xl font-bold mb-1" style={{ color: colors.textPrimary }}>Moneo Premium</h1>
+        <p className="text-sm" style={{ color: colors.textSecondary }}>All features unlocked</p>
         {startDate && <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>Member since {startDate}</p>}
       </div>
 
       {/* Billing info */}
       <div className="card-dark rounded-2xl overflow-hidden">
-        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #f4f5f9' }}>
+        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `1px solid ${colors.divider}` }}>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>Subscription</p>
         </div>
         {[
@@ -250,9 +253,9 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
           { label: 'Started', value: startDate ?? '—' },
           { label: 'Billing', value: 'Payment processing coming soon', small: true },
         ].map(({ label, value, valueColor, small }) => (
-          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #f4f5f9' }}>
-            <span className="text-sm" style={{ color: '#6b7280' }}>{label}</span>
-            <span className={`${small ? 'text-[11px]' : 'text-sm'} font-semibold`} style={{ color: valueColor ?? '#111827' }}>
+          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
+            <span className="text-sm" style={{ color: colors.textSecondary }}>{label}</span>
+            <span className={`${small ? 'text-[11px]' : 'text-sm'} font-semibold`} style={{ color: valueColor ?? colors.textPrimary }}>
               {value}
             </span>
           </div>
@@ -268,7 +271,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
           {PREMIUM_FEATURES.map(f => (
             <div key={f.label} className="flex items-center gap-3">
               <f.icon size={14} style={{ color: f.color }} className="flex-shrink-0" />
-              <span className="text-xs font-medium" style={{ color: '#374151' }}>{f.label}</span>
+              <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>{f.label}</span>
               <Check size={12} className="ml-auto flex-shrink-0" style={{ color: '#10b981' }} />
             </div>
           ))}
@@ -280,7 +283,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
         <button
           onClick={onShowCancel}
           className="w-full py-3 rounded-2xl text-sm cursor-pointer transition-colors"
-          style={{ background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#9ca3af' }}
+          style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textMuted }}
         >
           Cancel subscription
         </button>
@@ -293,7 +296,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
             <AlertCircle size={15} className="text-red-400 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-bold text-red-500 mb-1">Cancel your subscription?</p>
-              <p className="text-xs leading-relaxed" style={{ color: '#6b7280' }}>
+              <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>
                 You'll keep Premium access until the end of your current billing period, then revert to Moneo Free. Your data is never deleted.
               </p>
             </div>
@@ -301,7 +304,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
           <div className="flex gap-2">
             <button onClick={onHideCancel}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold cursor-pointer"
-              style={{ background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#6b7280' }}>
+              style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}>
               Keep Premium
             </button>
             <button onClick={onCancel} disabled={cancelling}

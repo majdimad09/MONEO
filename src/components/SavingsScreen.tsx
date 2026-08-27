@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { SavingGoal } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
+import { useTheme } from '../context/ThemeContext';
 
 interface SavingsScreenProps {
   currency: string;
@@ -32,6 +33,7 @@ const GOAL_COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06
 const emptyForm = { name: '', targetAmount: '', currentAmount: '', targetDate: getTodayMonth() };
 
 export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, onSaveGoals }) => {
+  const { colors } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -160,7 +162,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
               <Check size={15} /> {editingId ? 'Save Changes' : 'Add Goal'}
             </button>
             <button onClick={cancelForm} className="px-4 py-2.5 text-sm text-slate-400 rounded-xl cursor-pointer"
-              style={{ background: '#ffffff' }}>
+              style={{ background: colors.bgCard }}>
               Cancel
             </button>
           </div>
@@ -254,11 +256,11 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2.5 mb-3">
-                      <div className="rounded-xl p-2.5" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Remaining</p>
                         <p className="text-sm font-bold text-slate-700">{formatCurrency(remaining, currency)}</p>
                       </div>
-                      <div className="rounded-xl p-2.5" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Months left</p>
                         <p className="text-sm font-bold text-slate-700">{monthsLeft}</p>
                       </div>

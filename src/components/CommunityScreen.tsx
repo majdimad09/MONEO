@@ -8,6 +8,7 @@ import {
   generateInviteCode, saveCommunities, getChallengeStatus,
   communityAvgProgress,
 } from '../utils/communityUtils';
+import { useTheme } from '../context/ThemeContext';
 
 interface CommunityScreenProps {
   userId: string;
@@ -27,6 +28,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
   onCommunitiesChange, onSelectCommunity, onNavigate,
   onCreateCommunity, onJoinByCode,
 }) => {
+  const { colors } = useTheme();
   // Join flow
   const [showJoin, setShowJoin]     = useState(false);
   const [joinCode, setJoinCode]     = useState('');
@@ -157,7 +159,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer text-xs font-bold transition-all"
             style={isPremium
               ? { background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.3)', color: '#a78bfa' }
-              : { background: '#0d1526', border: '1px solid #1e2d4a', color: '#3d5068' }}
+              : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textMuted }}
           >
             {isPremium ? <Plus size={13} /> : <Lock size={13} />} Create
           </button>
@@ -256,7 +258,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                       className="flex-1 py-2 rounded-xl text-xs font-semibold cursor-pointer capitalize"
                       style={createPrivacy === p
                         ? { background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.35)', color: '#c4b5fd' }
-                        : { background: '#0a1424', border: '1px solid #1e2d4a', color: '#475569' }}
+                        : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textSecondary }}
                     >
                       {p === 'invite' ? '🔒 Invite Only' : '🌐 Public'}
                     </button>
@@ -281,7 +283,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
         <EmptyState isPremium={isPremium} onJoin={() => setShowJoin(true)} onCreate={() => setShowCreate(true)} />
       ) : communities.length > 0 ? (
         <div className="space-y-3">
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: '#3d5068' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
             Your Communities
           </p>
           {communities.map(community => (
@@ -317,6 +319,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
 const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: () => void }> = ({ isPremium, onJoin, onCreate }) => {
+  const { colors } = useTheme();
   return (
     <div className="space-y-4">
       {/* Hero */}
@@ -369,7 +372,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
           className="w-full py-3.5 rounded-2xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2 transition-all"
           style={isPremium
             ? { background: 'linear-gradient(135deg,#7c3aed,#8b5cf6)', boxShadow: '0 4px 16px rgba(139,92,246,0.3)', color: '#fff' }
-            : { background: '#0d1526', border: '1px solid #1e2d4a', color: '#475569' }}
+            : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textSecondary }}
         >
           <Crown size={16} style={{ color: isPremium ? '#fff' : '#a78bfa' }} />
           Create a Community
@@ -392,6 +395,7 @@ const CommunityCard: React.FC<{
   userId: string;
   onTap: () => void;
 }> = ({ community, userId, onTap }) => {
+  const { colors } = useTheme();
   const isAdmin = community.role === 'admin';
   const activeChallenges = community.challenges.filter(c => getChallengeStatus(c) === 'active');
   const userInChallenge = activeChallenges.filter(c => c.participants.some(p => p.userId === userId));
@@ -458,14 +462,14 @@ const CommunityCard: React.FC<{
         const avg = communityAvgProgress(ch);
         const myPct = me?.progress ?? 0;
         return (
-          <div className="mt-3 pt-3" style={{ borderTop: '1px solid #0c1a30' }}>
+          <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${colors.divider}` }}>
             <div className="flex justify-between text-[10px] mb-1.5">
               <span className="text-slate-500 font-semibold">{ch.name}</span>
               <span style={{ color: myPct >= 80 ? '#34d399' : myPct >= 40 ? '#fbbf24' : '#64748b' }} className="font-bold">
                 You: {myPct}%
               </span>
             </div>
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#0a1828' }}>
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
               <div
                 className="h-full rounded-full transition-all"
                 style={{

@@ -7,6 +7,7 @@ import { RecurringIncome, RecurringIncomeFrequency } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { frequencyLabel, getNextOccurrence, monthlyEquivalent } from '../utils/recurringUtils';
 import { AppView } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
 
 interface RecurringIncomeScreenProps {
   items: RecurringIncome[];
@@ -27,6 +28,7 @@ const BLANK: Omit<RecurringIncome, 'id' | 'createdAt'> = {
 export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
   items, currency, onSave, onNavigate,
 }) => {
+  const { colors } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...BLANK, amount: '' as string | number });
@@ -199,7 +201,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
       {items.length === 0 && !showForm ? (
         <div
           className="rounded-2xl px-4 py-10 text-center"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
         >
           <DollarSign size={28} className="mx-auto mb-3 text-slate-600" />
           <p className="text-sm font-semibold text-slate-400 mb-1">No recurring income yet</p>
@@ -228,7 +230,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <button
                         onClick={() => setDeleteId(null)}
                         className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                        style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
                       >
                         Cancel
                       </button>
@@ -273,7 +275,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <button
                         onClick={() => openEdit(item)}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}
+                        style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
                       >
                         <Edit2 size={11} /> Edit
                       </button>

@@ -18,6 +18,7 @@ import {
   SUPPORTED_CURRENCIES,
 } from '../types/finance';
 import { CategoryIcon } from './CategoryIcon';
+import { useTheme } from '../context/ThemeContext';
 
 interface EditTransactionModalProps {
   transaction: Transaction | null;
@@ -43,6 +44,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   const [date, setDate] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  const { colors } = useTheme();
   const currencySymbol =
     SUPPORTED_CURRENCIES.find((c) => c.code === currency)?.symbol || '$';
 
@@ -110,10 +112,10 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
       style={{ background: 'rgba(5,10,20,0.8)', backdropFilter: 'blur(6px)' }}>
       <div className="fixed inset-0" onClick={onClose} />
       <div className="relative w-full max-w-lg rounded-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-200"
-        style={{ background: '#0d1526', border: '1px solid #253659', boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(59,130,246,0.1)' }}>
+        style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(59,130,246,0.1)' }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid #1e2d4a', background: '#0a1424' }}>
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${colors.border}`, background: colors.bgSecondary }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
               style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
@@ -146,14 +148,14 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
             <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
               Transaction Type
             </label>
-            <div className="grid grid-cols-2 gap-2 p-1 rounded-xl" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+            <div className="grid grid-cols-2 gap-2 p-1 rounded-xl" style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}>
               <button
                 type="button"
                 onClick={() => { setType('expense'); setCategory('Food'); }}
                 className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   type === 'expense' ? 'text-red-400' : 'text-slate-500 hover:text-slate-600'
                 }`}
-                style={type === 'expense' ? { background: '#0d1526', border: '1px solid #253659' } : {}}
+                style={type === 'expense' ? { background: colors.bgCard, border: `1px solid ${colors.border}` } : {}}
               >
                 <ArrowDownRight className="w-4 h-4 text-red-500" />
                 <span>Expense</span>
@@ -164,7 +166,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   type === 'income' ? 'text-green-400' : 'text-slate-500 hover:text-slate-600'
                 }`}
-                style={type === 'income' ? { background: '#0d1526', border: '1px solid #253659' } : {}}
+                style={type === 'income' ? { background: colors.bgCard, border: `1px solid ${colors.border}` } : {}}
               >
                 <ArrowUpRight className="w-4 h-4 text-green-500" />
                 <span>Income</span>
@@ -253,7 +255,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
 
             {!isCustomCategory ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1.5 rounded-xl"
-                style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+                style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}>
                 {categoriesList.map((cat) => {
                   const isSelected = category === cat.name;
                   return (
@@ -266,7 +268,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                       }`}
                       style={isSelected
                         ? { background: 'linear-gradient(135deg, #2563eb, #3b82f6)', boxShadow: '0 0 10px rgba(59,130,246,0.3)' }
-                        : { background: '#111d35', border: '1px solid #1e2d4a' }
+                        : { background: colors.bgSecondary, border: `1px solid ${colors.border}` }
                       }
                     >
                       <CategoryIcon
@@ -297,7 +299,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2.5 pt-3" style={{ borderTop: '1px solid #1e2d4a' }}>
+          <div className="flex items-center justify-end gap-2.5 pt-3" style={{ borderTop: `1px solid ${colors.border}` }}>
             <button
               type="button"
               onClick={onClose}

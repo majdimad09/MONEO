@@ -5,6 +5,7 @@ import {
   Crown, Settings2, Zap, Target, DollarSign,
 } from 'lucide-react';
 import { AppView } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
 
 interface FeaturesHubProps {
   isPremium: boolean;
@@ -53,19 +54,20 @@ const SECTIONS: { title: string; cards: FeatureCard[] }[] = [
 ];
 
 export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate }) => {
+  const { colors, isDark } = useTheme();
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
       {/* Header */}
       <div className="flex items-center justify-between pt-1 pb-1">
-        <h1 className="text-xl font-bold" style={{ color: '#111827' }}>More</h1>
+        <h1 className="text-xl font-bold" style={{ color: colors.textPrimary }}>More</h1>
         <button
           onClick={() => onNavigate('settings')}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all"
-          style={{ background: '#f4f5f9', border: '1px solid #e5e7eb' }}
+          style={{ background: colors.bgPrimary, border: `1px solid ${colors.borderStrong}` }}
         >
-          <Settings2 size={14} style={{ color: '#9ca3af' }} />
-          <span className="text-xs font-semibold" style={{ color: '#6b7280' }}>Settings</span>
+          <Settings2 size={14} style={{ color: colors.textMuted }} />
+          <span className="text-xs font-semibold" style={{ color: colors.textSecondary }}>Settings</span>
         </button>
       </div>
 
@@ -75,7 +77,9 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
           onClick={() => onNavigate('premium')}
           className="w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
           style={{
-            background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
+            background: isDark
+              ? 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(109,40,217,0.08))'
+              : 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
             border: '1px solid rgba(139,92,246,0.25)',
             boxShadow: '0 2px 12px rgba(139,92,246,0.1)',
           }}
@@ -89,7 +93,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
                 <Crown size={18} style={{ color: '#7c3aed' }} />
               </div>
               <div>
-                <p className="text-sm font-bold" style={{ color: '#111827' }}>Upgrade to Premium</p>
+                <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Upgrade to Premium</p>
                 <p className="text-xs" style={{ color: '#7c3aed' }}>$1.99/month · Unlock all features</p>
               </div>
             </div>
@@ -101,7 +105,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
       {/* Feature sections */}
       {SECTIONS.map(section => (
         <div key={section.title}>
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: colors.textMuted }}>
             {section.title}
           </p>
           <div className="grid grid-cols-2 gap-2.5">
@@ -119,7 +123,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
 
       {/* Settings row */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: colors.textMuted }}>
           Account
         </p>
         <button
@@ -128,11 +132,11 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
         >
           <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ background: 'rgba(100,116,139,0.09)', border: '1px solid rgba(100,116,139,0.15)' }}>
-            <Settings2 size={16} style={{ color: '#64748b' }} />
+            <Settings2 size={16} style={{ color: colors.textSecondary }} />
           </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: '#111827' }}>Settings</p>
-            <p className="text-xs" style={{ color: '#9ca3af' }}>Account, preferences, security</p>
+            <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>Settings</p>
+            <p className="text-xs" style={{ color: colors.textMuted }}>Account, preferences, security</p>
           </div>
         </button>
       </div>
@@ -146,6 +150,7 @@ const FeatureCardButton: React.FC<{
   isPremium: boolean;
   onClick: () => void;
 }> = ({ card, isPremium, onClick }) => {
+  const { colors } = useTheme();
   const locked = card.premium && !isPremium;
   const Icon = card.icon;
 
@@ -174,8 +179,8 @@ const FeatureCardButton: React.FC<{
         ) : null}
       </div>
       <div>
-        <p className="text-xs font-bold" style={{ color: locked ? '#9ca3af' : '#111827' }}>{card.label}</p>
-        <p className="text-[10px] mt-0.5 leading-tight" style={{ color: '#9ca3af' }}>{card.desc}</p>
+        <p className="text-xs font-bold" style={{ color: locked ? colors.textMuted : colors.textPrimary }}>{card.label}</p>
+        <p className="text-[10px] mt-0.5 leading-tight" style={{ color: colors.textMuted }}>{card.desc}</p>
       </div>
     </button>
   );

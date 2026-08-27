@@ -3,6 +3,7 @@ import { ChevronLeft, TrendingUp, TrendingDown, Minus, Calendar, Clock } from 'l
 import { Transaction, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { PremiumGate } from './PremiumGate';
+import { useTheme } from '../context/ThemeContext';
 
 interface SpendingPatternsProps {
   transactions: Transaction[];
@@ -74,6 +75,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
   }, [transactions]);
 
   const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const { colors } = useTheme();
 
   return (
     <div className="page-enter px-4 pt-3 pb-8">
@@ -86,7 +88,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Spending Patterns</h1>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Spending Patterns</h1>
           <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>Trends across months and categories</p>
         </div>
       </div>
@@ -105,7 +107,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
           {patterns.catTrends.length === 0 ? (
             <div
               className="rounded-2xl p-5 text-center"
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+              style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
               <p className="text-sm" style={{ color: '#9ca3af' }}>
                 Add more transactions to see category trends.
@@ -117,7 +119,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
                 <div
                   key={cat}
                   className="rounded-2xl px-4 py-3 flex items-center gap-3"
-                  style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+                  style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
                 >
                   <div
                     className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -134,13 +136,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
                       : <Minus size={13} style={{ color: '#818cf8' }} />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate" style={{ color: '#111827' }}>{cat}</p>
+                    <p className="text-sm font-semibold truncate" style={{ color: colors.textPrimary }}>{cat}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: '#9ca3af' }}>
                       Avg {formatCurrency(avg, currency)}/mo
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold" style={{ color: '#111827' }}>
+                    <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>
                       {formatCurrency(lastMonth, currency)}
                     </p>
                     {Math.abs(changePct) >= 5 && (
@@ -161,7 +163,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
         {/* Day of week chart */}
         <div
           className="rounded-2xl p-4 mb-5"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Calendar size={13} style={{ color: '#818cf8' }} />
@@ -208,7 +210,7 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
         {/* Time of month */}
         <div
           className="rounded-2xl p-4"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Clock size={13} style={{ color: '#818cf8' }} />
@@ -226,13 +228,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
               return (
                 <div key={label}>
                   <div className="flex justify-between text-xs mb-1.5">
-                    <span style={{ color: '#6b7280' }}>{label}</span>
+                    <span style={{ color: colors.textSecondary }}>{label}</span>
                     <div className="flex items-center gap-2">
                       <span style={{ color: '#9ca3af' }}>{formatCurrency(amount, currency)}</span>
-                      <span className="font-bold" style={{ color: '#111827' }}>{pct.toFixed(0)}%</span>
+                      <span className="font-bold" style={{ color: colors.textPrimary }}>{pct.toFixed(0)}%</span>
                     </div>
                   </div>
-                  <div className="h-2 rounded-full" style={{ background: '#e5e7eb' }}>
+                  <div className="h-2 rounded-full" style={{ background: colors.borderStrong }}>
                     <div
                       className="h-full rounded-full transition-all"
                       style={{ width: `${pct}%`, background: '#6366f1' }}

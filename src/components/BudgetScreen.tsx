@@ -6,6 +6,7 @@ import {
 import { Transaction, CategoryLimit, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
+import { useTheme } from '../context/ThemeContext';
 
 interface BudgetScreenProps {
   monthlyBudget: number;
@@ -34,6 +35,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   monthlyBudget, categoryLimits, transactions, currency,
   onSaveBudget, onSaveLimits, onNavigateRecurring, onNavigateSavings,
 }) => {
+  const { colors } = useTheme();
   const [editBudget, setEditBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? String(monthlyBudget) : '');
 
@@ -152,7 +154,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </button>
               <button onClick={() => setEditBudget(false)}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: '#ffffff' }}>
+                style={{ background: colors.bgCard }}>
                 Cancel
               </button>
             </div>
@@ -161,16 +163,16 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <div>
             {/* Numbers */}
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="rounded-2xl p-3 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+              <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Budget</p>
                 <p className="text-sm font-bold text-slate-900">{formatCurrency(monthlyBudget, currency)}</p>
               </div>
-              <div className="rounded-2xl p-3 text-center" style={{ background: '#f7f8fc', border: '1px solid #e5e7eb' }}>
+              <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Spent</p>
                 <p className="text-sm font-bold text-red-400">{formatCurrency(thisMonthExpenses, currency)}</p>
               </div>
               <div className="rounded-2xl p-3 text-center"
-                style={{ background: budgetRemaining < 0 ? 'rgba(239,68,68,0.08)' : '#f7f8fc', border: `1px solid ${budgetRemaining < 0 ? 'rgba(239,68,68,0.2)' : '#e5e7eb'}` }}>
+                style={{ background: budgetRemaining < 0 ? 'rgba(239,68,68,0.08)' : colors.bgSecondary, border: `1px solid ${budgetRemaining < 0 ? 'rgba(239,68,68,0.2)' : colors.borderStrong}` }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? 'Over' : 'Left'}</p>
                 <p className="text-sm font-bold" style={{ color: budgetRemaining < 0 ? '#ef4444' : '#34d399' }}>
                   {formatCurrency(Math.abs(budgetRemaining), currency)}
@@ -183,7 +185,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               <span className="text-[11px] text-slate-500">Budget used</span>
               <span className="text-[11px] font-bold" style={{ color: budgetColor }}>{Math.min(budgetPct, 999).toFixed(0)}%</span>
             </div>
-            <div className="h-3 rounded-full overflow-hidden" style={{ background: '#f7f8fc' }}>
+            <div className="h-3 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
               <div className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(budgetPct, 100)}%`,
@@ -247,7 +249,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                       className="flex items-center gap-1.5 px-2 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all"
                       style={limitCategory === c.name
                         ? { background: `${color}20`, border: `1px solid ${color}50`, color }
-                        : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#475569' }}
+                        : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                     >
                       <CategoryIcon category={c.name} type="expense" size={12} />
                       <span className="truncate">{c.name}</span>
@@ -275,7 +277,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </button>
               <button onClick={cancelAddLimit}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: '#ffffff' }}>
+                style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
                 <X size={16} />
               </button>
             </div>
@@ -330,7 +332,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                       </button>
                     </div>
                   </div>
-                  <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: '#f7f8fc' }}>
+                  <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: colors.bgSecondary }}>
                     <div className="h-full rounded-full"
                       style={{
                         width: `${Math.min(pct, 100)}%`,
@@ -357,7 +359,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <button
             onClick={onNavigateRecurring}
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
-            style={{ borderBottom: '1px solid #f0f1f5' }}
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)' }}>

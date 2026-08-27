@@ -2,6 +2,7 @@ import React from 'react';
 import { Trash2, X } from 'lucide-react';
 import { Transaction } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
+import { useTheme } from '../context/ThemeContext';
 
 interface DeleteConfirmModalProps {
   transaction: Transaction | null;
@@ -18,6 +19,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   onConfirm,
   currency,
 }) => {
+  const { colors } = useTheme();
   if (!isOpen || !transaction) return null;
 
   return (
@@ -25,7 +27,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
       style={{ background: 'rgba(5,10,20,0.8)', backdropFilter: 'blur(6px)' }}>
       <div className="fixed inset-0" onClick={onClose} />
       <div className="relative w-full max-w-md rounded-2xl p-6 z-10 animate-in zoom-in-95 duration-200"
-        style={{ background: '#0d1526', border: '1px solid #253659', boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(239,68,68,0.08)' }}>
+        style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(239,68,68,0.08)' }}>
 
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -50,7 +52,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 
         {/* Transaction Preview */}
         <div className="rounded-xl p-3 mb-5 space-y-1 text-xs"
-          style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+          style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}>
           <div className="flex items-center justify-between font-bold text-slate-700 text-xs sm:text-sm">
             <span className="truncate">{transaction.description}</span>
             <span className={`font-mono flex-shrink-0 ${transaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>

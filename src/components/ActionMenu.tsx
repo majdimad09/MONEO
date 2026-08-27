@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X, ArrowDownRight, ArrowUpRight, RefreshCw, Camera, Scan } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 type ActionId = 'expense' | 'income' | 'recurring' | 'scan';
 
@@ -49,6 +50,7 @@ const ACTIONS = [
 ] as const;
 
 export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => {
+  const { colors } = useTheme();
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -68,7 +70,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl cursor-pointer"
-            style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#64748b' }}
+            style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
           >
             <X size={16} />
           </button>

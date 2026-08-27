@@ -8,6 +8,7 @@ import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome, 
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { generateInsights, InsightIcon, InsightType } from '../utils/insights';
 import { getNextOccurrence } from '../utils/recurringUtils';
+import { useTheme } from '../context/ThemeContext';
 
 interface MoneyCoachScreenProps {
   transactions: Transaction[];
@@ -42,6 +43,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, recurringIncome, onNavigate,
 }) => {
+  const { colors } = useTheme();
   const insights = useMemo(
     () => generateInsights(transactions, currency, subscriptions),
     [transactions, currency, subscriptions],
@@ -182,7 +184,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
         {insights.length === 0 ? (
           <div
             className="rounded-2xl px-4 py-8 text-center"
-            style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+            style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
           >
             <Lightbulb size={28} className="mx-auto mb-3 text-slate-600" />
             <p className="text-sm font-semibold text-slate-400 mb-1">Not enough data yet</p>

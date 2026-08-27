@@ -6,6 +6,7 @@ import { Transaction, Subscription, RecurringIncome } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
 import { getNextOccurrence } from '../utils/recurringUtils';
+import { useTheme } from '../context/ThemeContext';
 
 interface ActivityScreenProps {
   transactions: Transaction[];
@@ -47,6 +48,7 @@ function formatEventDate(dateStr: string): string {
 export const ActivityScreen: React.FC<ActivityScreenProps> = ({
   transactions, subscriptions, recurringIncome, currency, onEdit, onDelete,
 }) => {
+  const { colors } = useTheme();
   const [tab, setTab] = useState<'timeline' | 'transactions'>('timeline');
 
   const events = useMemo<TimelineEvent[]>(() => {
@@ -120,7 +122,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
 
       <div
         className="flex p-1 mb-5 rounded-xl"
-        style={{ background: '#060f22', border: '1px solid #e5e7eb' }}
+        style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
       >
         {(['timeline', 'transactions'] as const).map(t => (
           <button
@@ -143,7 +145,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
           {grouped.length === 0 ? (
             <div
               className="rounded-2xl px-4 py-10 text-center"
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+              style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
               <Clock size={28} className="mx-auto mb-3 text-slate-600" />
               <p className="text-sm font-semibold text-slate-400 mb-1">No activity yet</p>
@@ -159,9 +161,9 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                     <div
                       className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg"
                       style={{
-                        background: date === today() ? 'rgba(59,130,246,0.15)' : '#f7f8fc',
-                        color: date === today() ? '#60a5fa' : '#475569',
-                        border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : '#e5e7eb'}`,
+                        background: date === today() ? 'rgba(59,130,246,0.15)' : colors.bgSecondary,
+                        color: date === today() ? '#60a5fa' : colors.textSecondary,
+                        border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : colors.borderStrong}`,
                       }}
                     >
                       {formatEventDate(date)}
@@ -180,7 +182,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                       <div
                         key={e.id}
                         className="flex items-center gap-3 px-4 py-3"
-                        style={i < evts.length - 1 ? { borderBottom: '1px solid #f0f1f5' } : undefined}
+                        style={i < evts.length - 1 ? { borderBottom: `1px solid ${colors.divider}` } : undefined}
                       >
                         {/* Icon */}
                         <div
@@ -233,7 +235,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
           {recentTx.length === 0 ? (
             <div
               className="rounded-2xl px-4 py-10 text-center"
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+              style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
               <ArrowUpRight size={28} className="mx-auto mb-3 text-slate-600" />
               <p className="text-sm font-semibold text-slate-400 mb-1">No transactions yet</p>
@@ -245,7 +247,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                 <div
                   key={tx.id}
                   className="tx-row"
-                  style={i < recentTx.length - 1 ? { borderBottom: '1px solid #f0f1f5' } : undefined}
+                  style={i < recentTx.length - 1 ? { borderBottom: `1px solid ${colors.divider}` } : undefined}
                   onClick={() => onEdit(tx)}
                 >
                   <div

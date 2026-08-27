@@ -3,6 +3,7 @@ import { ChevronLeft, Shield, TrendingDown, Calendar, DollarSign, Info, Zap } fr
 import { Transaction, Subscription, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend } from '../utils/insights';
+import { useTheme } from '../context/ThemeContext';
 
 interface SafeToSpendProps {
   transactions: Transaction[];
@@ -15,6 +16,7 @@ interface SafeToSpendProps {
 export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
   transactions, subscriptions, currency, monthlyBudget, onNavigate,
 }) => {
+  const { colors } = useTheme();
   const result = useMemo(
     () => calculateSafeToSpend(transactions, subscriptions),
     [transactions, subscriptions],
@@ -45,7 +47,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: '#111827' }}>Safe to Spend</h1>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Safe to Spend</h1>
           <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>How much you can spend stress-free today</p>
         </div>
       </div>
@@ -67,7 +69,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
         </div>
         <p
           className="text-5xl font-bold mb-1"
-          style={{ color: '#111827', letterSpacing: '-0.03em' }}
+          style={{ color: colors.textPrimary, letterSpacing: '-0.03em' }}
         >
           {formatCurrency(result.safeAmount, currency)}
         </p>
@@ -90,9 +92,9 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
       {/* Breakdown */}
       <div
         className="rounded-2xl overflow-hidden mb-5"
-        style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+        style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
       >
-        <div className="px-4 py-3" style={{ borderBottom: '1px solid #e5e7eb' }}>
+        <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.borderStrong}` }}>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
             Breakdown
           </p>
@@ -105,7 +107,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           <div
             key={label}
             className="flex items-center justify-between px-4 py-3.5"
-            style={{ borderBottom: '1px solid #1a1a24' }}
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="flex items-center gap-3">
               <div
@@ -116,7 +118,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
               >
                 <Icon size={14} style={{ color: positive ? '#34d399' : '#f87171' }} />
               </div>
-              <span className="text-sm" style={{ color: '#4b5563' }}>{label}</span>
+              <span className="text-sm" style={{ color: colors.textSecondary }}>{label}</span>
             </div>
             <span className="text-sm font-bold" style={{ color: positive ? '#34d399' : '#f87171' }}>
               {positive ? '+' : '-'}{formatCurrency(value, currency)}
@@ -131,7 +133,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
             >
               <Shield size={14} style={{ color: '#818cf8' }} />
             </div>
-            <span className="text-sm font-bold" style={{ color: '#111827' }}>Safe to Spend</span>
+            <span className="text-sm font-bold" style={{ color: colors.textPrimary }}>Safe to Spend</span>
           </div>
           <span className="text-sm font-bold" style={{ color: '#818cf8' }}>
             {formatCurrency(result.safeAmount, currency)}
@@ -143,7 +145,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
       {monthlyBudget > 0 && (
         <div
           className="rounded-2xl p-4 mb-5"
-          style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}
+          style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
         >
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
@@ -151,12 +153,12 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
             </p>
             <p
               className="text-sm font-bold"
-              style={{ color: budgetUsedPct >= 100 ? '#f87171' : '#111827' }}
+              style={{ color: budgetUsedPct >= 100 ? '#f87171' : colors.textPrimary }}
             >
               {budgetUsedPct.toFixed(0)}% used
             </p>
           </div>
-          <div className="h-2 rounded-full mb-3" style={{ background: '#e5e7eb' }}>
+          <div className="h-2 rounded-full mb-3" style={{ background: colors.borderStrong }}>
             <div
               className="h-full rounded-full transition-all"
               style={{
