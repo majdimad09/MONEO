@@ -152,7 +152,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </button>
               <button onClick={() => setEditBudget(false)}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: '#111d35' }}>
+                style={{ background: '#16161f' }}>
                 Cancel
               </button>
             </div>
@@ -161,16 +161,16 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <div>
             {/* Numbers */}
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="rounded-2xl p-3 text-center" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+              <div className="rounded-2xl p-3 text-center" style={{ background: '#111118', border: '1px solid #242434' }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Budget</p>
                 <p className="text-sm font-bold text-white">{formatCurrency(monthlyBudget, currency)}</p>
               </div>
-              <div className="rounded-2xl p-3 text-center" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+              <div className="rounded-2xl p-3 text-center" style={{ background: '#111118', border: '1px solid #242434' }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Spent</p>
                 <p className="text-sm font-bold text-red-400">{formatCurrency(thisMonthExpenses, currency)}</p>
               </div>
               <div className="rounded-2xl p-3 text-center"
-                style={{ background: budgetRemaining < 0 ? 'rgba(239,68,68,0.08)' : '#0a1424', border: `1px solid ${budgetRemaining < 0 ? 'rgba(239,68,68,0.2)' : '#1e2d4a'}` }}>
+                style={{ background: budgetRemaining < 0 ? 'rgba(239,68,68,0.08)' : '#111118', border: `1px solid ${budgetRemaining < 0 ? 'rgba(239,68,68,0.2)' : '#242434'}` }}>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? 'Over' : 'Left'}</p>
                 <p className="text-sm font-bold" style={{ color: budgetRemaining < 0 ? '#ef4444' : '#34d399' }}>
                   {formatCurrency(Math.abs(budgetRemaining), currency)}
@@ -183,7 +183,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               <span className="text-[11px] text-slate-500">Budget used</span>
               <span className="text-[11px] font-bold" style={{ color: budgetColor }}>{Math.min(budgetPct, 999).toFixed(0)}%</span>
             </div>
-            <div className="h-3 rounded-full overflow-hidden" style={{ background: '#0a1424' }}>
+            <div className="h-3 rounded-full overflow-hidden" style={{ background: '#111118' }}>
               <div className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(budgetPct, 100)}%`,
@@ -247,7 +247,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                       className="flex items-center gap-1.5 px-2 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all"
                       style={limitCategory === c.name
                         ? { background: `${color}20`, border: `1px solid ${color}50`, color }
-                        : { background: '#0a1424', border: '1px solid #1e2d4a', color: '#475569' }}
+                        : { background: '#111118', border: '1px solid #242434', color: '#475569' }}
                     >
                       <CategoryIcon category={c.name} type="expense" size={12} />
                       <span className="truncate">{c.name}</span>
@@ -275,7 +275,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </button>
               <button onClick={cancelAddLimit}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: '#111d35' }}>
+                style={{ background: '#16161f' }}>
                 <X size={16} />
               </button>
             </div>
@@ -330,7 +330,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                       </button>
                     </div>
                   </div>
-                  <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: '#0a1424' }}>
+                  <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: '#111118' }}>
                     <div className="h-full rounded-full"
                       style={{
                         width: `${Math.min(pct, 100)}%`,
@@ -357,7 +357,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <button
             onClick={onNavigateRecurring}
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
-            style={{ borderBottom: '1px solid #0c1a30' }}
+            style={{ borderBottom: '1px solid #1e1e2c' }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)' }}>

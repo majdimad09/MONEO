@@ -305,7 +305,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
           <Crown size={16} style={{ color: '#a78bfa' }} />
           <div className="flex-1 text-left">
             <p className="text-xs font-bold text-slate-300">Create your own community</p>
-            <p className="text-[10px] text-slate-500">Premium · $3.99/month</p>
+            <p className="text-[10px] text-slate-500">Premium · $1.99/month</p>
           </div>
           <ArrowRight size={14} style={{ color: '#a78bfa' }} />
         </button>

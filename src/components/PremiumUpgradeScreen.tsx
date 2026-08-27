@@ -115,7 +115,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
         </h1>
         <p className="text-sm text-slate-400 mb-4">Advanced tools, deeper insights, community leadership</p>
         <div className="flex items-baseline justify-center gap-1">
-          <span className="text-4xl font-bold text-white">$3.99</span>
+          <span className="text-4xl font-bold text-white">$1.99</span>
           <span className="text-slate-400 text-sm">/month</span>
         </div>
         <p className="text-xs text-slate-600 mt-1">Cancel anytime · No commitment</p>
@@ -142,7 +142,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
 
       {/* Premium features */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
           What you unlock
         </p>
         <div className="space-y-2">
@@ -150,7 +150,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
             <div
               key={f.label}
               className="flex items-center gap-3 rounded-2xl px-4 py-3"
-              style={{ background: '#0d1526', border: '1px solid #1a2a45' }}
+              style={{ background: '#16161f', border: '1px solid #242434' }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -170,7 +170,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
 
       {/* Free features */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
           Always free
         </p>
         <div className="card-dark rounded-2xl px-4 py-3 space-y-2">
@@ -193,7 +193,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
           boxShadow: '0 4px 28px rgba(139,92,246,0.35)',
         }}
       >
-        <Crown size={16} /> Get Premium — $3.99/mo
+        <Crown size={16} /> Get Premium — $1.99/mo
       </button>
     </div>
   );
@@ -240,17 +240,17 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
 
       {/* Billing info */}
       <div className="card-dark rounded-2xl overflow-hidden">
-        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #0c1a30' }}>
+        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e2c' }}>
           <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Subscription</p>
         </div>
         {[
           { label: 'Plan', value: 'Moneo Premium' },
-          { label: 'Price', value: '$3.99 / month' },
+          { label: 'Price', value: '$1.99 / month' },
           { label: 'Status', value: 'Active', valueColor: '#34d399' },
           { label: 'Started', value: startDate ?? '—' },
           { label: 'Billing', value: 'Payment processing coming soon', small: true },
         ].map(({ label, value, valueColor, small }) => (
-          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #0c1a30' }}>
+          <div key={label} className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #1e1e2c' }}>
             <span className="text-sm text-slate-400">{label}</span>
             <span className={`${small ? 'text-[11px]' : 'text-sm'} font-semibold`} style={{ color: valueColor ?? '#e2e8f0' }}>
               {value}
@@ -261,7 +261,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
 
       {/* Feature list */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#50506a' }}>
           Your Premium features
         </p>
         <div className="card-dark rounded-2xl px-4 py-3 space-y-2.5">
@@ -280,7 +280,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
         <button
           onClick={onShowCancel}
           className="w-full py-3 rounded-2xl text-sm text-slate-500 cursor-pointer transition-colors hover:text-slate-400"
-          style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}
+          style={{ background: '#111118', border: '1px solid #242434' }}
         >
           Cancel subscription
         </button>
@@ -301,7 +301,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
           <div className="flex gap-2">
             <button onClick={onHideCancel}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-400 cursor-pointer"
-              style={{ background: '#111d35', border: '1px solid #1e2d4a' }}>
+              style={{ background: '#16161f', border: '1px solid #242434' }}>
               Keep Premium
             </button>
             <button onClick={onCancel} disabled={cancelling}

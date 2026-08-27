@@ -57,7 +57,7 @@ export const PremiumGate: React.FC<PremiumGateProps> = ({
         Upgrade to Premium <ArrowRight size={15} />
       </button>
 
-      <p className="text-xs text-slate-600 mt-4">$3.99 / month · Cancel anytime</p>
+      <p className="text-xs text-slate-600 mt-4">$1.99 / month · Cancel anytime</p>
     </div>
   );
 };

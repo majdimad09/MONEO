@@ -171,7 +171,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Expandable: Safe to spend */}
           {balanceExpanded && (
-            <div className="expand-in space-y-3 pt-2" style={{ borderTop: '1px solid rgba(59,130,246,0.15)' }}>
+            <div className="expand-in space-y-3 pt-2" style={{ borderTop: '1px solid rgba(99,102,241,0.15)' }}>
               {/* Safe to spend */}
               <div className="safe-spend-card">
                 <div className="flex items-center justify-between">
@@ -238,7 +238,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {[
             { label: 'Expense', icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', onClick: onAddExpense },
             { label: 'Income', icon: ArrowUpRight, color: '#34d399', bg: 'rgba(16,185,129,0.1)', onClick: onAddIncome },
-            { label: 'Stats', icon: BarChart2, color: '#60a5fa', bg: 'rgba(59,130,246,0.1)', onClick: onNavigateStats },
+            { label: 'Stats', icon: BarChart2, color: '#a5b4fc', bg: 'rgba(99,102,241,0.1)', onClick: onNavigateStats },
             { label: 'Budget', icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateBudget },
           ].map(({ label, icon: Icon, color, bg, onClick }) => (
             <button key={label} onClick={onClick} className="quick-action-btn">

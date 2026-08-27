@@ -64,6 +64,12 @@ import { PremiumUpgradeScreen } from './components/PremiumUpgradeScreen';
 // Stage 2 — Community
 import { CommunityScreen } from './components/CommunityScreen';
 import { CommunityDetailScreen } from './components/CommunityDetailScreen';
+// Missing premium screens (fixed)
+import { ProjectionScreen } from './components/ProjectionScreen';
+import { MoneyStoryScreen } from './components/MoneyStoryScreen';
+import { SpendingPatternsScreen } from './components/SpendingPatternsScreen';
+import { SafeToSpendScreen } from './components/SafeToSpendScreen';
+import { AskMoneoScreen } from './components/AskMoneoScreen';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -330,6 +336,37 @@ export default function App() {
     return dbJoinCommunity(user.id, code, userName || 'You', currentScore).catch(() => null);
   }, [user, userName, currentScore]);
 
+  // ── Premium upgrade with auto-subscription ────────────────────────────────
+  const handleUpgradeToPremium = useCallback(async () => {
+    await upgradeToPremium();
+    // Auto-add Moneo Premium as a recurring subscription expense (avoid duplicates)
+    const alreadyExists = subscriptions.some(s => s.name === 'Moneo Premium' && s.isActive);
+    if (!alreadyExists) {
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const newSub: import('./types/finance').Subscription = {
+        id: 'moneo-premium-' + Date.now(),
+        name: 'Moneo Premium',
+        amount: 1.99,
+        frequency: 'monthly',
+        nextPaymentDate: nextMonth.toISOString().split('T')[0],
+        category: 'Subscriptions',
+        isActive: true,
+        createdAt: Date.now(),
+      };
+      handleSaveSubscriptions([...subscriptions, newSub]);
+    }
+  }, [upgradeToPremium, subscriptions, handleSaveSubscriptions]);
+
+  const handleCancelPremium = useCallback(async () => {
+    await cancelPremium();
+    // Deactivate the Moneo Premium subscription entry
+    const updated = subscriptions.map(s =>
+      s.name === 'Moneo Premium' ? { ...s, isActive: false } : s,
+    );
+    handleSaveSubscriptions(updated);
+  }, [cancelPremium, subscriptions, handleSaveSubscriptions]);
+
   const openAddModal = (type: TransactionType) => {
     setAddModalDefaultType(type);
     setShowAddModal(true);
@@ -348,10 +385,10 @@ export default function App() {
 
   if (authLoading || cloudLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#060b18' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b0b0f' }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
-          <span className="text-xs text-slate-500">Loading Moneo…</span>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(99,102,241,0.2)', borderTopColor: '#6366f1' }} />
+          <span className="text-xs" style={{ color: '#50506a' }}>Loading Moneo…</span>
         </div>
       </div>
     );
@@ -569,12 +606,71 @@ export default function App() {
             />
           )}
 
+          {currentView === 'safe-to-spend' && (
+            <SafeToSpendScreen
+              transactions={transactions}
+              subscriptions={subscriptions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              onNavigate={navigate}
+            />
+          )}
+
+          {currentView === 'projection' && (
+            <ProjectionScreen
+              transactions={transactions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              categoryLimits={categoryLimits}
+              isPremium={isPremium}
+              onNavigate={navigate}
+              onUpgrade={handleUpgradeToPremium}
+            />
+          )}
+
+          {currentView === 'money-story' && (
+            <MoneyStoryScreen
+              transactions={transactions}
+              currency={currency}
+              isPremium={isPremium}
+              onNavigate={navigate}
+              onUpgrade={handleUpgradeToPremium}
+            />
+          )}
+
+          {currentView === 'spending-patterns' && (
+            <SpendingPatternsScreen
+              transactions={transactions}
+              currency={currency}
+              isPremium={isPremium}
+              onNavigate={navigate}
+              onUpgrade={handleUpgradeToPremium}
+            />
+          )}
+
+          {currentView === 'ask-moneo' && (
+            <AskMoneoScreen
+              transactions={transactions}
+              currency={currency}
+              monthlyBudget={monthlyBudget}
+              categoryLimits={categoryLimits}
+              subscriptions={subscriptions}
+              savingGoals={savingGoals}
+              recurringIncome={recurringIncome}
+              isPremium={isPremium}
+              onNavigate={navigate}
+              onUpgrade={handleUpgradeToPremium}
+            />
+          )}
+
           {currentView === 'premium' && (
             <PremiumUpgradeScreen
               isPremium={isPremium}
               membershipStartedAt={membership.startedAt}
-              onUpgrade={upgradeToPremium}
-              onCancelPremium={cancelPremium}
+              onUpgrade={handleUpgradeToPremium}
+              onCancelPremium={handleCancelPremium}
               onGoBack={() => navigate('more')}
             />
           )}
@@ -631,15 +727,15 @@ export default function App() {
           className="fixed bottom-24 left-1/2 z-50 text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2"
           style={{
             transform: 'translateX(-50%)',
-            background: '#0d1e3f',
-            border: '1px solid rgba(59,130,246,0.3)',
-            boxShadow: '0 0 24px rgba(59,130,246,0.2), 0 4px 16px rgba(0,0,0,0.5)',
-            color: '#f1f5f9',
+            background: '#1c1c2a',
+            border: '1px solid rgba(99,102,241,0.35)',
+            boxShadow: '0 0 24px rgba(99,102,241,0.2), 0 4px 16px rgba(0,0,0,0.5)',
+            color: '#f0f0f8',
             animation: 'pageEnter 0.25s ease forwards',
             whiteSpace: 'nowrap',
           }}
         >
-          <div className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" style={{ boxShadow: '0 0 6px rgba(96,165,250,0.8)' }} />
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#818cf8', boxShadow: '0 0 6px rgba(129,140,248,0.8)' }} />
           {toastMessage}
         </div>
       )}

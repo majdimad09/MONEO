@@ -30,7 +30,7 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
 const INSIGHT_COLORS: Record<InsightType, { bg: string; border: string; icon: string }> = {
   positive: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)',  icon: '#34d399' },
   warning:  { bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.2)',   icon: '#f87171' },
-  neutral:  { bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)', icon: '#60a5fa' },
+  neutral:  { bg: 'rgba(99,102,241,0.07)', border: 'rgba(99,102,241,0.18)', icon: '#a5b4fc' },
   info:     { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)',  icon: '#a78bfa' },
 };
 
@@ -72,7 +72,7 @@ const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView
       className="w-full rounded-2xl flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-left"
       style={locked
         ? { background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.2)' }
-        : { background: '#0d1526', border: '1px solid #1a2a45' }}
+        : { background: '#16161f', border: '1px solid #242434' }}
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: `${color}14` }}>
@@ -121,7 +121,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           {/* Mini ring */}
           <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
             <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={36} cy={36} r={28} fill="none" stroke="#1e2d4a" strokeWidth={7} />
+              <circle cx={36} cy={36} r={28} fill="none" stroke="#242434" strokeWidth={7} />
               <circle
                 cx={36} cy={36} r={28} fill="none"
                 stroke={level.color} strokeWidth={7} strokeLinecap="round"
@@ -156,7 +156,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Lightbulb size={14} style={{ color: '#fbbf24' }} />
-            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#3d5068' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#50506a' }}>
               Money Coach
             </p>
           </div>
@@ -171,7 +171,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         {insights.length === 0 ? (
           <div
             className="rounded-2xl px-4 py-5 text-center"
-            style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+            style={{ background: '#16161f', border: '1px solid #242434' }}
           >
             <Lightbulb size={24} className="mx-auto mb-2 text-slate-600" />
             <p className="text-sm text-slate-500">Add more transactions to get personalized insights.</p>
@@ -214,7 +214,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
 
       {/* ── Quick tools grid ─────────────────────────────────── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: '#50506a' }}>
           Tools
         </p>
         <div className="space-y-2">

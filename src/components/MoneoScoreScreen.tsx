@@ -36,7 +36,7 @@ function ScoreRing({ score, color, size = 120 }: { score: number; color: string;
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx={cx} cy={cx} r={r} fill="none" stroke="#1e2d4a" strokeWidth={stroke} />
+        <circle cx={cx} cy={cx} r={r} fill="none" stroke="#242434" strokeWidth={stroke} />
         <circle
           cx={cx} cy={cx} r={r} fill="none"
           stroke={color} strokeWidth={stroke} strokeLinecap="round"
@@ -103,7 +103,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <div className="space-y-3 text-left">
             {result.missingDataHints.map((hint, i) => (
               <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+                style={{ background: '#111118', border: '1px solid #242434' }}>
                 <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
                   style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)' }}>
                   {i + 1}
@@ -146,7 +146,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       {/* ── HERO SCORE CARD ──────────────────────────── */}
       <div className="px-4">
         <div className="card-dark rounded-3xl p-6"
-          style={{ background: 'linear-gradient(135deg, #070e1f 0%, #0c1a30 100%)', border: `1px solid ${result.color}25` }}>
+          style={{ background: 'linear-gradient(135deg, #070e1f 0%, #1e1e2c 100%)', border: `1px solid ${result.color}25` }}>
           <div className="flex items-center gap-6 mb-6">
             <ScoreRing score={result.score} color={result.color} size={130} />
             <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
                 <span className="text-[11px] font-bold text-emerald-400">Max level reached!</span>
               )}
             </div>
-            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: '#0a1424' }}>
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: '#111118' }}>
               <div
                 className="h-full rounded-full transition-all"
                 style={{
@@ -183,7 +183,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
             <div className="flex justify-between mt-2">
               {SCORE_LEVELS.map(l => (
                 <div key={l.name} className="flex flex-col items-center gap-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: result.score >= l.min ? l.color : '#1e2d4a' }} />
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: result.score >= l.min ? l.color : '#242434' }} />
                 </div>
               ))}
             </div>
@@ -198,14 +198,14 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           {result.factors.map((f, i) => {
             const pct = (f.points / f.maxPoints) * 100;
             return (
-              <div key={f.label} className="px-4 py-4" style={{ borderBottom: i < result.factors.length - 1 ? '1px solid #0c1a30' : 'none' }}>
+              <div key={f.label} className="px-4 py-4" style={{ borderBottom: i < result.factors.length - 1 ? '1px solid #1e1e2c' : 'none' }}>
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-sm font-semibold text-slate-200">{f.label}</span>
                   <span className="text-[12px] font-bold font-mono" style={{ color: f.color }}>
                     {f.points}/{f.maxPoints}
                   </span>
                 </div>
-                <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: '#0a1424' }}>
+                <div className="h-2 rounded-full overflow-hidden mb-1.5" style={{ background: '#111118' }}>
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -230,7 +230,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <div className="card-dark rounded-2xl overflow-hidden">
             {helpingFactors.map((f, i) => (
               <div key={f.label} className="flex items-start gap-3 px-4 py-3"
-                style={{ borderBottom: i < helpingFactors.length - 1 ? '1px solid #0c1a30' : 'none' }}>
+                style={{ borderBottom: i < helpingFactors.length - 1 ? '1px solid #1e1e2c' : 'none' }}>
                 <CheckCircle2 size={16} className="text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-slate-200">{f.label}</p>
@@ -249,7 +249,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <div className="card-dark rounded-2xl overflow-hidden">
             {hurtingFactors.map((f, i) => (
               <div key={f.label} className="flex items-start gap-3 px-4 py-3"
-                style={{ borderBottom: i < hurtingFactors.length - 1 ? '1px solid #0c1a30' : 'none' }}>
+                style={{ borderBottom: i < hurtingFactors.length - 1 ? '1px solid #1e1e2c' : 'none' }}>
                 <TrendingDown size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-slate-200">{f.label}</p>
@@ -268,7 +268,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <div className="card-dark rounded-2xl overflow-hidden">
             {actionItems.map((action, i) => (
               <div key={i} className="flex items-start gap-3 px-4 py-3"
-                style={{ borderBottom: i < actionItems.length - 1 ? '1px solid #0c1a30' : 'none' }}>
+                style={{ borderBottom: i < actionItems.length - 1 ? '1px solid #1e1e2c' : 'none' }}>
                 <Lightbulb size={15} className="text-blue-400 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-slate-300">{action}</p>
               </div>

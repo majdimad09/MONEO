@@ -40,7 +40,7 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-            style={{ background: '#111d35' }}
+            style={{ background: '#16161f' }}
           >
             <X size={16} />
           </button>

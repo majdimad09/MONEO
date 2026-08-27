@@ -62,7 +62,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
         <button
           onClick={() => onNavigate('settings')}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all"
-          style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+          style={{ background: '#16161f', border: '1px solid #242434' }}
         >
           <Settings2 size={14} style={{ color: '#64748b' }} />
           <span className="text-xs font-semibold text-slate-500">Settings</span>
@@ -90,7 +90,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
               </div>
               <div>
                 <p className="text-sm font-bold text-white">Upgrade to Premium</p>
-                <p className="text-xs text-slate-500">$3.99/month · Unlock all features</p>
+                <p className="text-xs text-slate-500">$1.99/month · Unlock all features</p>
               </div>
             </div>
             <Sparkles size={16} style={{ color: '#a78bfa' }} />
@@ -101,7 +101,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
       {/* Feature sections */}
       {SECTIONS.map(section => (
         <div key={section.title}>
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
             {section.title}
           </p>
           <div className="grid grid-cols-2 gap-2.5">
@@ -119,7 +119,7 @@ export const FeaturesHub: React.FC<FeaturesHubProps> = ({ isPremium, onNavigate 
 
       {/* Settings row */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
           Account
         </p>
         <button

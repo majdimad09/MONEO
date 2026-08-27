@@ -185,7 +185,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     <div className="page-enter px-4 pt-3 pb-6 space-y-4">
 
       {/* ── VIEW MODE TABS ──────────────────────────── */}
-      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: '#111118', border: '1px solid #242434' }}>
         {(['week', 'month', 'year'] as ViewMode[]).map(m => (
           <button key={m} onClick={() => setViewMode(m)}
             className={`stat-filter-btn capitalize ${viewMode === m ? 'active' : ''}`}>
@@ -198,7 +198,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       <div className="flex items-center justify-between py-0.5 card-float-1">
         <button onClick={handlePrev} disabled={!canGoPrev}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}>
+          style={{ background: '#16161f', border: '1px solid #242434' }}>
           <ChevronLeft size={16} className="text-slate-300" />
         </button>
         <div className="text-center">
@@ -207,7 +207,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         </div>
         <button onClick={handleNext} disabled={!canGoNext}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
-          style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}>
+          style={{ background: '#16161f', border: '1px solid #242434' }}>
           <ChevronRight size={16} className="text-slate-300" />
         </button>
       </div>
@@ -235,7 +235,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         key={slice.category + i}
                         d={slice.d}
                         fill={slice.color}
-                        stroke="#0d1526"
+                        stroke="#16161f"
                         strokeWidth={isSelected ? 1 : 3}
                         style={{
                           filter: isSelected ? `drop-shadow(0 0 8px ${slice.color}80)` : `drop-shadow(0 0 3px ${slice.color}30)`,
@@ -312,7 +312,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                           {formatCurrency(cat.total, currency)}
                         </span>
                       </div>
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e2d4a' }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#242434' }}>
                         <div className="h-full rounded-full transition-all duration-700" style={{
                           width: `${cat.percentage}%`,
                           background: cat.color,

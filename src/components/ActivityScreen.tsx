@@ -120,7 +120,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
 
       <div
         className="flex p-1 mb-5 rounded-xl"
-        style={{ background: '#060f22', border: '1px solid #1e2d4a' }}
+        style={{ background: '#060f22', border: '1px solid #242434' }}
       >
         {(['timeline', 'transactions'] as const).map(t => (
           <button
@@ -128,7 +128,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
             onClick={() => setTab(t)}
             className="flex-1 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all capitalize"
             style={tab === t
-              ? { background: '#162040', color: '#60a5fa', boxShadow: '0 0 0 1px rgba(59,130,246,0.3)' }
+              ? { background: '#1e1e2c', color: '#60a5fa', boxShadow: '0 0 0 1px rgba(59,130,246,0.3)' }
               : { color: '#475569' }
             }
           >
@@ -143,7 +143,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
           {grouped.length === 0 ? (
             <div
               className="rounded-2xl px-4 py-10 text-center"
-              style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+              style={{ background: '#16161f', border: '1px solid #242434' }}
             >
               <Clock size={28} className="mx-auto mb-3 text-slate-600" />
               <p className="text-sm font-semibold text-slate-400 mb-1">No activity yet</p>
@@ -159,9 +159,9 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                     <div
                       className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg"
                       style={{
-                        background: date === today() ? 'rgba(59,130,246,0.15)' : '#0a1424',
+                        background: date === today() ? 'rgba(59,130,246,0.15)' : '#111118',
                         color: date === today() ? '#60a5fa' : '#475569',
-                        border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : '#1e2d4a'}`,
+                        border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : '#242434'}`,
                       }}
                     >
                       {formatEventDate(date)}
@@ -180,7 +180,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                       <div
                         key={e.id}
                         className="flex items-center gap-3 px-4 py-3"
-                        style={i < evts.length - 1 ? { borderBottom: '1px solid #0c1a30' } : undefined}
+                        style={i < evts.length - 1 ? { borderBottom: '1px solid #1e1e2c' } : undefined}
                       >
                         {/* Icon */}
                         <div
@@ -233,7 +233,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
           {recentTx.length === 0 ? (
             <div
               className="rounded-2xl px-4 py-10 text-center"
-              style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+              style={{ background: '#16161f', border: '1px solid #242434' }}
             >
               <ArrowUpRight size={28} className="mx-auto mb-3 text-slate-600" />
               <p className="text-sm font-semibold text-slate-400 mb-1">No transactions yet</p>
@@ -245,7 +245,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                 <div
                   key={tx.id}
                   className="tx-row"
-                  style={i < recentTx.length - 1 ? { borderBottom: '1px solid #0c1a30' } : undefined}
+                  style={i < recentTx.length - 1 ? { borderBottom: '1px solid #1e1e2c' } : undefined}
                   onClick={() => onEdit(tx)}
                 >
                   <div

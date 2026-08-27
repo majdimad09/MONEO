@@ -160,7 +160,7 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
               <Check size={15} /> {editingId ? 'Save Changes' : 'Add Goal'}
             </button>
             <button onClick={cancelForm} className="px-4 py-2.5 text-sm text-slate-400 rounded-xl cursor-pointer"
-              style={{ background: '#111d35' }}>
+              style={{ background: '#16161f' }}>
               Cancel
             </button>
           </div>
@@ -254,11 +254,11 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2.5 mb-3">
-                      <div className="rounded-xl p-2.5" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: '#111118', border: '1px solid #242434' }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Remaining</p>
                         <p className="text-sm font-bold text-slate-200">{formatCurrency(remaining, currency)}</p>
                       </div>
-                      <div className="rounded-xl p-2.5" style={{ background: '#0a1424', border: '1px solid #1e2d4a' }}>
+                      <div className="rounded-xl p-2.5" style={{ background: '#111118', border: '1px solid #242434' }}>
                         <p className="text-[10px] text-slate-500 font-semibold mb-0.5">Months left</p>
                         <p className="text-sm font-bold text-slate-200">{monthsLeft}</p>
                       </div>

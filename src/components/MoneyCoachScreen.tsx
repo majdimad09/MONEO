@@ -102,7 +102,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
       {/* ── Upcoming alerts ─────────────────────────────────── */}
       {(upcomingPayments.length > 0 || upcomingIncome.length > 0) && (
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
             Coming Up
           </p>
           <div className="space-y-2">
@@ -145,7 +145,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
       {/* ── Budget status ────────────────────────────────────── */}
       {monthlyBudget > 0 && (
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
             Budget Status
           </p>
           <div className="card-dark rounded-2xl p-4">
@@ -176,13 +176,13 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
 
       {/* ── Insights ─────────────────────────────────────────── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#3d5068' }}>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#50506a' }}>
           Observations
         </p>
         {insights.length === 0 ? (
           <div
             className="rounded-2xl px-4 py-8 text-center"
-            style={{ background: '#0d1526', border: '1px solid #1e2d4a' }}
+            style={{ background: '#16161f', border: '1px solid #242434' }}
           >
             <Lightbulb size={28} className="mx-auto mb-3 text-slate-600" />
             <p className="text-sm font-semibold text-slate-400 mb-1">Not enough data yet</p>

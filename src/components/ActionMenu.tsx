@@ -68,7 +68,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl cursor-pointer"
-            style={{ background: '#111d35', border: '1px solid #1e2d4a', color: '#64748b' }}
+            style={{ background: '#16161f', border: '1px solid #242434', color: '#64748b' }}
           >
             <X size={16} />
           </button>
