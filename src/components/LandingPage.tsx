@@ -14,19 +14,19 @@ export const PhoneFrame: React.FC<{ children: React.ReactNode; className?: strin
     className={`relative mx-auto ${className}`}
     style={{
       width: 260,
-      background: '#0d1526',
-      border: '1px solid #1e2d4a',
+      background: '#f4f5f9',
+      border: '1px solid #e5e7eb',
       borderRadius: 26,
       padding: 14,
-      boxShadow: '0 0 60px rgba(59,130,246,0.12), 0 24px 48px rgba(0,0,0,0.5)',
+      boxShadow: '0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)',
       overflow: 'hidden',
     }}
   >
     <div className="flex items-center justify-between mb-3 px-1">
-      <span style={{ fontSize: 9, color: '#475569', fontWeight: 600 }}>9:41</span>
+      <span style={{ fontSize: 9, color: '#9ca3af', fontWeight: 600 }}>9:41</span>
       <div className="flex gap-1 items-center">
-        <div style={{ width: 12, height: 6, background: '#34d399', borderRadius: 2 }} />
-        <div style={{ width: 10, height: 6, background: '#475569', borderRadius: 1.5 }} />
+        <div style={{ width: 12, height: 6, background: '#10b981', borderRadius: 2 }} />
+        <div style={{ width: 10, height: 6, background: '#d1d5db', borderRadius: 1.5 }} />
       </div>
     </div>
     {children}
@@ -50,39 +50,39 @@ export const SectionHeader: React.FC<{ label: string; title: string; desc: strin
 export const DashboardMockup: React.FC = () => (
   <PhoneFrame>
     <div className="flex items-center justify-between mb-3">
-      <span style={{ fontSize: 12, color: 'white', fontWeight: 800, letterSpacing: '-0.01em' }}>MONEO</span>
-      <div style={{ background: '#111d35', border: '1px solid #1e2d4a', borderRadius: 7, padding: '2px 7px', fontSize: 9, color: '#60a5fa', fontWeight: 700 }}>$ USD</div>
+      <span style={{ fontSize: 12, color: '#111827', fontWeight: 800, letterSpacing: '-0.01em' }}>MONEO</span>
+      <div style={{ background: '#f0f1f5', border: '1px solid #e5e7eb', borderRadius: 7, padding: '2px 7px', fontSize: 9, color: '#6366f1', fontWeight: 700 }}>$ USD</div>
     </div>
-    <div style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%)', borderRadius: 18, padding: 13, marginBottom: 9, boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}>
-      <p style={{ fontSize: 8, color: 'rgba(147,197,253,0.7)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>Total Balance</p>
+    <div style={{ background: 'linear-gradient(135deg, #5b5bd6 0%, #7c3aed 60%, #9d34da 100%)', borderRadius: 18, padding: 13, marginBottom: 9, boxShadow: '0 4px 20px rgba(91,91,214,0.35)' }}>
+      <p style={{ fontSize: 8, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>Total Balance</p>
       <p style={{ fontSize: 28, fontWeight: 800, color: 'white', marginBottom: 9, letterSpacing: '-0.02em' }}>$2,450</p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
         <div style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 11, padding: 7 }}>
-          <p style={{ fontSize: 7, color: '#34d399', fontWeight: 700, textTransform: 'uppercase' }}>↑ Income</p>
+          <p style={{ fontSize: 7, color: '#6ee7b7', fontWeight: 700, textTransform: 'uppercase' }}>↑ Income</p>
           <p style={{ fontSize: 12, fontWeight: 700, color: 'white', marginTop: 2 }}>$3,950</p>
         </div>
-        <div style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 11, padding: 7 }}>
-          <p style={{ fontSize: 7, color: '#f87171', fontWeight: 700, textTransform: 'uppercase' }}>↓ Expenses</p>
+        <div style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 11, padding: 7 }}>
+          <p style={{ fontSize: 7, color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase' }}>↓ Expenses</p>
           <p style={{ fontSize: 12, fontWeight: 700, color: 'white', marginTop: 2 }}>$1,500</p>
         </div>
       </div>
     </div>
-    <div style={{ background: '#111d35', border: '1px solid #1e2d4a', borderRadius: 14, overflow: 'hidden' }}>
-      <p style={{ fontSize: 8, fontWeight: 700, color: '#64748b', padding: '7px 11px 3px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Recent</p>
+    <div style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 14, overflow: 'hidden' }}>
+      <p style={{ fontSize: 8, fontWeight: 700, color: '#9ca3af', padding: '7px 11px 3px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Recent</p>
       {[
         { dot: '#10b981', desc: 'Monthly Salary', cat: 'Salary', amt: '+$3,500', green: true },
         { dot: '#ef4444', desc: 'Apartment Rent', cat: 'Rent', amt: '-$900', green: false },
         { dot: '#ef4444', desc: 'Groceries', cat: 'Food', amt: '-$150', green: false },
       ].map((tx, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 11px', borderTop: '1px solid rgba(30,45,74,0.7)' }}>
-          <div style={{ width: 24, height: 24, background: tx.green ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.10)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 11px', borderTop: '1px solid #f4f5f9' }}>
+          <div style={{ width: 24, height: 24, background: tx.green ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <div style={{ width: 5, height: 5, borderRadius: '50%', background: tx.dot }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 10, fontWeight: 600, color: '#374151', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.desc}</p>
-            <p style={{ fontSize: 8, color: '#475569' }}>{tx.cat}</p>
+            <p style={{ fontSize: 10, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.desc}</p>
+            <p style={{ fontSize: 8, color: '#9ca3af' }}>{tx.cat}</p>
           </div>
-          <span style={{ fontSize: 10, fontWeight: 700, color: tx.green ? '#34d399' : '#f87171', fontFamily: 'monospace', flexShrink: 0 }}>{tx.amt}</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: tx.green ? '#10b981' : '#ef4444', fontFamily: 'monospace', flexShrink: 0 }}>{tx.amt}</span>
         </div>
       ))}
     </div>
@@ -119,15 +119,15 @@ export const SafeToSpendMockup: React.FC = () => (
         ))}
       </div>
     </div>
-    <div style={{ background: '#111d35', border: '1px solid #1e2d4a', borderRadius: 13, padding: 11 }}>
+    <div style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 13, padding: 11 }}>
       <div className="flex justify-between mb-2">
-        <span style={{ fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>Monthly Budget</span>
-        <span style={{ fontSize: 9, color: '#60a5fa', fontWeight: 700 }}>62% used</span>
+        <span style={{ fontSize: 9, color: '#6b7280', fontWeight: 600 }}>Monthly Budget</span>
+        <span style={{ fontSize: 9, color: '#6366f1', fontWeight: 700 }}>62% used</span>
       </div>
-      <div style={{ background: '#1e2d4a', borderRadius: 4, height: 5, overflow: 'hidden' }}>
-        <div style={{ width: '62%', height: '100%', background: 'linear-gradient(90deg, #3b82f6, #60a5fa)', borderRadius: 4 }} />
+      <div style={{ background: '#e5e7eb', borderRadius: 4, height: 5, overflow: 'hidden' }}>
+        <div style={{ width: '62%', height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: 4 }} />
       </div>
-      <p style={{ fontSize: 8, color: '#475569', marginTop: 4 }}>$1,850 of $3,000 · $1,150 remaining</p>
+      <p style={{ fontSize: 8, color: '#9ca3af', marginTop: 4 }}>$1,850 of $3,000 · $1,150 remaining</p>
     </div>
   </PhoneFrame>
 );
@@ -152,7 +152,7 @@ export const AnalyticsMockup: React.FC = () => {
       <p style={{ fontSize: 8, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 9 }}>August 2026</p>
       <div className="flex items-center justify-center mb-8" style={{ position: 'relative' }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx={cx} cy={cx} r={r} fill="none" stroke="#1e2d4a" strokeWidth={stroke} />
+          <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
           {slices.map((s, i) => {
             const dashArray = `${(s.pct / 100) * circ} ${circ}`;
             const el = <circle key={i} cx={cx} cy={cx} r={r} fill="none" stroke={s.color} strokeWidth={stroke} strokeDasharray={dashArray} strokeDashoffset={-offset} strokeLinecap="round" />;
@@ -161,17 +161,17 @@ export const AnalyticsMockup: React.FC = () => {
           })}
         </svg>
         <div style={{ position: 'absolute', textAlign: 'center' }}>
-          <p style={{ fontSize: 15, fontWeight: 800, color: 'white' }}>$2,572</p>
-          <p style={{ fontSize: 7, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Spent</p>
+          <p style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>$2,572</p>
+          <p style={{ fontSize: 7, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Spent</p>
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         {slices.map((s, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: 9, color: '#94a3b8', fontWeight: 500 }}>{s.label}</span>
-            <span style={{ fontSize: 9, color: '#374151', fontWeight: 700 }}>{s.val}</span>
-            <span style={{ fontSize: 8, color: '#475569', width: 22, textAlign: 'right' }}>{s.pct}%</span>
+            <span style={{ flex: 1, fontSize: 9, color: '#6b7280', fontWeight: 500 }}>{s.label}</span>
+            <span style={{ fontSize: 9, color: '#111827', fontWeight: 700 }}>{s.val}</span>
+            <span style={{ fontSize: 8, color: '#9ca3af', width: 22, textAlign: 'right' }}>{s.pct}%</span>
           </div>
         ))}
       </div>
@@ -228,10 +228,10 @@ export const ScoreMockup: React.FC = () => {
   const cx = size / 2;
   const circ = 2 * Math.PI * r;
   const dashOffset = circ - (score / 100) * circ;
-  const scoreColor = '#3b82f6';
+  const scoreColor = '#8b5cf6';
   const breakdown = [
     { label: 'Savings rate', val: 35, color: '#10b981' },
-    { label: 'Budget adherence', val: 62, color: '#3b82f6' },
+    { label: 'Budget adherence', val: 62, color: '#6366f1' },
     { label: 'Expense control', val: 78, color: '#a78bfa' },
     { label: 'Goal progress', val: 55, color: '#f59e0b' },
   ];
@@ -241,27 +241,27 @@ export const ScoreMockup: React.FC = () => {
       <div className="flex items-center gap-4 mb-4">
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-            <circle cx={cx} cy={cx} r={r} fill="none" stroke="#1e2d4a" strokeWidth={stroke} />
+            <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
             <circle cx={cx} cy={cx} r={r} fill="none" stroke={scoreColor} strokeWidth={stroke} strokeDasharray={circ} strokeDashoffset={dashOffset} strokeLinecap="round" style={{ filter: `drop-shadow(0 0 5px ${scoreColor}80)` }} />
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: 20, fontWeight: 800, color: 'white' }}>{score}</span>
-            <span style={{ fontSize: 8, color: '#64748b', textTransform: 'uppercase' }}>/ 100</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: scoreColor }}>{score}</span>
+            <span style={{ fontSize: 8, color: '#9ca3af', textTransform: 'uppercase' }}>/ 100</span>
           </div>
         </div>
         <div>
           <p style={{ fontSize: 13, fontWeight: 700, color: scoreColor, marginBottom: 2 }}>Good</p>
-          <p style={{ fontSize: 9, color: '#64748b', lineHeight: 1.4 }}>Your financial health is on track.</p>
+          <p style={{ fontSize: 9, color: '#6b7280', lineHeight: 1.4 }}>Your financial health is on track.</p>
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {breakdown.map((b, i) => (
           <div key={i}>
             <div className="flex justify-between mb-1">
-              <span style={{ fontSize: 8, color: '#94a3b8' }}>{b.label}</span>
+              <span style={{ fontSize: 8, color: '#6b7280' }}>{b.label}</span>
               <span style={{ fontSize: 8, color: b.color, fontWeight: 700 }}>{b.val}%</span>
             </div>
-            <div style={{ background: '#1e2d4a', borderRadius: 3, height: 3, overflow: 'hidden' }}>
+            <div style={{ background: '#e5e7eb', borderRadius: 3, height: 3, overflow: 'hidden' }}>
               <div style={{ width: `${b.val}%`, height: '100%', background: b.color, borderRadius: 3 }} />
             </div>
           </div>
@@ -290,15 +290,15 @@ export const RecurringMockup: React.FC = () => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         {subs.map((s, i) => (
-          <div key={i} style={{ background: '#111d35', border: '1px solid #1e2d4a', borderRadius: 11, padding: '8px 11px', display: 'flex', alignItems: 'center', gap: 9 }}>
+          <div key={i} style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 11, padding: '8px 11px', display: 'flex', alignItems: 'center', gap: 9 }}>
             <div style={{ width: 27, height: 27, background: `${s.dot}18`, border: `1px solid ${s.dot}30`, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.dot }} />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>{s.name}</p>
-              <p style={{ fontSize: 8, color: '#475569' }}>{s.freq}</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}>{s.name}</p>
+              <p style={{ fontSize: 8, color: '#9ca3af' }}>{s.freq}</p>
             </div>
-            <span style={{ fontSize: 10, fontWeight: 700, color: '#f87171', fontFamily: 'monospace' }}>{s.amt}</span>
+            <span style={{ fontSize: 10, fontWeight: 700, color: '#ef4444', fontFamily: 'monospace' }}>{s.amt}</span>
           </div>
         ))}
       </div>
@@ -351,7 +351,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
     title: 'See where your money goes.',
     desc: 'Log income and expenses in seconds. Real-time balance and a clear breakdown of every dollar.',
     mockup: <DashboardMockup />,
-    accent: '#3b82f6',
+    accent: '#6366f1',
   },
   {
     label: 'SPEND SMART',
@@ -372,7 +372,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
     title: 'Know your financial health.',
     desc: 'A 0–100 score combining savings rate, budget adherence, expense control, and goal progress.',
     mockup: <ScoreMockup />,
-    accent: '#3b82f6',
+    accent: '#8b5cf6',
   },
   {
     label: 'MONEO INSIGHTS',
@@ -414,9 +414,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             {/* Back */}
             <button
               onClick={prev}
-              style={{ width: 34, height: 34, borderRadius: 11, background: '#0d1526', border: '1px solid #1e2d4a', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
+              style={{ width: 34, height: 34, borderRadius: 11, background: '#f0f1f5', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
             >
-              <ChevronLeft size={16} color="#64748b" />
+              <ChevronLeft size={16} color="#6b7280" />
             </button>
 
             {/* Progress pills */}
@@ -428,7 +428,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     height: 4,
                     flex: i === featureIdx ? 2.4 : 1,
                     borderRadius: 2,
-                    background: i < featureIdx ? '#3b82f6' : i === featureIdx ? (feature?.accent ?? '#3b82f6') : '#1e2d4a',
+                    background: i < featureIdx ? '#6366f1' : i === featureIdx ? (feature?.accent ?? '#6366f1') : '#e5e7eb',
                     transition: 'all 0.3s ease',
                   }}
                 />
@@ -489,9 +489,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </button>
                 <button
                   onClick={() => onGetStarted('signin')}
-                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: 'transparent', color: '#64748b', fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid #1e2d4a' }}
+                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: '#f7f8fc', color: '#6b7280', fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid #e5e7eb' }}
                 >
-                  Already have an account? <span style={{ color: '#60a5fa' }}>Sign In</span>
+                  Already have an account? <span style={{ color: '#6366f1' }}>Sign In</span>
                 </button>
               </div>
 
@@ -515,7 +515,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <p style={{ fontSize: 10, fontWeight: 700, color: feature.accent, letterSpacing: '0.13em', textTransform: 'uppercase', marginBottom: 7 }}>
                   {feature.label}
                 </p>
-                <h2 style={{ fontSize: 23, fontWeight: 800, color: 'white', letterSpacing: '-0.01em', lineHeight: 1.15, marginBottom: 8 }}>
+                <h2 style={{ fontSize: 23, fontWeight: 800, color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.15, marginBottom: 8 }}>
                   {feature.title}
                 </h2>
                 <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
@@ -534,7 +534,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <LogoBrandBlock iconSize={46} cashlySize="30px" taglineSize="11px" className="mx-auto" />
               </div>
 
-              <h2 style={{ fontSize: 26, fontWeight: 800, color: 'white', textAlign: 'center', letterSpacing: '-0.015em', lineHeight: 1.18, marginBottom: 10, position: 'relative', zIndex: 1 }}>
+              <h2 style={{ fontSize: 26, fontWeight: 800, color: '#111827', textAlign: 'center', letterSpacing: '-0.015em', lineHeight: 1.18, marginBottom: 10, position: 'relative', zIndex: 1 }}>
                 Ready to take control<br />of your money?
               </h2>
 
@@ -554,7 +554,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </button>
                 <button
                   onClick={() => onGetStarted('signin')}
-                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: 'rgba(59,130,246,0.07)', color: '#93c5fd', fontSize: 15, fontWeight: 600, cursor: 'pointer', border: '1px solid rgba(59,130,246,0.2)' }}
+                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: '#f7f8fc', color: '#6b7280', fontSize: 15, fontWeight: 600, cursor: 'pointer', border: '1px solid #e5e7eb' }}
                 >
                   Sign In
                 </button>
