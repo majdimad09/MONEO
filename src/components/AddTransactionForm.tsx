@@ -19,6 +19,7 @@ import {
 import { getTodayDateString } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface AddTransactionFormProps {
   onAddTransaction: (data: {
@@ -48,6 +49,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const currencySymbol =
     SUPPORTED_CURRENCIES.find((c) => c.code === currency)?.symbol || '$';
 
@@ -69,26 +71,26 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
 
     const parsedAmount = parseFloat(amount);
     if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError('Please enter a valid positive amount greater than 0.');
+      setError(t('errValidAmount'));
       return;
     }
 
     if (!description.trim()) {
-      setError('Please enter a description (e.g. "Monthly Salary" or "Dinner").');
+      setError(t('errEnterDescription'));
       return;
     }
 
     let finalCategory = category;
     if (isCustomCategory) {
       if (!customCategoryInput.trim()) {
-        setError('Please provide a name for your custom category.');
+        setError(t('errEnterCustomCategory'));
         return;
       }
       finalCategory = customCategoryInput.trim();
     }
 
     if (!date) {
-      setError('Please select a valid date.');
+      setError(t('errSelectDate'));
       return;
     }
 
@@ -106,9 +108,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
     setCustomCategoryInput('');
     setDate(getTodayDateString());
 
-    setSuccessMessage(
-      activeTab === 'income' ? 'Income added successfully!' : 'Expense recorded successfully!'
-    );
+    setSuccessMessage(activeTab === 'income' ? t('incomeAdded') : t('expenseAdded'));
     setTimeout(() => {
       setSuccessMessage(null);
     }, 3000);
@@ -135,7 +135,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           }`}>
             <ArrowDownRight className="w-3.5 h-3.5" />
           </div>
-          <span>Add Expense</span>
+          <span>{t('addExpense')}</span>
         </button>
 
         <button
@@ -153,7 +153,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           }`}>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </div>
-          <span>Add Income</span>
+          <span>{t('addIncome')}</span>
         </button>
       </div>
 
@@ -231,11 +231,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
             </div>
             <input
               type="text"
-              placeholder={
-                activeTab === 'income'
-                  ? 'e.g. Monthly Salary, Freelance project...'
-                  : 'e.g. Groceries, Dinner, Electricity bill...'
-              }
+              placeholder={activeTab === 'income' ? t('incomePlaceholder') : t('expensePlaceholder')}
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -251,7 +247,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              {activeTab === 'expense' ? 'Category *' : 'Income Source *'}
+              {activeTab === 'expense' ? t('categoryLabel') : t('incomeSource')}
             </label>
             <button
               type="button"
@@ -262,7 +258,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
               className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
             >
               <PlusCircle className="w-3.5 h-3.5" />
-              <span>{isCustomCategory ? 'Standard categories' : '+ Custom'}</span>
+              <span>{isCustomCategory ? t('standardCategories') : t('customCategoryBtn')}</span>
             </button>
           </div>
 
@@ -302,7 +298,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
               </div>
               <input
                 type="text"
-                placeholder="Enter custom category name..."
+                placeholder={t('customCategoryPlaceholder')}
                 value={customCategoryInput}
                 onChange={(e) => setCustomCategoryInput(e.target.value)}
                 className="input-dark w-full pl-9 pr-3.5 py-2 text-xs sm:text-sm font-medium rounded-xl"
@@ -318,7 +314,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           className="btn-blue w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>{activeTab === 'income' ? 'Add Income' : 'Add Expense'}</span>
+          <span>{activeTab === 'income' ? t('addIncome') : t('addExpense')}</span>
         </button>
       </form>
     </div>

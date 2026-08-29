@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { ScoreResult, getScoreLevel } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface CashlyScoreProps {
   result: ScoreResult;
@@ -10,6 +11,7 @@ interface CashlyScoreProps {
 
 export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const r = 46;
   const stroke = 8;
   const svgSize = (r + stroke) * 2;
@@ -34,12 +36,12 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
       {/* Title row */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Moneo Score</p>
-          <p className="text-[11px] text-slate-600 mt-0.5">Personal money management score</p>
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>{t('moneoScore')}</p>
+          <p className="text-[11px] mt-0.5" style={{ color: colors.textSecondary }}>{t('personalMoneyScore')}</p>
         </div>
         {onViewDetails && (
           <span className="flex items-center gap-0.5 text-xs font-semibold" style={{ color: '#6366f1' }}>
-            View Details <ChevronRight size={13} />
+            {t('viewDetails')} <ChevronRight size={13} />
           </span>
         )}
       </div>
@@ -96,8 +98,8 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
 
           {onViewDetails && (
             <div className="mt-4 pt-3" style={{ borderTop: `1px solid ${colors.borderStrong}` }}>
-              <p className="text-[11px] text-center text-slate-600">
-                Tap to see full Moneo Score report →
+              <p className="text-[11px] text-center" style={{ color: colors.textSecondary }}>
+                {t('tapForFullReport')}
               </p>
             </div>
           )}
@@ -110,9 +112,9 @@ export const CashlyScore: React.FC<CashlyScoreProps> = ({ result, onViewDetails 
             <ShieldCheck size={26} className="text-blue-400" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-bold text-slate-700 mb-1">Build Your Moneo Score</p>
-            <p className="text-xs text-slate-500 leading-relaxed mb-3">
-              Add {result.missingDataHints.length > 0 ? result.missingDataHints[0].toLowerCase() : 'more transactions'} to unlock your personal finance score.
+            <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('buildYourScore')}</p>
+            <p className="text-xs leading-relaxed mb-3" style={{ color: colors.textSecondary }}>
+              {t('addMoreTransactions')}
             </p>
             {onViewDetails && (
               <span className="text-xs text-blue-400 font-semibold flex items-center gap-1">

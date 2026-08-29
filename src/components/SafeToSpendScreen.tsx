@@ -4,6 +4,7 @@ import { Transaction, Subscription, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface SafeToSpendProps {
   transactions: Transaction[];
@@ -17,6 +18,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
   transactions, subscriptions, currency, monthlyBudget, onNavigate,
 }) => {
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
   const result = useMemo(
     () => calculateSafeToSpend(transactions, subscriptions),
     [transactions, subscriptions],
@@ -47,8 +49,8 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Safe to Spend</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>How much you can spend stress-free today</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>{t('safeToSpend')}</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>{t('safeToSpendDesc')}</p>
         </div>
       </div>
 
@@ -64,7 +66,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
         <div className="flex items-center justify-center gap-2 mb-3">
           <Zap size={13} style={{ color: safeColor }} />
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: safeColor }}>
-            Available to spend
+            {t('availableToSpend')}
           </p>
         </div>
         <p
@@ -74,7 +76,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           {formatCurrency(result.safeAmount, currency)}
         </p>
         <p className="text-sm" style={{ color: '#9ca3af' }}>
-          {daysLeft} days left in {now.toLocaleDateString('en-US', { month: 'long' })}
+          {daysLeft} {t('daysLeftLabel')} {now.toLocaleDateString(undefined, { month: 'long' })}
         </p>
         {dailySafe > 0 && (
           <div
@@ -96,13 +98,13 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
       >
         <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.borderStrong}` }}>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
-            Breakdown
+            {t('breakdownTitle')}
           </p>
         </div>
         {[
-          { icon: DollarSign, label: 'Income this month', value: result.income, positive: true },
-          { icon: TrendingDown, label: 'Expenses so far', value: result.expenses, positive: false },
-          { icon: Calendar, label: 'Upcoming subscriptions', value: result.subsRemaining, positive: false },
+          { icon: DollarSign, label: t('incomeThisMonth'), value: result.income, positive: true },
+          { icon: TrendingDown, label: t('expensesSoFar'), value: result.expenses, positive: false },
+          { icon: Calendar, label: t('upcomingSubs'), value: result.subsRemaining, positive: false },
         ].map(({ icon: Icon, label, value, positive }) => (
           <div
             key={label}
@@ -133,7 +135,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
             >
               <Shield size={14} style={{ color: '#818cf8' }} />
             </div>
-            <span className="text-sm font-bold" style={{ color: colors.textPrimary }}>Safe to Spend</span>
+            <span className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('safeToSpend')}</span>
           </div>
           <span className="text-sm font-bold" style={{ color: '#818cf8' }}>
             {formatCurrency(result.safeAmount, currency)}
@@ -149,7 +151,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
         >
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
-              Monthly Budget
+              {t('monthlyBudgetLabel')}
             </p>
             <p
               className="text-sm font-bold"
@@ -170,8 +172,8 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
             />
           </div>
           <div className="flex justify-between text-xs" style={{ color: '#9ca3af' }}>
-            <span>{formatCurrency(result.expenses, currency)} spent</span>
-            <span>{formatCurrency(monthlyBudget, currency)} budget</span>
+            <span>{formatCurrency(result.expenses, currency)} {t('spent').toLowerCase()}</span>
+            <span>{formatCurrency(monthlyBudget, currency)} {t('monthlyBudgetLabel').toLowerCase()}</span>
           </div>
         </div>
       )}
@@ -183,7 +185,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
         >
           <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#f87171' }} />
           <p className="text-sm leading-relaxed" style={{ color: '#fca5a5' }}>
-            You've used all available funds this month. Avoid additional expenses where possible.
+            {t('noFundsLeft')}
           </p>
         </div>
       )}

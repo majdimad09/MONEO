@@ -7,6 +7,7 @@ import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
 import { getNextOccurrence } from '../utils/recurringUtils';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ActivityScreenProps {
   transactions: Transaction[];
@@ -35,20 +36,21 @@ function today(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-function formatEventDate(dateStr: string): string {
+function formatEventDate(dateStr: string, todayLbl: string, tomorrowLbl: string): string {
   const d = new Date(dateStr + 'T12:00:00');
   const todayStr = today();
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().split('T')[0];
-  if (dateStr === todayStr) return 'Today';
-  if (dateStr === tomorrowStr) return 'Tomorrow';
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  if (dateStr === todayStr) return todayLbl;
+  if (dateStr === tomorrowStr) return tomorrowLbl;
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 export const ActivityScreen: React.FC<ActivityScreenProps> = ({
   transactions, subscriptions, recurringIncome, currency, onEdit, onDelete,
 }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
   const [tab, setTab] = useState<'timeline' | 'transactions'>('timeline');
 
   const events = useMemo<TimelineEvent[]>(() => {
@@ -118,23 +120,23 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
     <div className="page-enter px-4 pt-3 pb-8">
 
       {/* Header + tabs */}
-      <h1 className="text-xl font-bold text-slate-900 pt-1 mb-4">Activity</h1>
+      <h1 className="text-xl font-bold pt-1 mb-4" style={{ color: colors.textPrimary }}>{t('activityTitle')}</h1>
 
       <div
         className="flex p-1 mb-5 rounded-xl"
         style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
       >
-        {(['timeline', 'transactions'] as const).map(t => (
+        {(['timeline', 'transactions'] as const).map(tabKey => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={tabKey}
+            onClick={() => setTab(tabKey)}
             className="flex-1 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all capitalize"
-            style={tab === t
-              ? { background: '#f0f1f5', color: '#60a5fa', boxShadow: '0 0 0 1px rgba(59,130,246,0.3)' }
-              : { color: '#475569' }
+            style={tab === tabKey
+              ? { background: colors.bgCard, color: colors.accent, boxShadow: `0 0 0 1px ${colors.accent}40` }
+              : { color: colors.textSecondary }
             }
           >
-            {t === 'timeline' ? 'Timeline' : 'Transactions'}
+            {tabKey === 'timeline' ? t('featTimeline') : t('allTransactions')}
           </button>
         ))}
       </div>
@@ -147,11 +149,9 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
               className="rounded-2xl px-4 py-10 text-center"
               style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
-              <Clock size={28} className="mx-auto mb-3 text-slate-600" />
-              <p className="text-sm font-semibold text-slate-400 mb-1">No activity yet</p>
-              <p className="text-xs text-slate-600">
-                Add transactions and set up recurring income to see your timeline.
-              </p>
+              <Clock size={28} className="mx-auto mb-3" style={{ color: colors.textMuted }} />
+              <p className="text-sm font-semibold mb-1" style={{ color: colors.textMuted }}>{t('noActivityYet')}</p>
+              <p className="text-xs" style={{ color: colors.textSecondary }}>{t('noActivityHint')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -166,14 +166,14 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                         border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : colors.borderStrong}`,
                       }}
                     >
-                      {formatEventDate(date)}
+                      {formatEventDate(date, t('todayLabel'), t('tomorrowLabel'))}
                     </div>
                     {date > today() && (
                       <div
                         className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide"
                         style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.2)' }}
                       >
-                        upcoming
+                        {t('upcomingBadge')}
                       </div>
                     )}
                   </div>
@@ -205,11 +205,11 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-slate-700 truncate">{e.label}</p>
-                          <p className="text-[10px] text-slate-500 mt-0.5">
+                          <p className="text-xs font-semibold truncate" style={{ color: colors.textPrimary }}>{e.label}</p>
+                          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>
                             {e.kind === 'transaction' ? e.category
-                              : e.kind === 'upcoming-sub' ? 'Upcoming payment'
-                              : 'Expected income'}
+                              : e.kind === 'upcoming-sub' ? t('upcomingPayment')
+                              : t('expectedIncome')}
                           </p>
                         </div>
 
@@ -237,9 +237,9 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
               className="rounded-2xl px-4 py-10 text-center"
               style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
             >
-              <ArrowUpRight size={28} className="mx-auto mb-3 text-slate-600" />
-              <p className="text-sm font-semibold text-slate-400 mb-1">No transactions yet</p>
-              <p className="text-xs text-slate-600">Tap the + button to add your first transaction.</p>
+              <ArrowUpRight size={28} className="mx-auto mb-3" style={{ color: colors.textMuted }} />
+              <p className="text-sm font-semibold mb-1" style={{ color: colors.textMuted }}>{t('noTransactionsYet')}</p>
+              <p className="text-xs" style={{ color: colors.textSecondary }}>{t('tapAddFirst')}</p>
             </div>
           ) : (
             <div className="card-dark rounded-2xl overflow-hidden">
@@ -260,8 +260,8 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                     <CategoryIcon category={tx.category} size={15} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-700 truncate">{tx.description}</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">{tx.category} · {tx.date}</p>
+                    <p className="text-xs font-semibold truncate" style={{ color: colors.textPrimary }}>{tx.description}</p>
+                    <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{tx.category} · {tx.date}</p>
                   </div>
                   <span className="text-sm font-bold flex-shrink-0"
                     style={{ color: tx.type === 'income' ? '#34d399' : '#f87171' }}>
