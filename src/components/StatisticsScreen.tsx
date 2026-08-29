@@ -4,6 +4,7 @@ import { Transaction } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { getCategoryColor, CategoryIcon } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface StatisticsScreenProps {
   transactions: Transaction[];
@@ -44,6 +45,7 @@ function getYearLabel(offset: number): string {
 
 export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions, currency }) => {
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [monthIdx, setMonthIdx] = useState(0);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -191,7 +193,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         {(['week', 'month', 'year'] as ViewMode[]).map(m => (
           <button key={m} onClick={() => setViewMode(m)}
             className={`stat-filter-btn capitalize ${viewMode === m ? 'active' : ''}`}>
-            {m === 'week' ? 'Weekly' : m === 'month' ? 'Monthly' : 'Yearly'}
+            {m === 'week' ? t('weekly') : m === 'month' ? t('monthly') : t('yearly')}
           </button>
         ))}
       </div>
@@ -204,8 +206,8 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
           <ChevronLeft size={16} className="text-slate-600" />
         </button>
         <div className="text-center">
-          <p className="text-base font-bold text-slate-900">{periodLabel}</p>
-          <p className="text-[11px] text-slate-500 mt-0.5">Spending overview</p>
+          <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{periodLabel}</p>
+          <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{t('spendingOverview')}</p>
         </div>
         <button onClick={handleNext} disabled={!canGoNext}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
@@ -222,8 +224,8 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <TrendingUp size={28} className="text-blue-400" />
             </div>
-            <p className="text-slate-600 font-semibold text-sm">No expenses in {periodLabel}</p>
-            <p className="text-slate-600 text-xs mt-1">Navigate to another period or add expenses</p>
+            <p className="font-semibold text-sm" style={{ color: colors.textSecondary }}>{t('noExpensesYet')}</p>
+            <p className="text-xs mt-1" style={{ color: colors.textMuted }}>{t('navigatePeriodHint')}</p>
           </div>
         ) : (
           <>
@@ -260,7 +262,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         {formatCurrency(categoryData.find(c => c.category === selectedCat)?.total || 0, currency)}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-1">
-                        {categoryData.find(c => c.category === selectedCat)?.percentage.toFixed(0)}% of spending
+                        {categoryData.find(c => c.category === selectedCat)?.percentage.toFixed(0)}% {t('ofSpending')}
                       </span>
                     </>
                   ) : (
@@ -269,7 +271,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         {formatCurrency(totalExpenses, currency)}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-1">
-                        {income > 0 ? `${((totalExpenses / income) * 100).toFixed(0)}% of income` : 'total spending'}
+                        {income > 0 ? `${((totalExpenses / income) * 100).toFixed(0)}% ${t('ofIncome')}` : t('total')}
                       </span>
                     </>
                   )}
@@ -345,7 +347,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       {selectedCat && selectedCatTx.length > 0 && (
         <div className="card-dark rounded-2xl overflow-hidden expand-in">
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
-            <p className="text-sm font-bold text-slate-700">{selectedCat} breakdown</p>
+            <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{selectedCat}</p>
             <button onClick={() => setSelectedCat(null)} className="text-slate-500 cursor-pointer">
               <X size={16} />
             </button>
@@ -367,14 +369,14 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       {totalExpenses > 0 && (
         <div className="grid grid-cols-2 gap-3 card-float-3">
           <div className="card-dark rounded-2xl p-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1.5">Income</p>
+            <p className="text-[10px] uppercase tracking-wider font-bold mb-1.5" style={{ color: colors.textMuted }}>{t('income')}</p>
             <p className="text-lg font-bold text-green-400">{formatCurrency(income, currency)}</p>
             <p className="text-[11px] text-slate-500 mt-0.5">{periodLabel}</p>
           </div>
           <div className="card-dark rounded-2xl p-4">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1.5">Expenses</p>
+            <p className="text-[10px] uppercase tracking-wider font-bold mb-1.5" style={{ color: colors.textMuted }}>{t('expenses')}</p>
             <p className="text-lg font-bold text-red-400">{formatCurrency(totalExpenses, currency)}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">{categoryData.length} categories</p>
+            <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{categoryData.length} {t('categories')}</p>
           </div>
         </div>
       )}
@@ -383,13 +385,13 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       {prevMonthForRecap && income > 0 && (
         <div className="recap-card p-5 card-float-4">
           <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: 'rgba(147,197,253,0.6)' }}>
-            {getMonthLabel(prevMonthForRecap)} Recap
+            {getMonthLabel(prevMonthForRecap)} {t('recap')}
           </p>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { label: 'Income', val: income, color: '#34d399' },
-              { label: 'Spent', val: totalExpenses, color: '#f87171' },
-              { label: 'Saved', val: Math.max(0, income - totalExpenses), color: '#60a5fa' },
+              { label: t('income'), val: income, color: '#34d399' },
+              { label: t('spent'), val: totalExpenses, color: '#f87171' },
+              { label: t('savedLabel'), val: Math.max(0, income - totalExpenses), color: '#60a5fa' },
             ].map(({ label, val, color }) => (
               <div key={label} className="text-center">
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">{label}</p>
@@ -405,7 +407,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         <div className="card-float-4">
           <div className="flex items-center gap-2 mb-3">
             <Zap size={14} className="text-yellow-400" />
-            <h3 className="text-sm font-bold text-slate-900">Spending Alerts</h3>
+            <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('spendingAlerts')}</h3>
           </div>
           <div className="space-y-2.5">
             {alerts.map((alert, i) => (

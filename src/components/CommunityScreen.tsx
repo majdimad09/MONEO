@@ -9,6 +9,7 @@ import {
   communityAvgProgress,
 } from '../utils/communityUtils';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface CommunityScreenProps {
   userId: string;
@@ -29,6 +30,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
   onCreateCommunity, onJoinByCode,
 }) => {
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
   // Join flow
   const [showJoin, setShowJoin]     = useState(false);
   const [joinCode, setJoinCode]     = useState('');
@@ -143,8 +145,8 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between pt-1 mb-5">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Community</h1>
-          <p className="text-[11px] text-slate-500 mt-0.5">Improve finances together</p>
+          <h1 className="text-xl font-bold" style={{ color: colors.textPrimary }}>{t('communityTitle')}</h1>
+          <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{t('improveFinancesTogether')}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -152,7 +154,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer text-xs font-bold transition-all"
             style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa' }}
           >
-            <UserPlus size={13} /> Join
+            <UserPlus size={13} /> {t('joinBtn').split(' ')[0]}
           </button>
           <button
             onClick={() => { setShowCreate(v => !v); setShowJoin(false); }}
@@ -161,7 +163,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
               ? { background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.3)', color: '#a78bfa' }
               : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textMuted }}
           >
-            {isPremium ? <Plus size={13} /> : <Lock size={13} />} Create
+            {isPremium ? <Plus size={13} /> : <Lock size={13} />} {t('createCommunityBtn').split(' ')[0]}
           </button>
         </div>
       </div>
@@ -169,8 +171,8 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
       {/* Join panel */}
       {showJoin && (
         <div className="card-dark rounded-2xl p-4 mb-4 space-y-3" style={{ border: '1px solid rgba(59,130,246,0.25)' }}>
-          <p className="text-sm font-bold text-slate-700">Join a Community</p>
-          <p className="text-xs text-slate-500">Ask the community admin for the 6-character invite code.</p>
+          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('joinCommunityTitle')}</p>
+          <p className="text-xs" style={{ color: colors.textSecondary }}>Ask the community admin for the 6-character invite code.</p>
           {joinSuccess ? (
             <div className="flex items-center gap-2 py-2">
               <Check size={16} className="text-emerald-400" />
@@ -191,7 +193,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 disabled={joinLoading || joinCode.trim().length < 4}
                 className="w-full py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer disabled:opacity-40"
               >
-                {joinLoading ? 'Joining…' : 'Join Community'}
+                {joinLoading ? t('joinLoading') : t('joinBtn')}
               </button>
             </>
           )}
@@ -208,8 +210,8 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                   style={{ background: 'rgba(139,92,246,0.15)' }}>
                   <Check size={22} style={{ color: '#a78bfa' }} />
                 </div>
-                <p className="text-base font-bold text-slate-900 mb-1">Community Created!</p>
-                <p className="text-xs text-slate-500 mb-4">Share this invite code with people you want to add.</p>
+                <p className="text-base font-bold mb-1" style={{ color: colors.textPrimary }}>{t('communityCreatedTitle')}</p>
+                <p className="text-xs mb-4" style={{ color: colors.textSecondary }}>Share this invite code with people you want to add.</p>
                 <div
                   className="flex items-center justify-center gap-3 rounded-2xl py-4 mb-3"
                   style={{ background: isDark ? 'rgba(139,92,246,0.18)' : 'rgba(139,92,246,0.08)', border: isDark ? '1px solid rgba(139,92,246,0.35)' : '1px solid rgba(139,92,246,0.2)' }}
@@ -220,7 +222,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                   </button>
                 </div>
                 <button onClick={finishCreate} className="btn-blue w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer">
-                  Done
+                  {t('done')}
                 </button>
               </div>
             </>
@@ -228,10 +230,10 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
             <>
               <div className="flex items-center gap-2 mb-1">
                 <Crown size={14} style={{ color: '#a78bfa' }} />
-                <p className="text-sm font-bold text-slate-700">Create a Community</p>
+                <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('createCommunityTitle')}</p>
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>{t('nameLabel')}</label>
                 <input
                   className={inputBase}
                   placeholder="e.g. Study Budget Squad"
@@ -240,7 +242,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Description (optional)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>{t('descriptionOptional')}</label>
                 <input
                   className={inputBase}
                   placeholder="What's this community about?"
@@ -249,7 +251,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Privacy</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>{t('privacyLabel')}</label>
                 <div className="flex gap-2">
                   {(['invite', 'public'] as const).map(p => (
                     <button
@@ -260,7 +262,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                         ? { background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.35)', color: '#c4b5fd' }
                         : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textSecondary }}
                     >
-                      {p === 'invite' ? '🔒 Invite Only' : '🌐 Public'}
+                      {p === 'invite' ? `🔒 ${t('inviteOnly')}` : `🌐 ${t('publicLabel')}`}
                     </button>
                   ))}
                 </div>
@@ -271,7 +273,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 className="w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg,#7c3aed,#8b5cf6)', boxShadow: '0 4px 16px rgba(139,92,246,0.3)' }}
               >
-                {creating ? 'Creating…' : <><Plus size={14} /> Create Community</>}
+                {creating ? t('creatingLoading') : <><Plus size={14} /> {t('createCommunityBtn')}</>}
               </button>
             </>
           )}
@@ -284,7 +286,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
       ) : communities.length > 0 ? (
         <div className="space-y-3">
           <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
-            Your Communities
+            {t('yourCommunities')}
           </p>
           {communities.map(community => (
             <CommunityCard

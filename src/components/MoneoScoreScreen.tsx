@@ -8,6 +8,7 @@ import {
   calculateCashlyScore, getScoreLevel, getNextScoreLevel, SCORE_LEVELS,
 } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface MoneoScoreScreenProps {
   transactions: Transaction[];
@@ -62,6 +63,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
     [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals]
   );
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
 
   const level = getScoreLevel(result.score);
   const nextLevel = getNextScoreLevel(result.score);
@@ -88,7 +90,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           <div className="flex items-center gap-2 px-4 py-2 rounded-full"
             style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' }}>
             <ShieldCheck size={14} className="text-indigo-400" />
-            <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider">Personal Money Score · Not a credit score</span>
+            <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider">{t('notACreditScoreTag')}</span>
           </div>
         </div>
 
@@ -97,7 +99,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
             style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <Lock size={32} className="text-blue-400" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Build Your Moneo Score</h2>
+          <h2 className="text-xl font-bold mb-2" style={{ color: colors.textPrimary }}>{t('buildYourScore')}</h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-6">
             Moneo Score is a personal money-management score that shows how well you're managing your finances.
             It is <span className="font-semibold" style={{ color: colors.textPrimary }}>not a credit score</span> and has no effect on your credit or borrowing.
@@ -119,7 +121,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
 
         {/* What the score measures */}
         <div className="card-dark rounded-2xl p-5">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">What Moneo Score measures</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.textMuted }}>{t('whatScoreMeasures')}</p>
           <div className="space-y-2.5">
             {['Saving Consistency', 'Spending Control', 'Budget Performance', 'Financial Stability', 'Recurring Commitments', 'Goal Progress'].map(cat => (
               <div key={cat} className="flex items-center gap-3">
@@ -142,7 +144,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
         <div className="flex items-center gap-2 px-4 py-2 rounded-full"
           style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' }}>
           <ShieldCheck size={13} className="text-indigo-400" />
-          <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider">Personal Money Score · Not a credit score</span>
+          <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider">{t('notACreditScoreTag')}</span>
         </div>
       </div>
 
@@ -168,7 +170,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
                   {nextLevel.min - result.score} pts to {nextLevel.name} →
                 </span>
               ) : (
-                <span className="text-[11px] font-bold text-emerald-400">Max level reached!</span>
+                <span className="text-[11px] font-bold text-emerald-400">{t('maxLevelReached')}</span>
               )}
             </div>
             <div className="h-2.5 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
@@ -196,7 +198,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
 
       {/* ── SCORE BREAKDOWN ──────────────────────────── */}
       <div className="px-4">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">Score Breakdown</p>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>{t('scoreBreakdownTitle')}</p>
         <div className="card-dark rounded-2xl overflow-hidden">
           {result.factors.map((f, i) => {
             const pct = (f.points / f.maxPoints) * 100;
@@ -229,7 +231,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       {/* ── WHAT'S HELPING ───────────────────────────── */}
       {helpingFactors.length > 0 && (
         <div className="px-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">What's Helping</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>{t('whatsHelping')}</p>
           <div className="card-dark rounded-2xl overflow-hidden">
             {helpingFactors.map((f, i) => (
               <div key={f.label} className="flex items-start gap-3 px-4 py-3"
@@ -248,7 +250,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       {/* ── WHAT'S HURTING ───────────────────────────── */}
       {hurtingFactors.length > 0 && (
         <div className="px-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">What's Hurting</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>{t('whatsHurting')}</p>
           <div className="card-dark rounded-2xl overflow-hidden">
             {hurtingFactors.map((f, i) => (
               <div key={f.label} className="flex items-start gap-3 px-4 py-3"
@@ -267,7 +269,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       {/* ── HOW TO IMPROVE ───────────────────────────── */}
       {actionItems.length > 0 && (
         <div className="px-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">How to Improve</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>{t('howToImprove')}</p>
           <div className="card-dark rounded-2xl overflow-hidden">
             {actionItems.map((action, i) => (
               <div key={i} className="flex items-start gap-3 px-4 py-3"

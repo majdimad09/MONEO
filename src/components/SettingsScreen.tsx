@@ -440,7 +440,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
       {/* ── SUBSCRIPTION ─────────────────────────────────────────────── */}
       <div>
-        <SectionHeader label="Subscription" />
+        <SectionHeader label={t('subscriptionSection')} />
         <div className="card-dark rounded-2xl overflow-hidden">
           <button
             onClick={onNavigatePremium}
@@ -451,15 +451,15 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               <Crown size={17} style={{ color: isPremium ? '#a78bfa' : colors.textSecondary }} />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-700">
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>
                 {isPremium ? 'Moneo Premium' : 'Moneo Free'}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>
                 {isPremium
                   ? membershipStartedAt
                     ? `Active since ${new Date(membershipStartedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`
-                    : 'All features unlocked'
-                  : 'Upgrade for advanced features · $1.99/month'}
+                    : t('allFeaturesUnlocked')
+                  : t('upgradePriceTag')}
               </p>
             </div>
             <ChevronRight size={15} className="text-slate-600" />

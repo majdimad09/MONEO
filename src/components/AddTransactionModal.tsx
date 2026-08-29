@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { AddTransactionForm } from './AddTransactionForm';
 import { TransactionType } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   isOpen, onClose, onAddTransaction, currency, defaultType,
 }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   const handleAdd = (data: {
@@ -38,7 +40,7 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-3 pb-2">
-          <h2 className="text-base font-bold text-slate-900">Add Transaction</h2>
+          <h2 className="text-base font-bold" style={{ color: colors.textPrimary }}>{t('addTransaction')}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-600 transition-colors cursor-pointer"
