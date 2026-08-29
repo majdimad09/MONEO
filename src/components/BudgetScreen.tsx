@@ -7,6 +7,7 @@ import { Transaction, CategoryLimit, EXPENSE_CATEGORIES } from '../types/finance
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BudgetScreenProps {
   monthlyBudget: number;
@@ -36,6 +37,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   onSaveBudget, onSaveLimits, onNavigateRecurring, onNavigateSavings,
 }) => {
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
   const [editBudget, setEditBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? String(monthlyBudget) : '');
 
@@ -113,7 +115,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{monthLabel}</p>
-          <h2 className="text-xl font-bold text-slate-900 mt-0.5">Budget</h2>
+          <h2 className="text-xl font-bold text-slate-900 mt-0.5">{t('budget')}</h2>
         </div>
       </div>
 
@@ -125,14 +127,14 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <Wallet size={17} className="text-blue-400" />
             </div>
-            <p className="text-sm font-bold text-slate-700">Monthly Budget</p>
+            <p className="text-sm font-bold text-slate-700">{t('monthlyBudgetLabel')}</p>
           </div>
           <button
             onClick={() => { setEditBudget(v => !v); setBudgetInput(monthlyBudget > 0 ? String(monthlyBudget) : ''); }}
             className="text-xs font-semibold text-blue-400 cursor-pointer px-2 py-1 rounded-lg"
             style={{ background: 'rgba(59,130,246,0.08)' }}
           >
-            {monthlyBudget > 0 ? 'Edit' : 'Set Budget'}
+            {monthlyBudget > 0 ? t('edit') : t('setBudget')}
           </button>
         </div>
 
@@ -140,7 +142,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <div className="space-y-3">
             <input
               type="number"
-              placeholder="Monthly budget amount..."
+              placeholder={t('monthlyBudgetLabel') + '...'}
               value={budgetInput}
               onChange={e => setBudgetInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSaveBudget()}
@@ -150,12 +152,12 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             <div className="flex gap-2">
               <button onClick={handleSaveBudget}
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-1.5">
-                <Check size={15} /> Save
+                <Check size={15} /> {t('save')}
               </button>
               <button onClick={() => setEditBudget(false)}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
                 style={{ background: colors.bgCard }}>
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </div>
@@ -164,16 +166,16 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             {/* Numbers */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Budget</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{t('budget')}</p>
                 <p className="text-sm font-bold text-slate-900">{formatCurrency(monthlyBudget, currency)}</p>
               </div>
               <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Spent</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{t('usedLabel')}</p>
                 <p className="text-sm font-bold text-red-400">{formatCurrency(thisMonthExpenses, currency)}</p>
               </div>
               <div className="rounded-2xl p-3 text-center"
                 style={{ background: budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)') : colors.bgSecondary, border: `1px solid ${budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.35)' : 'rgba(239,68,68,0.2)') : colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? 'Over' : 'Left'}</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? t('overBudget') : t('remaining')}</p>
                 <p className="text-sm font-bold" style={{ color: budgetRemaining < 0 ? '#ef4444' : '#34d399' }}>
                   {formatCurrency(Math.abs(budgetRemaining), currency)}
                 </p>
@@ -182,7 +184,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
 
             {/* Progress bar */}
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] text-slate-500">Budget used</span>
+              <span className="text-[11px] text-slate-500">{t('usedLabel')}</span>
               <span className="text-[11px] font-bold" style={{ color: budgetColor }}>{Math.min(budgetPct, 999).toFixed(0)}%</span>
             </div>
             <div className="h-3 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
@@ -210,10 +212,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               style={{ background: 'rgba(59,130,246,0.12)' }}>
               <Wallet size={20} className="text-blue-400" />
             </div>
-            <p className="text-sm font-bold text-slate-600 mb-1">No monthly budget yet</p>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Set a total monthly budget to see how much of your income you're spending — and get a clear safe-to-spend number each day.
-            </p>
+            <p className="text-sm font-bold text-slate-600 mb-1">{t('noBudgetSet')}</p>
+            <p className="text-xs text-slate-500 leading-relaxed">{t('setBudgetHint')}</p>
           </div>
         )}
       </div>
@@ -221,14 +221,14 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
       {/* ── CATEGORY BUDGETS ─────────────────────────── */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Category Budgets</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('categoryLimitsTitle')}</p>
           {!showAddLimit && (
             <button
               onClick={() => { setShowAddLimit(true); setEditingLimit(null); setLimitCategory(availableCats[0]?.name || ''); setLimitAmount(''); }}
               className="flex items-center gap-1.5 text-xs font-semibold text-blue-400 cursor-pointer px-2 py-1 rounded-lg"
               style={{ background: 'rgba(59,130,246,0.08)' }}
             >
-              <Plus size={13} /> Add
+              <Plus size={13} /> {t('addCategoryLimit')}
             </button>
           )}
         </div>
@@ -236,9 +236,9 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         {/* Add / Edit form */}
         {showAddLimit && (
           <div className="card-dark rounded-2xl p-4 mb-3 space-y-3">
-            <p className="text-sm font-bold text-slate-700">{editingLimit ? 'Edit Category Budget' : 'New Category Budget'}</p>
+            <p className="text-sm font-bold text-slate-700">{editingLimit ? t('editCategoryLimit') : t('addCategoryLimit')}</p>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">Category</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('categoryLabel')}</label>
               <div className="grid grid-cols-3 gap-1.5">
                 {(editingLimit ? EXPENSE_CATEGORIES : availableCats).map(c => {
                   const color = getCategoryColor(c.name, 'expense');
@@ -259,7 +259,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </div>
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">Monthly Limit ({currency})</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('amountLabel')} ({currency})</label>
               <input
                 type="number"
                 placeholder="0.00"
@@ -273,7 +273,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             <div className="flex gap-2">
               <button onClick={handleAddLimit}
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-1.5">
-                <Check size={15} /> {editingLimit ? 'Save' : 'Add'}
+                <Check size={15} /> {editingLimit ? t('save') : t('add')}
               </button>
               <button onClick={cancelAddLimit}
                 className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
@@ -291,10 +291,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               <Target size={17} className="text-blue-400" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-600 mb-1">Per-category spending limits</p>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Cap spending on Food, Transport, Entertainment, and more. Get alerted when you're getting close.
-              </p>
+              <p className="text-sm font-bold text-slate-600 mb-1">{t('categoryLimitsTitle')}</p>
+              <p className="text-xs text-slate-500 leading-relaxed">{t('noLimitsSet')}</p>
             </div>
           </div>
         ) : (
@@ -354,7 +352,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
 
       {/* ── QUICK LINKS ──────────────────────────────── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">More</p>
+        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">{t('moreTitle')}</p>
         <div className="card-dark rounded-2xl overflow-hidden">
           <button
             onClick={onNavigateRecurring}
@@ -366,8 +364,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               <RefreshCw size={17} className="text-blue-400" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-700">Recurring Payments</p>
-              <p className="text-xs text-slate-500 mt-0.5">Track subscriptions and regular bills</p>
+              <p className="text-sm font-semibold text-slate-700">{t('recurringPaymentsTitle')}</p>
+              <p className="text-xs text-slate-500 mt-0.5">{t('recurringPaymentsDesc')}</p>
             </div>
             <ChevronRight size={15} className="text-slate-600" />
           </button>
@@ -381,8 +379,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               <Target size={17} className="text-emerald-400" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-700">Savings Goals</p>
-              <p className="text-xs text-slate-500 mt-0.5">Plan and track what you're saving for</p>
+              <p className="text-sm font-semibold text-slate-700">{t('savingGoalsTitle')}</p>
+              <p className="text-xs text-slate-500 mt-0.5">{t('savingGoalsDesc')}</p>
             </div>
             <ChevronRight size={15} className="text-slate-600" />
           </button>

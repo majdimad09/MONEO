@@ -17,40 +17,48 @@ export interface ThemeColors {
   topBarBorder: string;
   inputBg: string;
   dropdownBg: string;
+  /** Primary accent: indigo in light, green in dark */
+  accent: string;
+  /** Soft tinted bg for accent elements */
+  accentSoft: string;
 }
 
 const LIGHT: ThemeColors = {
-  bgPrimary:    '#f4f5f9',
+  bgPrimary:    '#f8f9fb',
   bgCard:       '#ffffff',
-  bgSecondary:  '#f7f8fc',
-  bgHover:      '#f0f1f5',
-  border:       '#ececf0',
-  borderStrong: '#e5e7eb',
-  textPrimary:  '#111827',
-  textSecondary:'#6b7280',
-  textMuted:    '#9ca3af',
-  divider:      '#f4f5f9',
+  bgSecondary:  '#f3f4f8',
+  bgHover:      '#edf0f5',
+  border:       '#e5e8ef',
+  borderStrong: '#d8dce6',
+  textPrimary:  '#0d1117',
+  textSecondary:'#55607a',
+  textMuted:    '#8595aa',
+  divider:      '#eff1f6',
   topBarBg:     '#ffffff',
-  topBarBorder: '#f0f1f5',
-  inputBg:      '#f4f5f9',
+  topBarBorder: '#edf0f5',
+  inputBg:      '#f3f4f8',
   dropdownBg:   '#ffffff',
+  accent:       '#6366f1',
+  accentSoft:   'rgba(99,102,241,0.10)',
 };
 
 const DARK: ThemeColors = {
-  bgPrimary:    '#0d0d14',
-  bgCard:       '#16161f',
-  bgSecondary:  '#1a1a28',
-  bgHover:      '#1e1e2a',
-  border:       '#2a2a38',
-  borderStrong: '#35354a',
-  textPrimary:  '#f0f0f8',
-  textSecondary:'#a8a8c0',
-  textMuted:    '#707090',
-  divider:      '#1e1e2a',
-  topBarBg:     '#111118',
-  topBarBorder: '#1e1e2a',
-  inputBg:      '#1a1a28',
-  dropdownBg:   '#16161f',
+  bgPrimary:    '#080810',
+  bgCard:       '#0f1018',
+  bgSecondary:  '#13141e',
+  bgHover:      '#181924',
+  border:       '#1f2130',
+  borderStrong: '#272940',
+  textPrimary:  '#e6eaf8',
+  textSecondary:'#8892b0',
+  textMuted:    '#566080',
+  divider:      '#141520',
+  topBarBg:     '#09090f',
+  topBarBorder: '#141520',
+  inputBg:      '#13141e',
+  dropdownBg:   '#0f1018',
+  accent:       '#22c55e',
+  accentSoft:   'rgba(34,197,94,0.12)',
 };
 
 interface ThemeContextValue {

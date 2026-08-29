@@ -3,6 +3,7 @@ import { ChevronDown, Search, X, Download, RotateCcw, ArrowLeft } from 'lucide-r
 import { LogoWordmark } from './Logo';
 import { SUPPORTED_CURRENCIES, AppView } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface MobileTopBarProps {
   currentView: AppView;
@@ -20,7 +21,8 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   onLoadSampleData, onClearAllData, onExportCSV,
   transactionCount, onNavigate,
 }) => {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { t } = useLanguage();
   const [showCurrency, setShowCurrency] = useState(false);
   const [showClear, setShowClear] = useState(false);
   const [search, setSearch] = useState('');
@@ -38,22 +40,22 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   }, [showCurrency]);
 
   const BACK_VIEWS: Partial<Record<string, { label: string; dest: AppView }>> = {
-    transactions:      { label: 'All Transactions',   dest: 'home' },
-    'moneo-score':     { label: 'Moneo Score',        dest: 'home' },
-    savings:           { label: 'Savings Goals',      dest: 'budget' },
-    recurring:         { label: 'Recurring',          dest: 'budget' },
-    budget:            { label: 'Budget',             dest: 'more' },
-    statistics:        { label: 'Statistics',         dest: 'insights' },
-    activity:          { label: 'Activity',           dest: 'home' },
-    'money-coach':     { label: 'Money Coach',        dest: 'insights' },
-    'recurring-income':{ label: 'Recurring Income',   dest: 'more' },
-    settings:          { label: 'Settings',           dest: 'more' },
-    projection:        { label: 'Projections',        dest: 'insights' },
-    'money-story':     { label: 'Monthly Story',      dest: 'insights' },
-    'spending-patterns':{ label: 'Patterns',          dest: 'insights' },
-    'safe-to-spend':   { label: 'Safe to Spend',      dest: 'insights' },
-    'ask-moneo':       { label: 'Ask Moneo',          dest: 'insights' },
-    premium:           { label: 'Premium',            dest: 'more' },
+    transactions:       { label: t('allTransactions'),       dest: 'home' },
+    'moneo-score':      { label: t('moneoScore'),            dest: 'home' },
+    savings:            { label: t('savingGoalsTitle'),      dest: 'budget' },
+    recurring:          { label: t('featRecurring'),         dest: 'budget' },
+    budget:             { label: t('budget'),                dest: 'more' },
+    statistics:         { label: t('statisticsTitle'),       dest: 'insights' },
+    activity:           { label: t('featActivity'),          dest: 'home' },
+    'money-coach':      { label: t('featMoneyCoach'),        dest: 'insights' },
+    'recurring-income': { label: t('featRecurringIncome'),   dest: 'more' },
+    settings:           { label: t('settings'),              dest: 'more' },
+    projection:         { label: t('projectionTitle'),       dest: 'insights' },
+    'money-story':      { label: t('monthlyStoryTitle'),     dest: 'insights' },
+    'spending-patterns':{ label: t('spendingPatternsTitle'), dest: 'insights' },
+    'safe-to-spend':    { label: t('safeToSpend'),           dest: 'insights' },
+    'ask-moneo':        { label: t('featAskMoneo'),          dest: 'insights' },
+    premium:            { label: t('featPremium'),           dest: 'more' },
   };
   const backInfo = BACK_VIEWS[currentView];
 
@@ -69,7 +71,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           className="flex items-center gap-2 text-sm font-bold cursor-pointer"
           style={{ color: colors.textSecondary, WebkitTapHighlightColor: 'transparent' }}
         >
-          <ArrowLeft size={18} style={{ color: '#6366f1' }} />
+          <ArrowLeft size={18} style={{ color: colors.accent }} />
           <span>{backInfo.label}</span>
         </button>
       ) : (
@@ -102,13 +104,13 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                   <div className="fixed inset-0 z-40" onClick={() => setShowClear(false)} />
                   <div className="absolute right-0 mt-2 w-64 rounded-2xl p-4 z-50"
                     style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
-                    <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>Reset all data?</p>
-                    <p className="text-xs mb-3 leading-relaxed" style={{ color: colors.textSecondary }}>This will erase all your transactions.</p>
+                    <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('areYouSure')}</p>
+                    <p className="text-xs mb-3 leading-relaxed" style={{ color: colors.textSecondary }}>{t('resetDataMsg')}</p>
                     <div className="flex gap-2 justify-end">
                       <button onClick={() => setShowClear(false)}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: '#6b7280' }}>Cancel</button>
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: '#6b7280' }}>{t('cancel')}</button>
                       <button onClick={() => { onClearAllData(); setShowClear(false); }}
-                        className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg cursor-pointer">Reset</button>
+                        className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg cursor-pointer">{t('yesReset')}</button>
                     </div>
                   </div>
                 </>
@@ -122,9 +124,9 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           <button
             onClick={() => setShowCurrency(!showCurrency)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer"
-            style={{ background: colors.inputBg, border: `1px solid ${colors.borderStrong}`, color: '#6366f1' }}
+            style={{ background: colors.inputBg, border: `1px solid ${colors.borderStrong}`, color: colors.accent }}
           >
-            <span className="font-mono" style={{ color: '#6366f1' }}>{selected.symbol}</span>
+            <span className="font-mono" style={{ color: colors.accent }}>{selected.symbol}</span>
             <span className="hidden sm:inline" style={{ color: '#6b7280' }}>{selected.code}</span>
             <ChevronDown size={11} className={`transition-transform ${showCurrency ? 'rotate-180' : ''}`} style={{ color: '#9ca3af' }} />
           </button>
@@ -141,7 +143,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                       ref={searchRef}
                       value={search}
                       onChange={e => setSearch(e.target.value)}
-                      placeholder="Search currency..."
+                      placeholder={t('searchCurrencyPlaceholder')}
                       className="w-full pl-7 pr-6 py-1.5 text-xs rounded-lg"
                       style={{ background: colors.inputBg, border: `1px solid ${colors.border}`, color: colors.textPrimary }}
                     />
@@ -159,12 +161,12 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                       onClick={() => { onCurrencyChange(c.code); setShowCurrency(false); }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs cursor-pointer"
                       style={{
-                        color: c.code === currentCurrency ? '#6366f1' : colors.textSecondary,
-                        background: c.code === currentCurrency ? 'rgba(99,102,241,0.07)' : undefined,
+                        color: c.code === currentCurrency ? colors.accent : colors.textSecondary,
+                        background: c.code === currentCurrency ? colors.accentSoft : undefined,
                         fontWeight: c.code === currentCurrency ? 700 : 400,
                       }}
                     >
-                      <span className="w-6 font-mono font-bold text-xs flex-shrink-0" style={{ color: '#6366f1' }}>{c.symbol}</span>
+                      <span className="w-6 font-mono font-bold text-xs flex-shrink-0" style={{ color: colors.accent }}>{c.symbol}</span>
                       <span className="flex-1 truncate">{c.name}</span>
                       <span className="font-mono" style={{ color: '#9ca3af' }}>{c.code}</span>
                     </button>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Home, Lightbulb, Plus, Users, LayoutGrid } from 'lucide-react';
 import { AppView } from '../types/finance';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BottomNavProps {
   currentView: AppView;
@@ -20,6 +22,8 @@ const MORE_VIEWS: AppView[] = [
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, onAddPress }) => {
+  const { colors } = useTheme();
+  const { t } = useLanguage();
   const homeActive      = HOME_VIEWS.includes(currentView);
   const insightsActive  = INSIGHTS_VIEWS.includes(currentView);
   const communityActive = COMMUNITY_VIEWS.includes(currentView);
@@ -27,21 +31,21 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, o
 
   return (
     <div className="bottom-nav-bar">
-      <NavBtn label="Home"      Icon={Home}       active={homeActive}      onClick={() => onNavigate('home')} />
-      <NavBtn label="Insights"  Icon={Lightbulb}  active={insightsActive}  onClick={() => onNavigate('insights')} />
+      <NavBtn label={t('navHome')}      Icon={Home}       active={homeActive}      accent={colors.accent} muted={colors.textMuted} onClick={() => onNavigate('home')} />
+      <NavBtn label={t('navInsights')}  Icon={Lightbulb}  active={insightsActive}  accent={colors.accent} muted={colors.textMuted} onClick={() => onNavigate('insights')} />
 
       <button className="fab-add" onClick={onAddPress} aria-label="Add transaction">
         <Plus size={22} color="white" strokeWidth={2.8} />
       </button>
 
-      <NavBtn label="Community" Icon={Users}       active={communityActive} onClick={() => onNavigate('community')} />
-      <NavBtn label="More"      Icon={LayoutGrid}  active={moreActive}     onClick={() => onNavigate('more')} />
+      <NavBtn label={t('navCommunity')} Icon={Users}       active={communityActive} accent={colors.accent} muted={colors.textMuted} onClick={() => onNavigate('community')} />
+      <NavBtn label={t('navMore')}      Icon={LayoutGrid}  active={moreActive}      accent={colors.accent} muted={colors.textMuted} onClick={() => onNavigate('more')} />
     </div>
   );
 };
 
-function NavBtn({ label, Icon, active, onClick }: {
-  label: string; Icon: React.ElementType; active: boolean; onClick: () => void;
+function NavBtn({ label, Icon, active, accent, muted, onClick }: {
+  label: string; Icon: React.ElementType; active: boolean; accent: string; muted: string; onClick: () => void;
 }) {
   return (
     <button
@@ -52,11 +56,11 @@ function NavBtn({ label, Icon, active, onClick }: {
       <Icon
         size={21}
         style={{
-          color: active ? '#6366f1' : '#c4c7d0',
+          color: active ? accent : muted,
           transition: 'color 0.18s ease',
         }}
       />
-      <span className="text-[10px] font-bold transition-colors" style={{ color: active ? '#6366f1' : '#c4c7d0' }}>
+      <span className="text-[10px] font-bold transition-colors" style={{ color: active ? accent : muted }}>
         {label}
       </span>
     </button>

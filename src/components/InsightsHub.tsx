@@ -11,6 +11,7 @@ import {
   InsightIcon, InsightType,
 } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface InsightsHubProps {
   transactions: Transaction[];
@@ -105,6 +106,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
   );
 
   const { isDark, colors } = useTheme();
+  const { t } = useLanguage();
   const INSIGHT_COLORS = getInsightColors(isDark);
   const level = getScoreLevel(scoreResult.score);
   const r = scoreResult.score / 100;
@@ -113,7 +115,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
-      <h1 className="text-xl font-bold pt-1" style={{ color: colors.textPrimary }}>Insights</h1>
+      <h1 className="text-xl font-bold pt-1" style={{ color: colors.textPrimary }}>{t('insightsHub')}</h1>
 
       {/* ── Moneo Score Card ─────────────────────────────────── */}
       <button
@@ -144,7 +146,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
             <div className="flex items-center gap-2 mb-1">
               <ShieldCheck size={14} style={{ color: level.color }} />
               <span className="text-xs font-bold uppercase tracking-wide" style={{ color: level.color }}>
-                Moneo Score
+                {t('moneoScore')}
               </span>
             </div>
             <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{level.name}</p>
@@ -165,9 +167,9 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           </div>
           <button
             onClick={() => onNavigate('money-coach')}
-            className="text-[11px] font-semibold cursor-pointer" style={{ color: '#6366f1' }}
+            className="text-[11px] font-semibold cursor-pointer" style={{ color: colors.accent }}
           >
-            See all
+            {t('seeAll')}
           </button>
         </div>
 
@@ -177,7 +179,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
             style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
           >
             <Lightbulb size={24} className="mx-auto mb-2" style={{ color: colors.textMuted }} />
-            <p className="text-sm" style={{ color: colors.textMuted }}>Add more transactions to get personalized insights.</p>
+            <p className="text-sm" style={{ color: colors.textMuted }}>{t('noInsightsYet')}</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -209,8 +211,8 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           <BarChart2 size={17} style={{ color: '#3b82f6' }} />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Statistics</p>
-          <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>Charts, categories, monthly view</p>
+          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('statisticsTitle')}</p>
+          <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{t('byCategory')}</p>
         </div>
         <ChevronRight size={15} style={{ color: colors.textMuted }} />
       </button>
@@ -218,7 +220,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
       {/* ── Quick tools grid ─────────────────────────────────── */}
       <div>
         <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>
-          Tools
+          {t('financialTools')}
         </p>
         <div className="space-y-2">
           {TOOL_LINKS.map(t => (

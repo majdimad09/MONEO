@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { X, ArrowDownRight, ArrowUpRight, RefreshCw, Camera, Scan } from 'lucide-react';
+import { X, ArrowDownRight, ArrowUpRight, RefreshCw, Camera } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { TKey } from '../i18n/translations';
 
 type ActionId = 'expense' | 'income' | 'recurring' | 'scan';
 
@@ -9,52 +11,28 @@ interface ActionMenuProps {
   onClose: () => void;
 }
 
-const ACTIONS = [
-  {
-    id: 'expense' as ActionId,
-    icon: ArrowDownRight,
-    label: 'Add Expense',
-    desc: 'Record a payment or purchase',
-    color: '#f87171',
-    bg: 'rgba(239,68,68,0.12)',
-    border: 'rgba(239,68,68,0.25)',
-  },
-  {
-    id: 'income' as ActionId,
-    icon: ArrowUpRight,
-    label: 'Add Income',
-    desc: 'Log salary, freelance or any inflow',
-    color: '#34d399',
-    bg: 'rgba(16,185,129,0.12)',
-    border: 'rgba(16,185,129,0.25)',
-  },
-  {
-    id: 'recurring' as ActionId,
-    icon: RefreshCw,
-    label: 'Add Recurring',
-    desc: 'Track subscriptions & regular bills',
-    color: '#60a5fa',
-    bg: 'rgba(59,130,246,0.12)',
-    border: 'rgba(59,130,246,0.25)',
-  },
-  {
-    id: 'scan' as ActionId,
-    icon: Camera,
-    label: 'Scan Receipt',
-    desc: 'Coming soon',
-    color: '#a78bfa',
-    bg: 'rgba(139,92,246,0.12)',
-    border: 'rgba(139,92,246,0.2)',
-    disabled: true,
-  },
+const ACTION_CONFIGS = [
+  { id: 'expense' as ActionId, icon: ArrowDownRight, labelKey: 'addExpense' as TKey, descKey: 'descRecurring' as TKey, color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
+  { id: 'income' as ActionId, icon: ArrowUpRight, labelKey: 'addIncome' as TKey, descKey: 'descRecurringIncome' as TKey, color: '#34d399', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.25)' },
+  { id: 'recurring' as ActionId, icon: RefreshCw, labelKey: 'addSubscription' as TKey, descKey: 'recurringPaymentsDesc' as TKey, color: '#60a5fa', bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.25)' },
+  { id: 'scan' as ActionId, icon: Camera, labelKey: 'loading' as TKey, descKey: 'loading' as TKey, color: '#a78bfa', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.2)', disabled: true },
 ] as const;
 
 export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
+
+  const actions = [
+    { id: 'expense' as ActionId, icon: ArrowDownRight, label: t('addExpense'), desc: 'Record a payment or purchase', color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
+    { id: 'income' as ActionId, icon: ArrowUpRight, label: t('addIncome'), desc: 'Log salary, freelance or any inflow', color: '#34d399', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.25)' },
+    { id: 'recurring' as ActionId, icon: RefreshCw, label: t('addSubscription'), desc: t('recurringPaymentsDesc'), color: '#60a5fa', bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.25)' },
+    { id: 'scan' as ActionId, icon: Camera, label: 'Scan Receipt', desc: 'Coming soon', color: '#a78bfa', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.2)', disabled: true },
+  ];
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -64,8 +42,9 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-3 pb-1">
           <div>
-            <p className="text-base font-bold text-slate-900">What would you like to do?</p>
-            <p className="text-xs text-slate-500 mt-0.5">Choose an action to get started</p>
+            <p className="text-base font-bold" style={{ color: colors.textPrimary }}>
+              {t('addTransaction')}
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -78,7 +57,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
 
         {/* Actions grid */}
         <div className="px-4 pt-3 pb-8 grid grid-cols-2 gap-3">
-          {ACTIONS.map((action, i) => {
+          {actions.map((action, i) => {
             const Icon = action.icon;
             const disabled = 'disabled' in action && action.disabled;
             return (
@@ -100,8 +79,8 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
                 >
                   <Icon size={20} style={{ color: action.color }} strokeWidth={2.2} />
                 </div>
-                <p className="text-sm font-bold text-slate-800 leading-tight">{action.label}</p>
-                <p className="text-[11px] text-slate-500 mt-1 leading-tight">{action.desc}</p>
+                <p className="text-sm font-bold leading-tight" style={{ color: colors.textPrimary }}>{action.label}</p>
+                <p className="text-[11px] mt-1 leading-tight" style={{ color: colors.textMuted }}>{action.desc}</p>
               </button>
             );
           })}

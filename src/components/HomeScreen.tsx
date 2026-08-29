@@ -6,6 +6,7 @@ import {
   Info, Plus,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome } from '../types/finance';
 import { monthlyEquivalent } from '../utils/recurringUtils';
 import { formatCurrency, formatDate } from '../utils/formatters';
@@ -76,6 +77,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
 }) => {
   const { isDark, toggleTheme, colors } = useTheme();
+  const { t } = useLanguage();
   const INSIGHT_COLORS = getInsightColors(isDark);
   const [balanceExpanded, setBalanceExpanded] = useState(false);
   const prefix = getCurrentMonthPrefix();
@@ -159,10 +161,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Header row */}
           <div className="flex items-center justify-between mb-1">
             <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(147,197,253,0.6)' }}>
-              Total Balance
+              {t('totalBalance')}
             </p>
             <div className="flex items-center gap-1 text-[11px]" style={{ color: 'rgba(147,197,253,0.5)' }}>
-              <span>{balanceExpanded ? 'Less' : 'Details'}</span>
+              <span>{balanceExpanded ? t('lessBtn') : t('detailsBtn')}</span>
               {balanceExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
             </div>
           </div>
@@ -175,7 +177,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             >
               {formatCurrency(Math.abs(balance), currency)}
             </span>
-            {!isPositive && <p className="text-xs text-red-400 font-semibold mt-1">overspent</p>}
+            {!isPositive && <p className="text-xs text-red-400 font-semibold mt-1">{t('overspentLabel')}</p>}
           </div>
 
           {/* Income / Expense split */}
@@ -183,14 +185,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="rounded-2xl p-3" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <ArrowUpRight size={12} className="text-green-400" />
-                <span className="text-[10px] text-green-400 font-bold uppercase tracking-wide">Income</span>
+                <span className="text-[10px] text-green-400 font-bold uppercase tracking-wide">{t('income')}</span>
               </div>
               <p className="text-sm font-bold text-white">{formatCurrency(totalIncome, currency)}</p>
             </div>
             <div className="rounded-2xl p-3" style={{ background: isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)', border: isDark ? '1px solid rgba(239,68,68,0.32)' : '1px solid rgba(239,68,68,0.18)' }}>
               <div className="flex items-center gap-1.5 mb-1">
                 <ArrowDownRight size={12} className="text-red-400" />
-                <span className="text-[10px] text-red-400 font-bold uppercase tracking-wide">Expenses</span>
+                <span className="text-[10px] text-red-400 font-bold uppercase tracking-wide">{t('expenses')}</span>
               </div>
               <p className="text-sm font-bold text-white">{formatCurrency(totalExpenses, currency)}</p>
             </div>
@@ -203,34 +205,34 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="safe-spend-card">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-bold text-green-400 uppercase tracking-wider mb-0.5">Safe to Spend</p>
+                    <p className="text-[11px] font-bold text-green-400 uppercase tracking-wider mb-0.5">{t('safeToSpend')}</p>
                     <p className="text-xl font-bold text-white">{formatCurrency(safeToSpend.safeAmount, currency)}</p>
                   </div>
                   <ShieldCheck size={28} className="text-green-400 opacity-60" />
                 </div>
                 <div className="mt-2.5 space-y-1">
                   <div className="flex justify-between text-[11px]">
-                    <span className="text-slate-500">Income logged</span>
+                    <span className="text-slate-500">{t('incomeLogged')}</span>
                     <span className="text-slate-300 font-medium">{formatCurrency(safeToSpend.income, currency)}</span>
                   </div>
                   {monthlyRecurringIncome > 0 && (
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-500">Expected recurring</span>
+                      <span className="text-slate-500">{t('expectedRecurring')}</span>
                       <span className="text-emerald-400 font-medium">+ {formatCurrency(monthlyRecurringIncome, currency)}/mo</span>
                     </div>
                   )}
                   <div className="flex justify-between text-[11px]">
-                    <span className="text-slate-500">Spent so far</span>
+                    <span className="text-slate-500">{t('spentSoFar')}</span>
                     <span className="text-red-400 font-medium">− {formatCurrency(safeToSpend.expenses, currency)}</span>
                   </div>
                   {safeToSpend.subsRemaining > 0 && (
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-500">Upcoming subs</span>
+                      <span className="text-slate-500">{t('upcomingSubs')}</span>
                       <span className="text-yellow-400 font-medium">− {formatCurrency(safeToSpend.subsRemaining, currency)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-[11px]">
-                    <span className="text-slate-500">Savings buffer (10%)</span>
+                    <span className="text-slate-500">{t('savingsBuffer')}</span>
                     <span className="text-blue-400 font-medium">− {formatCurrency(safeToSpend.savingsBuffer, currency)}</span>
                   </div>
                 </div>
@@ -240,9 +242,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               {monthlyBudget > 0 && (
                 <div>
                   <div className="flex justify-between mb-1.5 text-[11px]">
-                    <span className="text-slate-400 font-semibold">Monthly Budget</span>
+                    <span className="text-slate-400 font-semibold">{t('monthlyBudgetLabel')}</span>
                     <span className={budgetPct >= 100 ? 'text-red-400 font-bold' : budgetPct >= 80 ? 'text-orange-400 font-bold' : 'text-slate-500'}>
-                      {budgetPct.toFixed(0)}% used
+                      {budgetPct.toFixed(0)}% {t('usedLabel')}
                     </span>
                   </div>
                   <div className="progress-track h-2">
@@ -263,16 +265,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="px-4 card-float-2">
         <div className="flex gap-2">
           {[
-            { label: 'Expense', icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', onClick: onAddExpense },
-            { label: 'Income', icon: ArrowUpRight, color: '#34d399', bg: 'rgba(16,185,129,0.1)', onClick: onAddIncome },
-            { label: 'Stats', icon: BarChart2, color: '#a5b4fc', bg: 'rgba(99,102,241,0.1)', onClick: onNavigateStats },
-            { label: 'Budget', icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateBudget },
-          ].map(({ label, icon: Icon, color, bg, onClick }) => (
-            <button key={label} onClick={onClick} className="quick-action-btn">
+            { labelKey: 'expenseType' as const, icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', onClick: onAddExpense },
+            { labelKey: 'incomeType' as const, icon: ArrowUpRight, color: '#34d399', bg: 'rgba(16,185,129,0.1)', onClick: onAddIncome },
+            { labelKey: 'statisticsTitle' as const, icon: BarChart2, color: '#a5b4fc', bg: 'rgba(99,102,241,0.1)', onClick: onNavigateStats },
+            { labelKey: 'budget' as const, icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateBudget },
+          ].map(({ labelKey, icon: Icon, color, bg, onClick }) => (
+            <button key={labelKey} onClick={onClick} className="quick-action-btn">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: bg }}>
                 <Icon size={16} style={{ color }} strokeWidth={2.2} />
               </div>
-              <span className="text-[10px] font-bold text-slate-400">{label}</span>
+              <span className="text-[10px] font-bold text-slate-400">{t(labelKey)}</span>
             </button>
           ))}
         </div>
@@ -288,10 +290,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="card-float-4">
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
-              <Sparkles size={14} style={{ color: '#6366f1' }} />
-              <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>Moneo Insights</h3>
+              <Sparkles size={14} style={{ color: colors.accent }} />
+              <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('yourInsights')}</h3>
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>Based on your data</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#9ca3af' }}>{t('basedOnYourData')}</span>
           </div>
           <div className="insights-scroll px-4">
             {insights.map((insight, i) => {
@@ -329,12 +331,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <TrendingUp size={28} className="text-blue-400" />
             </div>
-            <p className="font-bold text-base mb-2" style={{ color: colors.textPrimary }}>No transactions yet</p>
+            <p className="font-bold text-base mb-2" style={{ color: colors.textPrimary }}>{t('noTransactionsYet')}</p>
             <p className="text-sm leading-relaxed mb-5" style={{ color: colors.textSecondary }}>
-              Add your first transaction and Moneo will start building your financial picture.
+              {t('addFirstTransactionHint')}
             </p>
             <button onClick={onAddExpense} className="btn-blue px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2">
-              <Plus size={16} /> Add Transaction
+              <Plus size={16} /> {t('addTransaction')}
             </button>
           </div>
         </div>
@@ -344,9 +346,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {!isEmpty && (
         <div className="px-4 card-float-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>Recent Transactions</h3>
-            <button onClick={onViewAllTransactions} className="flex items-center gap-0.5 text-xs font-semibold cursor-pointer" style={{ color: '#6366f1' }}>
-              See all <ChevronRight size={14} />
+            <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('recentTransactions')}</h3>
+            <button onClick={onViewAllTransactions} className="flex items-center gap-0.5 text-xs font-semibold cursor-pointer" style={{ color: colors.accent }}>
+              {t('seeAll')} <ChevronRight size={14} />
             </button>
           </div>
           <div className="card-dark rounded-2xl overflow-hidden">
@@ -381,7 +383,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── BUDGET CATEGORIES ────────────────────────── */}
       {categoryLimits.length > 0 && !isEmpty && (
         <div className="px-4 card-float-6">
-          <h3 className="text-sm font-bold mb-3" style={{ color: colors.textPrimary }}>Category Budgets</h3>
+          <h3 className="text-sm font-bold mb-3" style={{ color: colors.textPrimary }}>{t('categoryLimitsTitle')}</h3>
           <div className="space-y-2.5">
             {categoryLimits.slice(0, 5).map(limit => {
               const spent = categorySpend[limit.category] || 0;
@@ -413,8 +415,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </div>
                   <p className={`text-[11px] mt-1.5 font-medium ${remaining < 0 ? 'text-red-400' : pct >= 90 ? 'text-orange-400' : 'text-slate-500'}`}>
                     {remaining >= 0
-                      ? pct >= 90 ? `⚠ Only ${formatCurrency(remaining, currency)} left` : `${formatCurrency(remaining, currency)} remaining`
-                      : `${formatCurrency(Math.abs(remaining), currency)} over limit`}
+                      ? pct >= 90 ? `⚠ ${formatCurrency(remaining, currency)} ${t('remaining')}` : `${formatCurrency(remaining, currency)} ${t('remaining')}`
+                      : `${formatCurrency(Math.abs(remaining), currency)} ${t('overLimit')}`}
                   </p>
                 </div>
               );
