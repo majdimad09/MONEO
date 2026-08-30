@@ -132,7 +132,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
         </div>
         <button
           onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
-          className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           Add Subscription
@@ -205,7 +205,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
                     key={freq}
                     onClick={() => setForm(f => ({ ...f, frequency: freq }))}
                     className={`flex-1 py-2 rounded-xl text-xs font-semibold capitalize transition-all cursor-pointer ${
-                      form.frequency === freq ? 'btn-blue' : 'text-slate-400'
+                      form.frequency === freq ? 'btn-primary' : 'text-slate-400'
                     }`}
                     style={form.frequency !== freq ? { background: '#0a1424', border: '1px solid #1e2d4a' } : {}}
                   >
@@ -240,7 +240,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
             </p>
           )}
           <div className="flex items-center gap-2">
-            <button onClick={handleSubmit} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-1.5">
+            <button onClick={handleSubmit} className="btn-primary px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-1.5">
               <Check className="w-4 h-4" />
               {editingId ? 'Save Changes' : 'Add Subscription'}
             </button>
@@ -260,7 +260,7 @@ export const SubscriptionsPage: React.FC<SubscriptionsPageProps> = ({ currency, 
           </div>
           <h3 className="font-bold text-slate-600 mb-1">No subscriptions yet</h3>
           <p className="text-sm text-slate-500 mb-4">Add your recurring payments to track monthly costs.</p>
-          <button onClick={() => setShowForm(true)} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer">
+          <button onClick={() => setShowForm(true)} className="btn-primary px-5 py-2 rounded-xl text-sm cursor-pointer">
             + Add First Subscription
           </button>
         </div>

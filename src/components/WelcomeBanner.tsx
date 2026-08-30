@@ -54,7 +54,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onLoadSample }) =>
         <button
           type="button"
           onClick={onLoadSample}
-          className="btn-blue px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer"
+          className="btn-primary px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
           <span>Load Sample Demo</span>

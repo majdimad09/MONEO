@@ -151,7 +151,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
               autoFocus
               onKeyDown={e => e.key === 'Enter' && handleSaveBudget()}
             />
-            <button onClick={handleSaveBudget} className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer">Save</button>
+            <button onClick={handleSaveBudget} className="btn-primary px-4 py-2 rounded-xl text-sm cursor-pointer">Save</button>
             <button onClick={() => setEditingBudget(false)} className="p-2 text-slate-500 hover:text-slate-600 rounded-lg transition-colors">
               <X className="w-4 h-4" />
             </button>
@@ -254,7 +254,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
               className="input-dark px-3 py-2 rounded-xl text-sm w-36"
               onKeyDown={e => e.key === 'Enter' && handleAddLimit()}
             />
-            <button onClick={handleAddLimit} className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer">Add</button>
+            <button onClick={handleAddLimit} className="btn-primary px-4 py-2 rounded-xl text-sm cursor-pointer">Add</button>
             <button onClick={() => setShowAddLimit(false)} className="p-2 text-slate-500 hover:text-slate-600">
               <X className="w-4 h-4" />
             </button>
@@ -294,7 +294,7 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
                               onKeyDown={e => e.key === 'Enter' && handleSaveEditLimit()}
                               autoFocus
                             />
-                            <button onClick={handleSaveEditLimit} className="btn-blue px-2 py-1 rounded-lg text-xs cursor-pointer">OK</button>
+                            <button onClick={handleSaveEditLimit} className="btn-primary px-2 py-1 rounded-lg text-xs cursor-pointer">OK</button>
                             <button onClick={() => setEditingLimit(null)} className="text-slate-500 hover:text-slate-600"><X className="w-3.5 h-3.5" /></button>
                           </div>
                         ) : (

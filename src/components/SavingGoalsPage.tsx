@@ -106,7 +106,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
         </div>
         <button
           onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
-          className="btn-blue px-4 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           New Goal
@@ -164,7 +164,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
             </p>
           )}
           <div className="flex items-center gap-2">
-            <button onClick={handleSubmit} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-1.5">
+            <button onClick={handleSubmit} className="btn-primary px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-1.5">
               <Check className="w-4 h-4" />
               {editingId ? 'Save Changes' : 'Add Goal'}
             </button>
@@ -184,7 +184,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
           </div>
           <h3 className="font-bold text-slate-600 mb-1">No goals yet</h3>
           <p className="text-sm text-slate-500 mb-4">Create a saving goal to start tracking your progress.</p>
-          <button onClick={() => setShowForm(true)} className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer">
+          <button onClick={() => setShowForm(true)} className="btn-primary px-5 py-2 rounded-xl text-sm cursor-pointer">
             + Add Your First Goal
           </button>
         </div>
@@ -280,7 +280,7 @@ export const SavingGoalsPage: React.FC<SavingGoalsPageProps> = ({ currency, goal
                           autoFocus
                           onKeyDown={e => e.key === 'Enter' && handleAddMoney(goal.id)}
                         />
-                        <button onClick={() => handleAddMoney(goal.id)} className="btn-blue px-3 py-1.5 rounded-lg text-xs cursor-pointer">Add</button>
+                        <button onClick={() => handleAddMoney(goal.id)} className="btn-primary px-3 py-1.5 rounded-lg text-xs cursor-pointer">Add</button>
                         <button onClick={() => setAddMoneyId(null)} className="text-slate-500 hover:text-slate-600"><X className="w-4 h-4" /></button>
                       </div>
                     ) : (
