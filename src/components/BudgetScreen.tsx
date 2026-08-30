@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   Wallet, Plus, Edit2, Trash2, Check, X, AlertTriangle, ChevronRight,
-  RefreshCw, Target, TrendingUp,
+  RefreshCw, Target,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
@@ -53,9 +53,9 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   const { thisMonthExpenses, categorySpend } = useMemo(() => {
     let total = 0;
     const byCategory: Record<string, number> = {};
-    transactions.filter(t => t.type === 'expense' && t.date.startsWith(prefix)).forEach(t => {
-      total += t.amount;
-      byCategory[t.category] = (byCategory[t.category] || 0) + t.amount;
+    transactions.filter(tx => tx.type === 'expense' && tx.date.startsWith(prefix)).forEach(tx => {
+      total += tx.amount;
+      byCategory[tx.category] = (byCategory[tx.category] || 0) + tx.amount;
     });
     return { thisMonthExpenses: total, categorySpend: byCategory };
   }, [transactions, prefix]);
@@ -63,6 +63,10 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   const budgetPct = monthlyBudget > 0 ? (thisMonthExpenses / monthlyBudget) * 100 : 0;
   const budgetRemaining = monthlyBudget - thisMonthExpenses;
   const budgetColor = getProgressColor(budgetPct);
+
+  const arcR = 52;
+  const arcCircumference = 2 * Math.PI * arcR;
+  const arcOffset = arcCircumference * (1 - Math.min(budgetPct, 100) / 100);
 
   const handleSaveBudget = () => {
     const v = parseFloat(budgetInput);
@@ -112,27 +116,29 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
 
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
+
+      {/* ── Header ── */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{monthLabel}</p>
-          <h2 className="text-xl font-bold text-slate-900 mt-0.5">{t('budget')}</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: colors.textMuted }}>{monthLabel}</p>
+          <h2 className="text-xl font-bold mt-0.5" style={{ color: colors.textPrimary }}>{t('budget')}</h2>
         </div>
       </div>
 
-      {/* ── MONTHLY BUDGET ───────────────────────────── */}
+      {/* ── MONTHLY BUDGET ── */}
       <div className="card-dark rounded-3xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Wallet size={17} className="text-blue-400" />
+              <Wallet size={17} style={{ color: '#60a5fa' }} />
             </div>
-            <p className="text-sm font-bold text-slate-700">{t('monthlyBudgetLabel')}</p>
+            <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('monthlyBudgetLabel')}</p>
           </div>
           <button
             onClick={() => { setEditBudget(v => !v); setBudgetInput(monthlyBudget > 0 ? String(monthlyBudget) : ''); }}
-            className="text-xs font-semibold text-blue-400 cursor-pointer px-2 py-1 rounded-lg"
-            style={{ background: 'rgba(59,130,246,0.08)' }}
+            className="text-xs font-semibold cursor-pointer px-2 py-1 rounded-lg"
+            style={{ background: 'rgba(59,130,246,0.08)', color: '#60a5fa' }}
           >
             {monthlyBudget > 0 ? t('edit') : t('setBudget')}
           </button>
@@ -155,78 +161,90 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                 <Check size={15} /> {t('save')}
               </button>
               <button onClick={() => setEditBudget(false)}
-                className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: colors.bgCard }}>
+                className="px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer"
+                style={{ background: colors.bgSecondary, color: colors.textSecondary }}>
                 {t('cancel')}
               </button>
             </div>
           </div>
         ) : monthlyBudget > 0 ? (
           <div>
-            {/* Numbers */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{t('budget')}</p>
-                <p className="text-sm font-bold text-slate-900">{formatCurrency(monthlyBudget, currency)}</p>
-              </div>
-              <div className="rounded-2xl p-3 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{t('usedLabel')}</p>
-                <p className="text-sm font-bold text-red-400">{formatCurrency(thisMonthExpenses, currency)}</p>
-              </div>
-              <div className="rounded-2xl p-3 text-center"
-                style={{ background: budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)') : colors.bgSecondary, border: `1px solid ${budgetRemaining < 0 ? (isDark ? 'rgba(239,68,68,0.35)' : 'rgba(239,68,68,0.2)') : colors.borderStrong}` }}>
-                <p className="text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">{budgetRemaining < 0 ? t('overBudget') : t('remaining')}</p>
-                <p className="text-sm font-bold" style={{ color: budgetRemaining < 0 ? '#ef4444' : '#34d399' }}>
-                  {formatCurrency(Math.abs(budgetRemaining), currency)}
-                </p>
+            {/* Arc progress ring */}
+            <div className="flex flex-col items-center mb-4">
+              <div className="relative" style={{ width: 120, height: 120 }}>
+                <svg width={120} height={120} style={{ transform: 'rotate(-90deg)' }}>
+                  <circle cx={60} cy={60} r={arcR} fill="none"
+                    stroke={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'} strokeWidth={10} />
+                  <circle cx={60} cy={60} r={arcR} fill="none"
+                    stroke={budgetColor} strokeWidth={10} strokeLinecap="round"
+                    strokeDasharray={arcCircumference}
+                    strokeDashoffset={arcOffset}
+                    style={{ filter: `drop-shadow(0 0 6px ${budgetColor}70)`, transition: 'stroke-dashoffset 1.1s cubic-bezier(0.34,1.2,0.64,1)' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-bold leading-none" style={{ color: budgetColor }}>
+                    {Math.min(budgetPct, 999).toFixed(0)}%
+                  </span>
+                  <span className="text-[10px] font-semibold mt-1" style={{ color: colors.textMuted }}>{t('usedLabel')}</span>
+                </div>
               </div>
             </div>
 
-            {/* Progress bar */}
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] text-slate-500">{t('usedLabel')}</span>
-              <span className="text-[11px] font-bold" style={{ color: budgetColor }}>{Math.min(budgetPct, 999).toFixed(0)}%</span>
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {[
+                { label: t('budget'), value: formatCurrency(monthlyBudget, currency), color: colors.textPrimary },
+                { label: t('usedLabel'), value: formatCurrency(thisMonthExpenses, currency), color: '#f87171' },
+                {
+                  label: budgetRemaining < 0 ? t('overBudget') : t('remaining'),
+                  value: formatCurrency(Math.abs(budgetRemaining), currency),
+                  color: budgetRemaining < 0 ? '#ef4444' : '#34d399',
+                },
+              ].map(stat => (
+                <div key={stat.label} className="rounded-2xl p-2.5 text-center"
+                  style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
+                  <p className="text-[9px] uppercase tracking-wide font-bold mb-1" style={{ color: colors.textMuted }}>{stat.label}</p>
+                  <p className="text-xs font-bold" style={{ color: stat.color }}>{stat.value}</p>
+                </div>
+              ))}
             </div>
-            <div className="h-3 rounded-full overflow-hidden" style={{ background: colors.bgSecondary }}>
-              <div className="h-full rounded-full transition-all"
-                style={{
-                  width: `${Math.min(budgetPct, 100)}%`,
-                  background: budgetColor,
-                  boxShadow: `0 0 8px ${budgetColor}50`,
-                }} />
-            </div>
+
             {budgetPct >= 80 && (
-              <p className="text-[11px] mt-2 flex items-center gap-1"
+              <p className="text-[11px] flex items-center gap-1"
                 style={{ color: budgetPct >= 100 ? '#ef4444' : '#f97316' }}>
                 <AlertTriangle size={12} />
-                {budgetPct >= 100 ? 'Over budget this month' : `Approaching limit — ${(100 - budgetPct).toFixed(0)}% remaining`}
+                {budgetPct >= 100 ? t('overBudget') : `${(100 - budgetPct).toFixed(0)}% ${t('remaining')}`}
               </p>
             )}
           </div>
         ) : (
           <div
             className="rounded-2xl p-5 text-center"
-            style={{ background: isDark ? 'rgba(59,130,246,0.14)' : 'rgba(59,130,246,0.05)', border: isDark ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(59,130,246,0.15)' }}
+            style={{
+              background: isDark ? 'rgba(59,130,246,0.1)' : 'rgba(59,130,246,0.04)',
+              border: isDark ? '1px solid rgba(59,130,246,0.25)' : '1px solid rgba(59,130,246,0.12)',
+            }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
               style={{ background: 'rgba(59,130,246,0.12)' }}>
-              <Wallet size={20} className="text-blue-400" />
+              <Wallet size={20} style={{ color: '#60a5fa' }} />
             </div>
-            <p className="text-sm font-bold text-slate-600 mb-1">{t('noBudgetSet')}</p>
-            <p className="text-xs text-slate-500 leading-relaxed">{t('setBudgetHint')}</p>
+            <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('noBudgetSet')}</p>
+            <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{t('setBudgetHint')}</p>
           </div>
         )}
       </div>
 
-      {/* ── CATEGORY BUDGETS ─────────────────────────── */}
+      {/* ── CATEGORY BUDGETS ── */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('categoryLimitsTitle')}</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>{t('categoryLimitsTitle')}</p>
           {!showAddLimit && (
             <button
               onClick={() => { setShowAddLimit(true); setEditingLimit(null); setLimitCategory(availableCats[0]?.name || ''); setLimitAmount(''); }}
-              className="flex items-center gap-1.5 text-xs font-semibold text-blue-400 cursor-pointer px-2 py-1 rounded-lg"
-              style={{ background: 'rgba(59,130,246,0.08)' }}
+              className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-2 py-1 rounded-lg"
+              style={{ background: 'rgba(59,130,246,0.08)', color: '#60a5fa' }}
             >
               <Plus size={13} /> {t('addCategoryLimit')}
             </button>
@@ -236,9 +254,9 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         {/* Add / Edit form */}
         {showAddLimit && (
           <div className="card-dark rounded-2xl p-4 mb-3 space-y-3">
-            <p className="text-sm font-bold text-slate-700">{editingLimit ? t('editCategoryLimit') : t('addCategoryLimit')}</p>
+            <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{editingLimit ? t('editCategoryLimit') : t('addCategoryLimit')}</p>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('categoryLabel')}</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textSecondary }}>{t('categoryLabel')}</label>
               <div className="grid grid-cols-3 gap-1.5">
                 {(editingLimit ? EXPENSE_CATEGORIES : availableCats).map(c => {
                   const color = getCategoryColor(c.name, 'expense');
@@ -259,7 +277,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
               </div>
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 block mb-1.5">{t('amountLabel')} ({currency})</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textSecondary }}>{t('amountLabel')} ({currency})</label>
               <input
                 type="number"
                 placeholder="0.00"
@@ -276,8 +294,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                 <Check size={15} /> {editingLimit ? t('save') : t('add')}
               </button>
               <button onClick={cancelAddLimit}
-                className="px-4 py-2.5 rounded-xl text-sm text-slate-400 cursor-pointer"
-                style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
+                className="px-4 py-2.5 rounded-xl text-sm cursor-pointer"
+                style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textMuted }}>
                 <X size={16} />
               </button>
             </div>
@@ -288,11 +306,11 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <div className="card-dark rounded-2xl px-4 py-5 flex items-start gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
               style={{ background: 'rgba(96,165,250,0.1)' }}>
-              <Target size={17} className="text-blue-400" />
+              <Target size={17} style={{ color: '#60a5fa' }} />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-600 mb-1">{t('categoryLimitsTitle')}</p>
-              <p className="text-xs text-slate-500 leading-relaxed">{t('noLimitsSet')}</p>
+              <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('categoryLimitsTitle')}</p>
+              <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{t('noLimitsSet')}</p>
             </div>
           </div>
         ) : (
@@ -313,19 +331,21 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                         <CategoryIcon category={limit.category} type="expense" size={15} />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-slate-700">{limit.category}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
+                        <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{limit.category}</p>
+                        <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                           {formatCurrency(spent, currency)} / {formatCurrency(limit.limit, currency)}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       <button onClick={() => openEditLimit(limit)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-blue-400 transition-colors cursor-pointer">
+                        className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer"
+                        style={{ color: colors.textMuted }}>
                         <Edit2 size={13} />
                       </button>
                       <button onClick={() => handleDeleteLimit(limit.category)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 transition-colors cursor-pointer">
+                        className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer"
+                        style={{ color: colors.textMuted }}>
                         <Trash2 size={13} />
                       </button>
                     </div>
@@ -338,7 +358,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                         boxShadow: `0 0 5px ${barColor}50`,
                       }} />
                   </div>
-                  <p className={`text-[11px] font-medium ${remaining < 0 ? 'text-red-400' : pct >= 90 ? 'text-orange-400' : 'text-slate-500'}`}>
+                  <p className="text-[11px] font-medium" style={{ color: remaining < 0 ? '#ef4444' : pct >= 90 ? '#f97316' : colors.textMuted }}>
                     {remaining >= 0
                       ? pct >= 90 ? `⚠ Only ${formatCurrency(remaining, currency)} left` : `${formatCurrency(remaining, currency)} remaining`
                       : `${formatCurrency(Math.abs(remaining), currency)} over limit`}
@@ -350,9 +370,9 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         )}
       </div>
 
-      {/* ── QUICK LINKS ──────────────────────────────── */}
+      {/* ── QUICK LINKS ── */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-3">{t('moreTitle')}</p>
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>{t('moreTitle')}</p>
         <div className="card-dark rounded-2xl overflow-hidden">
           <button
             onClick={onNavigateRecurring}
@@ -361,13 +381,13 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)' }}>
-              <RefreshCw size={17} className="text-blue-400" />
+              <RefreshCw size={17} style={{ color: '#60a5fa' }} />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-700">{t('recurringPaymentsTitle')}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{t('recurringPaymentsDesc')}</p>
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('recurringPaymentsTitle')}</p>
+              <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{t('recurringPaymentsDesc')}</p>
             </div>
-            <ChevronRight size={15} className="text-slate-600" />
+            <ChevronRight size={15} style={{ color: colors.textMuted }} />
           </button>
 
           <button
@@ -376,13 +396,13 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}>
-              <Target size={17} className="text-emerald-400" />
+              <Target size={17} style={{ color: '#34d399' }} />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-700">{t('savingGoalsTitle')}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{t('savingGoalsDesc')}</p>
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('savingGoalsTitle')}</p>
+              <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{t('savingGoalsDesc')}</p>
             </div>
-            <ChevronRight size={15} className="text-slate-600" />
+            <ChevronRight size={15} style={{ color: colors.textMuted }} />
           </button>
         </div>
       </div>

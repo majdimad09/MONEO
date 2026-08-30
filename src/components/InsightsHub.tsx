@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import {
   ShieldCheck, Lightbulb, BarChart2, TrendingUp, ChevronRight,
   TrendingDown, AlertTriangle, Info, Sparkles, Flame, PiggyBank,
-  CalendarDays, Zap, DollarSign, BookOpen, MessageCircle, GitBranch,
+  CalendarDays, Zap, DollarSign, BookOpen, MessageCircle, GitBranch, Crown,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView } from '../types/finance';
-import { formatCurrency } from '../utils/formatters';
 import {
   calculateCashlyScore, generateInsights, getScoreLevel,
   InsightIcon, InsightType,
 } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { TKey } from '../i18n/translations';
 
 interface InsightsHubProps {
   transactions: Transaction[];
@@ -29,68 +29,35 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
   'info': Info, 'sparkle': Sparkles, 'calendar': CalendarDays, 'piggy': PiggyBank,
   'fire': Flame, 'zap': Zap,
 };
-function getInsightColors(isDark: boolean): Record<InsightType, { bg: string; border: string; icon: string }> {
+
+function getInsightColors(isDark: boolean): Record<InsightType, { bg: string; border: string; icon: string; accent: string }> {
   return {
-    positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.07)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.18)',  icon: '#10b981' },
-    warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.06)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.16)',   icon: '#ef4444' },
-    neutral:  { bg: isDark ? 'rgba(59,130,246,0.15)'  : 'rgba(59,130,246,0.06)',  border: isDark ? 'rgba(59,130,246,0.30)'  : 'rgba(59,130,246,0.16)',  icon: '#3b82f6' },
-    info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.07)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.18)',  icon: '#8b5cf6' },
+    positive: { bg: isDark ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.06)', border: isDark ? 'rgba(16,185,129,0.28)' : 'rgba(16,185,129,0.16)', icon: '#10b981', accent: '#10b981' },
+    warning:  { bg: isDark ? 'rgba(239,68,68,0.12)'  : 'rgba(239,68,68,0.05)',  border: isDark ? 'rgba(239,68,68,0.28)'  : 'rgba(239,68,68,0.15)',  icon: '#ef4444', accent: '#ef4444' },
+    neutral:  { bg: isDark ? 'rgba(59,130,246,0.12)' : 'rgba(59,130,246,0.05)', border: isDark ? 'rgba(59,130,246,0.28)' : 'rgba(59,130,246,0.15)', icon: '#3b82f6', accent: '#3b82f6' },
+    info:     { bg: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(139,92,246,0.06)', border: isDark ? 'rgba(139,92,246,0.28)' : 'rgba(139,92,246,0.16)', icon: '#8b5cf6', accent: '#8b5cf6' },
   };
 }
 
-interface ToolLink {
+interface ToolConfig {
   view: AppView;
   icon: React.ElementType;
   color: string;
-  label: string;
-  desc: string;
+  iconBg: string;
+  labelKey: TKey;
+  descKey: TKey;
   premium?: true;
 }
 
-const TOOL_LINKS: ToolLink[] = [
-  { view: 'safe-to-spend',     icon: DollarSign,    color: '#34d399', label: 'Safe to Spend',     desc: 'How much you can spend today without stress' },
-  { view: 'statistics',        icon: BarChart2,      color: '#60a5fa', label: 'Statistics',         desc: 'Charts, categories, monthly breakdown' },
-  { view: 'what-if',          icon: TrendingUp,     color: '#a78bfa', label: 'What If?',           desc: 'Simulate decisions before making them',  premium: true },
-  { view: 'spending-patterns', icon: GitBranch,      color: '#f97316', label: 'Spending Patterns',  desc: 'Detect trends across months',             premium: true },
-  { view: 'projection',        icon: Sparkles,       color: '#fbbf24', label: 'Future Projections', desc: 'Where will your finances be in 6 months?', premium: true },
-  { view: 'money-story',       icon: BookOpen,       color: '#c084fc', label: 'Monthly Story',      desc: 'A narrative recap of each month',          premium: true },
-  { view: 'ask-moneo',         icon: MessageCircle,  color: '#06b6d4', label: 'Ask Moneo',          desc: 'Query your finances in plain language',    premium: true },
+const TOOL_CONFIGS: ToolConfig[] = [
+  { view: 'safe-to-spend',     icon: Zap,           color: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'safeToSpend',         descKey: 'descSafeToSpend' },
+  { view: 'statistics',        icon: BarChart2,      color: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  labelKey: 'statisticsTitle',     descKey: 'descStatistics' },
+  { view: 'what-if',           icon: TrendingUp,     color: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featWhatIf',          descKey: 'descWhatIf',       premium: true },
+  { view: 'spending-patterns', icon: GitBranch,      color: '#f97316', iconBg: 'rgba(249,115,22,0.12)',  labelKey: 'spendingPatternsTitle',descKey: 'descSpendingPatterns', premium: true },
+  { view: 'projection',        icon: Sparkles,       color: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',  labelKey: 'featProjectionShort', descKey: 'descProjection',   premium: true },
+  { view: 'money-story',       icon: BookOpen,       color: '#c084fc', iconBg: 'rgba(192,132,252,0.12)', labelKey: 'monthlyStoryTitle',   descKey: 'descMoneyStory',   premium: true },
+  { view: 'ask-moneo',         icon: MessageCircle,  color: '#06b6d4', iconBg: 'rgba(6,182,212,0.12)',   labelKey: 'featAskMoneo',        descKey: 'descMoneyStory',   premium: true },
 ];
-
-const PremiumBadge = () => (
-  <span
-    className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide flex-shrink-0"
-    style={{ background: 'rgba(139,92,246,0.1)', color: '#7c3aed', border: '1px solid rgba(139,92,246,0.2)' }}
-  >
-    Premium
-  </span>
-);
-
-const ToolRow: React.FC<ToolLink & { isPremium: boolean; onNavigate: (v: AppView) => void }> = ({
-  view, icon: Icon, color, label, desc, premium, isPremium, onNavigate,
-}) => {
-  const { colors } = useTheme();
-  const locked = premium && !isPremium;
-  return (
-    <button
-      onClick={() => onNavigate(view)}
-      className="card-dark w-full rounded-2xl flex items-center gap-3 px-4 py-3 cursor-pointer transition-all text-left"
-    >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: `${color}14` }}>
-        <Icon size={16} style={{ color: locked ? colors.textMuted : color }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-bold truncate" style={{ color: locked ? colors.textMuted : colors.textPrimary }}>{label}</p>
-          {locked && <PremiumBadge />}
-        </div>
-        <p className="text-xs mt-0.5 truncate" style={{ color: colors.textMuted }}>{desc}</p>
-      </div>
-      <ChevronRight size={14} style={{ color: colors.textMuted }} className="flex-shrink-0" />
-    </button>
-  );
-};
 
 export const InsightsHub: React.FC<InsightsHubProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions, savingGoals,
@@ -105,84 +72,111 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
     [transactions, currency, subscriptions],
   );
 
-  const { isDark, colors } = useTheme();
+  const { isDark, colors, toggleTheme } = useTheme();
   const { t } = useLanguage();
   const INSIGHT_COLORS = getInsightColors(isDark);
   const level = getScoreLevel(scoreResult.score);
-  const r = scoreResult.score / 100;
   const circumference = 2 * Math.PI * 36;
+  const strokeOffset = circumference - (scoreResult.score / 100) * circumference;
 
   return (
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
-      <h1 className="text-xl font-bold pt-1" style={{ color: colors.textPrimary }}>{t('insightsHub')}</h1>
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between pt-1">
+        <h1 className="text-xl font-bold" style={{ color: colors.textPrimary }}>{t('insightsHub')}</h1>
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="w-9 h-9 rounded-2xl flex items-center justify-center cursor-pointer transition-all"
+          style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
+        >
+          <span style={{ fontSize: 16 }}>{isDark ? '☀️' : '🌙'}</span>
+        </button>
+      </div>
 
-      {/* ── Moneo Score Card ─────────────────────────────────── */}
+      {/* ── Moneo Score Card ── */}
       <button
         onClick={() => onNavigate('moneo-score')}
-        className="card-dark w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
+        className="w-full rounded-3xl text-left cursor-pointer transition-all overflow-hidden"
+        style={{
+          background: isDark
+            ? `linear-gradient(135deg, ${level.color}18 0%, ${level.color}08 100%)`
+            : `linear-gradient(135deg, ${level.color}10 0%, ${level.color}05 100%)`,
+          border: `1px solid ${level.color}30`,
+          boxShadow: isDark ? `0 4px 24px ${level.color}15` : `0 2px 12px ${level.color}10`,
+          padding: '20px',
+        }}
       >
-        <div className="flex items-center gap-4">
-          {/* Mini ring */}
-          <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
-            <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={36} cy={36} r={28} fill="none" stroke={colors.borderStrong} strokeWidth={7} />
+        <div className="flex items-center gap-5">
+          {/* Score ring */}
+          <div className="relative flex-shrink-0" style={{ width: 80, height: 80 }}>
+            <svg width={80} height={80} style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx={40} cy={40} r={32} fill="none" stroke={`${level.color}25`} strokeWidth={8} />
               <circle
-                cx={36} cy={36} r={28} fill="none"
-                stroke={level.color} strokeWidth={7} strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={circumference - r * circumference}
-                style={{ filter: `drop-shadow(0 0 8px ${level.color}70)` }}
+                cx={40} cy={40} r={32} fill="none"
+                stroke={level.color} strokeWidth={8} strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 32}
+                strokeDashoffset={2 * Math.PI * 32 - (scoreResult.score / 100) * 2 * Math.PI * 32}
+                style={{
+                  filter: `drop-shadow(0 0 10px ${level.color}80)`,
+                  transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34,1.2,0.64,1)',
+                }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-bold" style={{ fontSize: 20, color: level.color, lineHeight: 1 }}>
+              <span className="font-bold leading-none" style={{ fontSize: 22, color: level.color }}>
                 {scoreResult.score}
               </span>
+              <span className="text-[9px] font-semibold mt-0.5" style={{ color: `${level.color}80` }}>/100</span>
             </div>
           </div>
 
+          {/* Score info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <ShieldCheck size={14} style={{ color: level.color }} />
-              <span className="text-xs font-bold uppercase tracking-wide" style={{ color: level.color }}>
+              <ShieldCheck size={13} style={{ color: level.color }} />
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: `${level.color}90` }}>
                 {t('moneoScore')}
               </span>
             </div>
-            <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{level.name}</p>
-            <p className="text-xs mt-0.5 leading-tight" style={{ color: colors.textSecondary }}>{scoreResult.summary}</p>
+            <p className="text-xl font-bold leading-tight mb-1" style={{ color: level.color }}>{level.name}</p>
+            <p className="text-[12px] leading-relaxed" style={{ color: colors.textSecondary }}>{scoreResult.summary}</p>
           </div>
-          <ChevronRight size={16} style={{ color: colors.textSecondary }} className="flex-shrink-0" />
+
+          <div className="flex-shrink-0 flex flex-col items-center gap-1">
+            <ChevronRight size={16} style={{ color: level.color }} />
+          </div>
+        </div>
+
+        <div className="mt-4 pt-3 flex items-center justify-center" style={{ borderTop: `1px solid ${level.color}20` }}>
+          <span className="text-[11px] font-semibold" style={{ color: `${level.color}80` }}>
+            {t('tapForFullReport')}
+          </span>
         </div>
       </button>
 
-      {/* ── Money Coach ──────────────────────────────────────── */}
+      {/* ── AI Insights ── */}
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Lightbulb size={14} style={{ color: '#fbbf24' }} />
             <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
-              Money Coach
+              {t('yourInsights')}
             </p>
           </div>
-          <button
-            onClick={() => onNavigate('money-coach')}
-            className="text-[11px] font-semibold cursor-pointer" style={{ color: colors.accent }}
-          >
+          <button onClick={() => onNavigate('money-coach')} className="text-[11px] font-semibold cursor-pointer" style={{ color: colors.accent }}>
             {t('seeAll')}
           </button>
         </div>
 
         {insights.length === 0 ? (
-          <div
-            className="rounded-2xl px-4 py-5 text-center"
-            style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
-          >
-            <Lightbulb size={24} className="mx-auto mb-2" style={{ color: colors.textMuted }} />
+          <div className="rounded-2xl px-4 py-6 text-center" style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}>
+            <Lightbulb size={22} className="mx-auto mb-2" style={{ color: colors.textMuted }} />
             <p className="text-sm" style={{ color: colors.textMuted }}>{t('noInsightsYet')}</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {insights.slice(0, 3).map(ins => {
               const ic = INSIGHT_COLORS[ins.type];
               const Icon = INSIGHT_ICON_MAP[ins.icon];
@@ -190,10 +184,20 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
                 <div
                   key={ins.id}
                   className="rounded-2xl px-4 py-3 flex items-start gap-3"
-                  style={{ background: ic.bg, border: `1px solid ${ic.border}` }}
+                  style={{
+                    background: ic.bg,
+                    border: `1px solid ${ic.border}`,
+                    borderLeft: `3px solid ${ic.icon}`,
+                    paddingLeft: 14,
+                  }}
                 >
-                  <Icon size={15} className="flex-shrink-0 mt-0.5" style={{ color: ic.icon }} />
-                  <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{ins.text}</p>
+                  <div
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                    style={{ background: `${ic.icon}15` }}
+                  >
+                    <Icon size={13} style={{ color: ic.icon }} strokeWidth={2.2} />
+                  </div>
+                  <p className="text-[12px] leading-relaxed flex-1" style={{ color: colors.textSecondary }}>{ins.text}</p>
                 </div>
               );
             })}
@@ -201,31 +205,42 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
         )}
       </div>
 
-      {/* ── Statistics quick link ────────────────────────────── */}
-      <button
-        onClick={() => onNavigate('statistics')}
-        className="card-dark w-full rounded-2xl flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all text-left"
-      >
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(59,130,246,0.09)' }}>
-          <BarChart2 size={17} style={{ color: '#3b82f6' }} />
-        </div>
-        <div className="flex-1">
-          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('statisticsTitle')}</p>
-          <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{t('byCategory')}</p>
-        </div>
-        <ChevronRight size={15} style={{ color: colors.textMuted }} />
-      </button>
-
-      {/* ── Quick tools grid ─────────────────────────────────── */}
+      {/* ── Analytics Tools ── */}
       <div>
         <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: colors.textMuted }}>
           {t('financialTools')}
         </p>
-        <div className="space-y-2">
-          {TOOL_LINKS.map(t => (
-            <ToolRow key={t.view} {...t} isPremium={isPremium} onNavigate={onNavigate} />
-          ))}
+        <div className="grid grid-cols-2 gap-2.5">
+          {TOOL_CONFIGS.map(cfg => {
+            const Icon = cfg.icon;
+            const locked = cfg.premium && !isPremium;
+            return (
+              <button
+                key={cfg.view}
+                onClick={() => onNavigate(cfg.view)}
+                className="card-dark rounded-2xl p-3.5 text-left cursor-pointer transition-all flex flex-col gap-2.5"
+                style={locked ? { opacity: 0.75 } : undefined}
+              >
+                <div className="flex items-start justify-between">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    style={{ background: cfg.iconBg }}
+                  >
+                    <Icon size={16} style={{ color: locked ? colors.textMuted : cfg.color }} strokeWidth={2} />
+                  </div>
+                  {locked && <Crown size={12} style={{ color: '#8b5cf6' }} />}
+                </div>
+                <div>
+                  <p className="text-xs font-bold" style={{ color: locked ? colors.textMuted : colors.textPrimary }}>
+                    {t(cfg.labelKey)}
+                  </p>
+                  <p className="text-[10px] mt-0.5 leading-tight" style={{ color: colors.textMuted }}>
+                    {t(cfg.descKey)}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -122,32 +122,34 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     <div className="page-enter pb-8 space-y-4">
 
       {/* ── GREETING ─────────────────────────────────── */}
-      <div className="px-4 pt-4 flex items-center justify-between">
+      <div className="px-4 pt-5 flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: colors.textMuted }}>{monthLabel}</p>
-          <p className="text-lg font-bold mt-0.5" style={{ color: colors.textPrimary }}>{greeting}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>{monthLabel}</p>
+          <p className="text-xl font-bold mt-0.5 leading-tight" style={{ color: colors.textPrimary }}>{greeting}</p>
         </div>
         {/* ── THEME TOGGLE ── */}
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
           className="flex items-center rounded-full p-0.5 transition-all cursor-pointer"
-          style={{ background: colors.bgHover, border: `1px solid ${colors.border}` }}
+          style={{
+            background: isDark ? '#13141e' : '#eff0f8',
+            border: `1px solid ${colors.borderStrong}`,
+            boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.07)',
+          }}
         >
-          <div style={{
-            width: 28, height: 28, borderRadius: '50%',
-            background: !isDark ? colors.bgCard : 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 15, transition: 'all 0.2s ease',
-            boxShadow: !isDark ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
-          }}>☀️</div>
-          <div style={{
-            width: 28, height: 28, borderRadius: '50%',
-            background: isDark ? colors.border : 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 15, transition: 'all 0.2s ease',
-            boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
-          }}>🌙</div>
+          {(['☀️', '🌙'] as const).map((emoji, idx) => {
+            const isActive = idx === 0 ? !isDark : isDark;
+            return (
+              <div key={emoji} style={{
+                width: 30, height: 30, borderRadius: '50%',
+                background: isActive ? (isDark ? colors.border : '#ffffff') : 'transparent',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 14, transition: 'all 0.22s cubic-bezier(0.34,1.56,0.64,1)',
+                boxShadow: isActive ? (isDark ? '0 2px 6px rgba(0,0,0,0.4)' : '0 2px 6px rgba(0,0,0,0.1)') : 'none',
+              }}>{emoji}</div>
+            );
+          })}
         </button>
       </div>
 
@@ -158,43 +160,51 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           style={{ WebkitTapHighlightColor: 'transparent' }}
           onClick={() => setBalanceExpanded(v => !v)}
         >
-          {/* Header row */}
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(147,197,253,0.6)' }}>
-              {t('totalBalance')}
-            </p>
-            <div className="flex items-center gap-1 text-[11px]" style={{ color: 'rgba(147,197,253,0.5)' }}>
-              <span>{balanceExpanded ? t('lessBtn') : t('detailsBtn')}</span>
-              {balanceExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          {/* Details toggle */}
+          <div className="flex justify-end mb-1">
+            <div className="flex items-center gap-1 text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              <span className="font-semibold">{balanceExpanded ? t('lessBtn') : t('detailsBtn')}</span>
+              {balanceExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
             </div>
           </div>
 
           {/* Big balance number */}
-          <div className="py-2 mb-4">
+          <div className="pt-1 pb-5">
+            <p className="text-[11px] font-bold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              {t('totalBalance')}
+            </p>
             <span
-              className="text-[2.8rem] font-bold tracking-tight leading-none"
-              style={{ color: isPositive ? '#ffffff' : '#f87171' }}
+              className="font-bold tracking-tight leading-none"
+              style={{ fontSize: 46, color: isPositive ? '#ffffff' : '#fca5a5', display: 'block', letterSpacing: '-0.03em' }}
             >
               {formatCurrency(Math.abs(balance), currency)}
             </span>
-            {!isPositive && <p className="text-xs text-red-400 font-semibold mt-1">{t('overspentLabel')}</p>}
+            {!isPositive && (
+              <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(239,68,68,0.25)', color: '#fca5a5' }}>
+                {t('overspentLabel')}
+              </span>
+            )}
           </div>
 
-          {/* Income / Expense split */}
-          <div className="grid grid-cols-2 gap-3 mb-3">
-            <div className="rounded-2xl p-3" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+          {/* Income / Expense chips */}
+          <div className="flex gap-2 mb-3">
+            <div className="flex-1 rounded-2xl px-3 py-2.5" style={{ background: 'rgba(16,185,129,0.14)', border: '1px solid rgba(16,185,129,0.25)', backdropFilter: 'blur(8px)' }}>
               <div className="flex items-center gap-1.5 mb-1">
-                <ArrowUpRight size={12} className="text-green-400" />
-                <span className="text-[10px] text-green-400 font-bold uppercase tracking-wide">{t('income')}</span>
+                <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: 'rgba(52,211,153,0.25)' }}>
+                  <ArrowUpRight size={10} style={{ color: '#34d399' }} />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'rgba(52,211,153,0.9)' }}>{t('income')}</span>
               </div>
-              <p className="text-sm font-bold text-white">{formatCurrency(totalIncome, currency)}</p>
+              <p className="text-[15px] font-bold" style={{ color: '#ffffff' }}>{formatCurrency(totalIncome, currency)}</p>
             </div>
-            <div className="rounded-2xl p-3" style={{ background: isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)', border: isDark ? '1px solid rgba(239,68,68,0.32)' : '1px solid rgba(239,68,68,0.18)' }}>
+            <div className="flex-1 rounded-2xl px-3 py-2.5" style={{ background: 'rgba(239,68,68,0.14)', border: '1px solid rgba(239,68,68,0.25)', backdropFilter: 'blur(8px)' }}>
               <div className="flex items-center gap-1.5 mb-1">
-                <ArrowDownRight size={12} className="text-red-400" />
-                <span className="text-[10px] text-red-400 font-bold uppercase tracking-wide">{t('expenses')}</span>
+                <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: 'rgba(248,113,113,0.25)' }}>
+                  <ArrowDownRight size={10} style={{ color: '#f87171' }} />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'rgba(248,113,113,0.9)' }}>{t('expenses')}</span>
               </div>
-              <p className="text-sm font-bold text-white">{formatCurrency(totalExpenses, currency)}</p>
+              <p className="text-[15px] font-bold" style={{ color: '#ffffff' }}>{formatCurrency(totalExpenses, currency)}</p>
             </div>
           </div>
 
@@ -265,16 +275,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="px-4 card-float-2">
         <div className="flex gap-2">
           {[
-            { labelKey: 'expenseType' as const, icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', onClick: onAddExpense },
-            { labelKey: 'incomeType' as const, icon: ArrowUpRight, color: '#34d399', bg: 'rgba(16,185,129,0.1)', onClick: onAddIncome },
-            { labelKey: 'statisticsTitle' as const, icon: BarChart2, color: '#a5b4fc', bg: 'rgba(99,102,241,0.1)', onClick: onNavigateStats },
-            { labelKey: 'budget' as const, icon: Wallet, color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', onClick: onNavigateBudget },
-          ].map(({ labelKey, icon: Icon, color, bg, onClick }) => (
+            { labelKey: 'expenseType' as const, icon: ArrowDownRight, color: '#f87171', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.18)', onClick: onAddExpense },
+            { labelKey: 'incomeType' as const, icon: ArrowUpRight,   color: '#34d399', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.18)', onClick: onAddIncome },
+            { labelKey: 'statisticsTitle' as const, icon: BarChart2, color: '#818cf8', bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.18)', onClick: onNavigateStats },
+            { labelKey: 'budget' as const, icon: Wallet,             color: '#c084fc', bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.18)', onClick: onNavigateBudget },
+          ].map(({ labelKey, icon: Icon, color, bg, border, onClick }) => (
             <button key={labelKey} onClick={onClick} className="quick-action-btn">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: bg }}>
-                <Icon size={16} style={{ color }} strokeWidth={2.2} />
+              <div
+                className="w-10 h-10 rounded-2xl flex items-center justify-center"
+                style={{ background: bg, border: `1px solid ${border}` }}
+              >
+                <Icon size={18} style={{ color }} strokeWidth={2.2} />
               </div>
-              <span className="text-[10px] font-bold text-slate-400">{t(labelKey)}</span>
+              <span className="text-[11px] font-bold" style={{ color: colors.textSecondary }}>{t(labelKey)}</span>
             </button>
           ))}
         </div>
@@ -297,23 +310,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div className="insights-scroll px-4">
             {insights.map((insight, i) => {
-              const colors = INSIGHT_COLORS[insight.type] || INSIGHT_COLORS.info;
+              const ic = INSIGHT_COLORS[insight.type] || INSIGHT_COLORS.info;
               const Icon = INSIGHT_ICON_MAP[insight.icon] || Info;
               return (
                 <div
                   key={insight.id}
                   className="insight-card"
                   style={{
-                    background: colors.bg,
-                    border: `1px solid ${colors.border}`,
-                    animation: `insightSlide 0.3s ${i * 0.08}s ease both`,
+                    background: ic.bg,
+                    border: `1px solid ${ic.border}`,
+                    borderLeft: `3px solid ${ic.icon}`,
+                    animation: `insightSlide 0.32s ${i * 0.07}s cubic-bezier(0.22,1,0.36,1) both`,
+                    paddingLeft: 14,
                   }}
                 >
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2.5"
-                    style={{ background: colors.bg, border: `1px solid ${colors.border}` }}>
-                    <Icon size={16} style={{ color: colors.icon }} />
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${ic.icon}18`, border: `1px solid ${ic.icon}30` }}>
+                      <Icon size={14} style={{ color: ic.icon }} strokeWidth={2.2} />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: ic.icon }}>
+                      {insight.type}
+                    </span>
                   </div>
-                  <p className="text-[12px] font-semibold leading-relaxed" style={{ color: colors.text }}>
+                  <p className="text-[12px] font-semibold leading-relaxed" style={{ color: ic.text }}>
                     {insight.text}
                   </p>
                 </div>
@@ -362,17 +382,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   style={{ borderBottom: i < recentTx.length - 1 ? `1px solid ${colors.divider}` : 'none' }}
                   onClick={() => onEdit(tx)}
                 >
-                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${catColor}18`, border: `1px solid ${catColor}28`, color: catColor }}>
+                  <div
+                    className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${catColor}16`, border: `1px solid ${catColor}25` }}
+                  >
                     <CategoryIcon category={tx.category} type={tx.type} size={16} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold truncate" style={{ color: colors.textPrimary }}>{tx.description}</p>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{formatDate(tx.date)} · {tx.category}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{formatDate(tx.date)} · {tx.category}</p>
                   </div>
-                  <span className={`font-bold font-mono text-sm flex-shrink-0 ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
-                    {isIncome ? '+' : '−'}{formatCurrency(tx.amount, currency)}
-                  </span>
+                  <div className="text-right flex-shrink-0">
+                    <p
+                      className="font-bold font-mono text-[14px]"
+                      style={{ color: isIncome ? '#22c55e' : '#f87171' }}
+                    >
+                      {isIncome ? '+' : '−'}{formatCurrency(tx.amount, currency)}
+                    </p>
+                  </div>
                 </div>
               );
             })}

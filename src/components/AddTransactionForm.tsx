@@ -123,16 +123,13 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         <button
           type="button"
           onClick={() => handleTabChange('expense')}
-          className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
-            activeTab === 'expense'
-              ? 'text-red-400'
-              : 'text-slate-500 hover:text-slate-600'
-          }`}
-          style={activeTab === 'expense' ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` } : {}}
+          className="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
+          style={activeTab === 'expense'
+            ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: '#f87171' }
+            : { color: colors.textSecondary }}
         >
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-            activeTab === 'expense' ? 'bg-red-500/15 text-red-400' : 'text-slate-600'
-          }`}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+            style={{ background: activeTab === 'expense' ? 'rgba(239,68,68,0.12)' : 'transparent', color: activeTab === 'expense' ? '#f87171' : colors.textMuted }}>
             <ArrowDownRight className="w-3.5 h-3.5" />
           </div>
           <span>{t('addExpense')}</span>
@@ -141,16 +138,13 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         <button
           type="button"
           onClick={() => handleTabChange('income')}
-          className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
-            activeTab === 'income'
-              ? 'text-green-400'
-              : 'text-slate-500 hover:text-slate-600'
-          }`}
-          style={activeTab === 'income' ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` } : {}}
+          className="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
+          style={activeTab === 'income'
+            ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: '#34d399' }
+            : { color: colors.textSecondary }}
         >
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-            activeTab === 'income' ? 'bg-green-500/15 text-green-400' : 'text-slate-600'
-          }`}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+            style={{ background: activeTab === 'income' ? 'rgba(52,211,153,0.12)' : 'transparent', color: activeTab === 'income' ? '#34d399' : colors.textMuted }}>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </div>
           <span>{t('addIncome')}</span>
@@ -178,12 +172,12 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         {/* Row 1: Amount & Date */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: colors.textSecondary }}>
               Amount ({currencySymbol}) *
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <span className="text-blue-400 font-bold text-sm">{currencySymbol}</span>
+                <span className="font-bold text-sm" style={{ color: colors.accent }}>{currencySymbol}</span>
               </div>
               <input
                 type="number"
@@ -202,12 +196,12 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: colors.textSecondary }}>
               Date *
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Calendar className="w-4 h-4 text-slate-500" />
+                <Calendar className="w-4 h-4" style={{ color: colors.textMuted }} />
               </div>
               <input
                 type="date"
@@ -222,12 +216,12 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
 
         {/* Row 2: Description */}
         <div>
-          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: colors.textSecondary }}>
             Description *
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <FileText className="w-4 h-4 text-slate-500" />
+              <FileText className="w-4 h-4" style={{ color: colors.textMuted }} />
             </div>
             <input
               type="text"
@@ -246,7 +240,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         {/* Row 3: Category */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <label className="block text-[11px] font-bold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
               {activeTab === 'expense' ? t('categoryLabel') : t('incomeSource')}
             </label>
             <button
@@ -255,7 +249,8 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
                 setIsCustomCategory(!isCustomCategory);
                 if (!isCustomCategory) setCustomCategoryInput('');
               }}
-              className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors"
+              className="text-xs font-medium flex items-center gap-1 transition-colors"
+              style={{ color: colors.accent }}
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>{isCustomCategory ? t('standardCategories') : t('customCategoryBtn')}</span>
@@ -272,19 +267,16 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
                     key={cat.name}
                     type="button"
                     onClick={() => setCategory(cat.name)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all text-left truncate ${
-                      isSelected ? 'text-white' : 'text-slate-400 hover:text-slate-700'
-                    }`}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all text-left truncate"
                     style={isSelected
-                      ? { background: 'linear-gradient(135deg, #2563eb, #3b82f6)', boxShadow: '0 0 10px rgba(59,130,246,0.3)' }
-                      : { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }
+                      ? { background: colors.accent, color: '#fff', boxShadow: `0 0 10px ${colors.accent}40` }
+                      : { background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }
                     }
                   >
                     <CategoryIcon
                       category={cat.name}
                       type={activeTab}
                       size={12}
-                      className={isSelected ? 'text-blue-200' : 'text-slate-500'}
                     />
                     <span className="truncate">{cat.name}</span>
                   </button>
@@ -294,7 +286,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           ) : (
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Tag className="w-4 h-4 text-slate-500" />
+                <Tag className="w-4 h-4" style={{ color: colors.textMuted }} />
               </div>
               <input
                 type="text"
