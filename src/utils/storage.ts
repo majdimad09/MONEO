@@ -1,4 +1,4 @@
-import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome } from '../types/finance';
+import { Transaction, CategoryLimit, SavingGoal, Subscription, RecurringIncome, MonthlyCheckIn } from '../types/finance';
 
 const STORAGE_KEY = 'cashly_transactions_v1';
 const CURRENCY_KEY = 'cashly_selected_currency_v1';
@@ -110,6 +110,20 @@ export function loadUserName(): string {
 }
 export function saveUserName(name: string): void {
   try { localStorage.setItem(USERNAME_KEY, name); } catch { /* ignore */ }
+}
+
+// --- Monthly Check-In ---
+const CHECKIN_KEY = 'moneo-monthly-checkin';
+
+export function loadCheckIn(): MonthlyCheckIn | null {
+  try {
+    const v = localStorage.getItem(CHECKIN_KEY);
+    return v ? JSON.parse(v) : null;
+  } catch { return null; }
+}
+
+export function saveCheckIn(data: MonthlyCheckIn): void {
+  try { localStorage.setItem(CHECKIN_KEY, JSON.stringify(data)); } catch { /* ignore */ }
 }
 
 // --- CSV Export ---

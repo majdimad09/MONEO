@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, Community, AppView } from './types/finance';
+import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, Community, AppView, MonthlyCheckIn } from './types/finance';
 import {
   loadTransactions, saveTransactions,
   loadSavedCurrency, saveSelectedCurrency,
@@ -14,6 +14,7 @@ import {
   loadSubscriptions, saveSubscriptions,
   loadRecurringIncome, saveRecurringIncome,
   loadUserName, saveUserName,
+  loadCheckIn, saveCheckIn,
   SAMPLE_TRANSACTIONS, exportTransactionsToCSV,
 } from './utils/storage';
 import { isSupabaseConfigured } from './lib/supabase';
@@ -72,6 +73,7 @@ import { MoneyStoryScreen } from './components/MoneyStoryScreen';
 import { SpendingPatternsScreen } from './components/SpendingPatternsScreen';
 import { SafeToSpendScreen } from './components/SafeToSpendScreen';
 import { AskMoneoScreen } from './components/AskMoneoScreen';
+import { MonthlyCheckInModal } from './components/MonthlyCheckInModal';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -98,6 +100,10 @@ export default function App() {
   const [recurringIncome, setRecurringIncome] = useState<RecurringIncome[]>(() => loadRecurringIncome());
   const [communities, setCommunities]         = useState<Community[]>(() => loadCommunities());
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
+
+  // ── Check-in state ────────────────────────────────────────────────────────
+  const [checkIn, setCheckIn] = useState<MonthlyCheckIn | null>(() => loadCheckIn());
+  const [showCheckIn, setShowCheckIn] = useState(false);
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -178,6 +184,42 @@ export default function App() {
       .finally(() => setCloudLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
+
+  // Show monthly check-in once per month (after app is ready)
+  useEffect(() => {
+    if (showSplash || authLoading || cloudLoading) return;
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    if (!checkIn || checkIn.month !== currentMonth) {
+      const timer = setTimeout(() => setShowCheckIn(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showSplash, authLoading, cloudLoading]);
+
+  const handleCheckInComplete = (data: MonthlyCheckIn) => {
+    setCheckIn(data);
+    saveCheckIn(data);
+    setShowCheckIn(false);
+  };
+
+  const handleCheckInSkip = () => {
+    const now = new Date();
+    const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const skipped: MonthlyCheckIn = {
+      month,
+      completedAt: Date.now(),
+      monthlyIncomeEstimate: 0,
+      recurringExpenses: 0,
+      savingsGoalEnabled: false,
+      savingsGoalAmount: 0,
+      upcomingExpenses: '',
+      skipped: true,
+    };
+    setCheckIn(skipped);
+    saveCheckIn(skipped);
+    setShowCheckIn(false);
+  };
 
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleCurrencyChange = (code: string) => {
@@ -776,6 +818,14 @@ export default function App() {
         onConfirm={() => { if (deletingTransaction) handleDeleteTransaction(deletingTransaction); }}
         currency={currency}
       />
+
+      {showCheckIn && (
+        <MonthlyCheckInModal
+          currency={currency}
+          onComplete={handleCheckInComplete}
+          onSkip={handleCheckInSkip}
+        />
+      )}
     </div>
   );
 }

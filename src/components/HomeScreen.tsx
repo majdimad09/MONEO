@@ -217,10 +217,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Income / Expenses / Add row */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'stretch' }}>
             {/* Income sub-card */}
-            <div style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.22)', borderRadius: 14, padding: '11px 12px' }}>
+            <div style={{
+              background: isDark
+                ? 'rgba(16,185,129,0.10)'
+                : 'linear-gradient(135deg, rgba(16,185,129,0.28) 0%, rgba(5,150,105,0.20) 100%)',
+              border: isDark
+                ? '1px solid rgba(16,185,129,0.22)'
+                : '1.5px solid rgba(16,185,129,0.52)',
+              borderRadius: 14,
+              padding: '11px 12px',
+              boxShadow: isDark ? 'none' : '0 3px 14px rgba(16,185,129,0.26), inset 0 1px 0 rgba(255,255,255,0.14)',
+            }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                <ArrowUpRight size={11} color="#34d399" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#34d399' }}>
+                <ArrowUpRight size={11} color={isDark ? '#34d399' : '#6ee7b7'} />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: isDark ? '#34d399' : '#6ee7b7' }}>
                   {t('income')}
                 </span>
               </div>
@@ -230,10 +240,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             {/* Expenses sub-card */}
-            <div style={{ background: 'rgba(248,113,113,0.09)', border: '1px solid rgba(248,113,113,0.18)', borderRadius: 14, padding: '11px 12px' }}>
+            <div style={{
+              background: isDark
+                ? 'rgba(248,113,113,0.09)'
+                : 'linear-gradient(135deg, rgba(239,68,68,0.26) 0%, rgba(220,38,38,0.18) 100%)',
+              border: isDark
+                ? '1px solid rgba(248,113,113,0.18)'
+                : '1.5px solid rgba(248,113,113,0.46)',
+              borderRadius: 14,
+              padding: '11px 12px',
+              boxShadow: isDark ? 'none' : '0 3px 14px rgba(239,68,68,0.24), inset 0 1px 0 rgba(255,255,255,0.10)',
+            }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                <ArrowDownRight size={11} color="#f87171" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#f87171' }}>
+                <ArrowDownRight size={11} color={isDark ? '#f87171' : '#fca5a5'} />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: isDark ? '#f87171' : '#fca5a5' }}>
                   {t('expenses')}
                 </span>
               </div>

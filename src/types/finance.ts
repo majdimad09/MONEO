@@ -254,3 +254,14 @@ export interface CommunityPrivacy {
   showProfileName: boolean;
   appearOnLeaderboards: boolean;
 }
+
+export interface MonthlyCheckIn {
+  month: string;                // 'YYYY-MM' — the month this check-in covers
+  completedAt: number;          // timestamp
+  monthlyIncomeEstimate: number;
+  recurringExpenses: number;    // rent + bills + fixed costs
+  savingsGoalEnabled: boolean;
+  savingsGoalAmount: number;
+  upcomingExpenses: string;     // free text, e.g. "car service, new laptop"
+  skipped: boolean;
+}
