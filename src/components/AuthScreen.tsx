@@ -4,6 +4,7 @@ import { LogoWordmark } from './Logo';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LANGUAGES, LangCode } from '../i18n/translations';
 import type { SignupMeta } from '../hooks/useAuth';
+import { useTheme } from '../context/ThemeContext';
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'update-password';
 
@@ -21,6 +22,7 @@ export function AuthScreen({
   onSignIn, onSignUp, onResetPassword, onUpdatePassword, isRecoveryMode, initialMode, onGoBack,
 }: AuthScreenProps) {
   const { t, lang, setLanguage } = useLanguage();
+  const { isDark, colors } = useTheme();
 
   const [mode, setMode] = useState<AuthMode>(isRecoveryMode ? 'update-password' : (initialMode ?? 'signin'));
   const [email, setEmail] = useState('');
@@ -115,8 +117,7 @@ export function AuthScreen({
     }
   };
 
-  const inputBase =
-    'w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all';
+  const inputBase = 'input-dark w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-all';
 
   const subtitle: Record<AuthMode, string> = {
     signin: t('welcomeBack'),
@@ -135,13 +136,17 @@ export function AuthScreen({
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 relative"
-      style={{ background: 'linear-gradient(145deg, #e8eaf6 0%, #f4f5f9 40%, #e8f5e9 100%)' }}
+      style={{
+        background: isDark
+          ? '#0a0a0a'
+          : 'linear-gradient(145deg, #f0f4ff 0%, #f7f8fa 50%, #f0fdf4 100%)',
+      }}
     >
       {onGoBack && !isRecoveryMode && (
         <button
           onClick={onGoBack}
           className="absolute top-6 left-6 flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
-          style={{ color: '#6b7280' }}
+          style={{ color: colors.textMuted }}
         >
           <ChevronLeft size={16} />
           Back
@@ -149,12 +154,16 @@ export function AuthScreen({
       )}
       <div
         className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
-        style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)' }}
+        style={{
+          background: colors.bgCard,
+          border: `1px solid ${colors.border}`,
+          boxShadow: isDark ? '0 8px 40px rgba(0,0,0,0.5)' : '0 8px 40px rgba(0,0,0,0.10)',
+        }}
       >
         {/* Logo */}
         <div className="flex flex-col items-center gap-2 pt-2">
           <LogoWordmark iconSize={36} textSize="md" />
-          <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{subtitle[mode]}</p>
+          <p className="text-xs mt-1" style={{ color: colors.textMuted }}>{subtitle[mode]}</p>
         </div>
 
         {/* Success / Error */}
@@ -259,7 +268,7 @@ export function AuthScreen({
 
                   {/* Language picker */}
                   <div>
-                    <p className="text-[11px] text-slate-500 mb-1.5 font-medium">{t('chooseLanguage')}</p>
+                    <p className="text-[11px] mb-1.5 font-medium" style={{ color: colors.textSecondary }}>{t('chooseLanguage')}</p>
                     <div className="grid grid-cols-3 gap-1.5">
                       {LANGUAGES.map(l => (
                         <button
@@ -269,8 +278,8 @@ export function AuthScreen({
                           disabled={loading}
                           className="py-2 px-1 rounded-xl text-[11px] font-semibold text-center transition-all cursor-pointer"
                           style={signupLang === l.code
-                            ? { background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.3)', color: '#6366f1' }
-                            : { background: '#f7f8fc', border: '1px solid #e5e7eb', color: '#6b7280' }
+                            ? { background: colors.accentSoft, border: `1px solid ${colors.accent}40`, color: colors.accent }
+                            : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textSecondary }
                           }
                         >
                           {l.nativeName}
@@ -336,7 +345,7 @@ export function AuthScreen({
               {mode === 'signin' && (
                 <button type="button"
                   className="text-xs self-end -mt-1 transition-colors cursor-pointer"
-                  style={{ color: '#6366f1' }}
+                  style={{ color: colors.accent }}
                   onClick={() => reset('forgot')}>
                   {t('forgotPassword')}
                 </button>
@@ -350,8 +359,8 @@ export function AuthScreen({
             disabled={loading}
             className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer disabled:opacity-60"
             style={{
-              background: loading ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-              boxShadow: loading ? 'none' : '0 4px 20px rgba(99,102,241,0.35)',
+              background: loading ? `${colors.accent}80` : colors.accent,
+              boxShadow: loading ? 'none' : `0 4px 20px ${colors.accent}40`,
             }}
           >
             {loading && <Loader2 size={15} className="animate-spin" />}
@@ -368,17 +377,17 @@ export function AuthScreen({
             {mode === 'forgot' ? (
               <button
                 className="flex items-center gap-1.5 text-xs transition-colors cursor-pointer"
-                style={{ color: '#6b7280' }}
+                style={{ color: colors.textMuted }}
                 onClick={() => reset('signin')}
               >
                 <ArrowLeft size={13} /> {t('backToSignIn')}
               </button>
             ) : (
-              <p className="text-xs" style={{ color: '#9ca3af' }}>
+              <p className="text-xs" style={{ color: colors.textMuted }}>
                 {mode === 'signin' ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
                 <button
                   className="font-semibold transition-colors cursor-pointer"
-                  style={{ color: '#6366f1' }}
+                  style={{ color: colors.accent }}
                   onClick={() => reset(mode === 'signin' ? 'signup' : 'signin')}
                 >
                   {mode === 'signin' ? t('signUpLink') : t('signInLink')}

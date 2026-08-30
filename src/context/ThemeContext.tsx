@@ -17,48 +17,58 @@ export interface ThemeColors {
   topBarBorder: string;
   inputBg: string;
   dropdownBg: string;
-  /** Primary accent: indigo in light, green in dark */
   accent: string;
-  /** Soft tinted bg for accent elements */
   accentSoft: string;
+  positive: string;
+  negative: string;
+  positiveSoft: string;
+  negativeSoft: string;
 }
 
 const LIGHT: ThemeColors = {
-  bgPrimary:    '#f8f9fb',
+  bgPrimary:    '#f7f8fa',
   bgCard:       '#ffffff',
-  bgSecondary:  '#f3f4f8',
-  bgHover:      '#edf0f5',
-  border:       '#e5e8ef',
-  borderStrong: '#d8dce6',
-  textPrimary:  '#0d1117',
-  textSecondary:'#55607a',
-  textMuted:    '#8595aa',
-  divider:      '#eff1f6',
+  bgSecondary:  '#f0f2f5',
+  bgHover:      '#e8eaed',
+  border:       'rgba(0,0,0,0.07)',
+  borderStrong: 'rgba(0,0,0,0.11)',
+  textPrimary:  '#111111',
+  textSecondary:'#666666',
+  textMuted:    '#999999',
+  divider:      'rgba(0,0,0,0.05)',
   topBarBg:     '#ffffff',
-  topBarBorder: '#edf0f5',
-  inputBg:      '#f3f4f8',
+  topBarBorder: 'rgba(0,0,0,0.07)',
+  inputBg:      '#f0f2f5',
   dropdownBg:   '#ffffff',
-  accent:       '#6366f1',
-  accentSoft:   'rgba(99,102,241,0.10)',
+  accent:       '#059669',
+  accentSoft:   'rgba(5,150,105,0.09)',
+  positive:     '#059669',
+  negative:     '#e11d48',
+  positiveSoft: 'rgba(5,150,105,0.09)',
+  negativeSoft: 'rgba(225,29,72,0.08)',
 };
 
 const DARK: ThemeColors = {
-  bgPrimary:    '#080810',
-  bgCard:       '#0f1018',
-  bgSecondary:  '#13141e',
-  bgHover:      '#181924',
-  border:       '#1f2130',
-  borderStrong: '#272940',
-  textPrimary:  '#e6eaf8',
-  textSecondary:'#8892b0',
-  textMuted:    '#566080',
-  divider:      '#141520',
-  topBarBg:     '#09090f',
-  topBarBorder: '#141520',
-  inputBg:      '#13141e',
-  dropdownBg:   '#0f1018',
+  bgPrimary:    '#0a0a0a',
+  bgCard:       '#141414',
+  bgSecondary:  '#1e1e1e',
+  bgHover:      '#242424',
+  border:       'rgba(255,255,255,0.07)',
+  borderStrong: 'rgba(255,255,255,0.11)',
+  textPrimary:  '#f2f2f2',
+  textSecondary:'#888888',
+  textMuted:    '#555555',
+  divider:      'rgba(255,255,255,0.04)',
+  topBarBg:     '#0a0a0a',
+  topBarBorder: 'rgba(255,255,255,0.06)',
+  inputBg:      '#1e1e1e',
+  dropdownBg:   '#141414',
   accent:       '#22c55e',
-  accentSoft:   'rgba(34,197,94,0.12)',
+  accentSoft:   'rgba(34,197,94,0.10)',
+  positive:     '#22c55e',
+  negative:     '#f43f5e',
+  positiveSoft: 'rgba(34,197,94,0.10)',
+  negativeSoft: 'rgba(244,63,94,0.10)',
 };
 
 interface ThemeContextValue {

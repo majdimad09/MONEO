@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   ShieldCheck, Lightbulb, BarChart2, TrendingUp, ChevronRight,
   TrendingDown, AlertTriangle, Info, Sparkles, Flame, PiggyBank,
-  CalendarDays, Zap, DollarSign, BookOpen, MessageCircle, GitBranch, Crown,
+  CalendarDays, Zap, BookOpen, MessageCircle, GitBranch, Crown, Sun, Moon,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView } from '../types/finance';
 import {
@@ -91,7 +91,9 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           className="w-9 h-9 rounded-2xl flex items-center justify-center cursor-pointer transition-all"
           style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
         >
-          <span style={{ fontSize: 16 }}>{isDark ? '☀️' : '🌙'}</span>
+          {isDark
+            ? <Sun size={16} style={{ color: '#fbbf24' }} />
+            : <Moon size={16} style={{ color: '#6366f1' }} />}
         </button>
       </div>
 

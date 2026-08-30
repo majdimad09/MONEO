@@ -33,6 +33,7 @@ import {
 } from './lib/supabaseService';
 import { useLanguage } from './i18n/LanguageContext';
 import { LangCode } from './i18n/translations';
+import { useTheme } from './context/ThemeContext';
 import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
@@ -75,6 +76,7 @@ export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
   const { setLanguage } = useLanguage();
   const { isPremium, membership, upgradeToPremium, cancelPremium } = usePremium(user?.id);
+  const { isDark, colors } = useTheme();
 
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
@@ -385,10 +387,10 @@ export default function App() {
 
   if (authLoading || cloudLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f4f5f9' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: colors.bgPrimary }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(99,102,241,0.15)', borderTopColor: '#6366f1' }} />
-          <span className="text-xs" style={{ color: '#9ca3af' }}>Loading Moneo…</span>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: `${colors.accent}20`, borderTopColor: colors.accent }} />
+          <span className="text-xs font-semibold" style={{ color: colors.textMuted }}>Loading Moneo…</span>
         </div>
       </div>
     );
@@ -727,15 +729,15 @@ export default function App() {
           className="fixed bottom-24 left-1/2 z-50 text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2"
           style={{
             transform: 'translateX(-50%)',
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06)',
-            color: '#111827',
+            background: colors.bgCard,
+            border: `1px solid ${colors.borderStrong}`,
+            boxShadow: isDark ? '0 4px 24px rgba(0,0,0,0.5)' : '0 4px 20px rgba(0,0,0,0.10)',
+            color: colors.textPrimary,
             animation: 'pageEnter 0.25s ease forwards',
             whiteSpace: 'nowrap',
           }}
         >
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#6366f1' }} />
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: colors.accent }} />
           {toastMessage}
         </div>
       )}

@@ -308,8 +308,8 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
         >
           <Crown size={16} style={{ color: '#a78bfa' }} />
           <div className="flex-1 text-left">
-            <p className="text-xs font-bold text-slate-600">Create your own community</p>
-            <p className="text-[10px] text-slate-500">Premium · $1.99/month</p>
+            <p className="text-xs font-bold" style={{ color: colors.textPrimary }}>Create your own community</p>
+            <p className="text-[10px]" style={{ color: colors.textSecondary }}>Premium · $1.99/month</p>
           </div>
           <ArrowRight size={14} style={{ color: '#a78bfa' }} />
         </button>
@@ -335,8 +335,8 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
         >
           <Users size={28} style={{ color: '#a78bfa' }} />
         </div>
-        <h2 className="text-base font-bold text-slate-900 mb-2">Your financial community awaits</h2>
-        <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+        <h2 className="text-base font-bold mb-2" style={{ color: colors.textPrimary }}>Your financial community awaits</h2>
+        <p className="text-xs leading-relaxed max-w-xs mx-auto" style={{ color: colors.textSecondary }}>
           Join a community to take on challenges together, compare Moneo Scores, and stay motivated.
           No private financial data is ever shared — only what you choose.
         </p>
@@ -354,8 +354,8 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
               <Icon size={17} style={{ color }} />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-700">{title}</p>
-              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{desc}</p>
+              <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{title}</p>
+              <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: colors.textSecondary }}>{desc}</p>
             </div>
           </div>
         ))}
@@ -405,19 +405,20 @@ const CommunityCard: React.FC<{
   return (
     <button
       onClick={onTap}
-      className="card-dark w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
+      className="w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
+      style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold text-slate-900"
-            style={{ background: 'linear-gradient(135deg,rgba(99,102,241,0.4),rgba(139,92,246,0.4))', border: '1px solid rgba(139,92,246,0.3)' }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold"
+            style={{ background: 'linear-gradient(135deg,rgba(99,102,241,0.3),rgba(139,92,246,0.3))', border: '1px solid rgba(139,92,246,0.3)', color: '#c4b5fd' }}
           >
             {community.name.charAt(0).toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-bold text-slate-700">{community.name}</p>
+              <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{community.name}</p>
               {isAdmin && (
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide"
                   style={{ background: 'rgba(139,92,246,0.15)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.25)' }}>
@@ -426,18 +427,18 @@ const CommunityCard: React.FC<{
               )}
             </div>
             {community.description && (
-              <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">{community.description}</p>
+              <p className="text-[11px] mt-0.5 leading-tight" style={{ color: colors.textSecondary }}>{community.description}</p>
             )}
           </div>
         </div>
-        <ChevronRight size={15} className="text-slate-600 flex-shrink-0 mt-0.5" />
+        <ChevronRight size={15} style={{ color: colors.textMuted, flexShrink: 0, marginTop: 2 }} />
       </div>
 
       {/* Stats row */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <Users size={11} className="text-slate-600" />
-          <span className="text-[11px] text-slate-500">{community.members.length} member{community.members.length !== 1 ? 's' : ''}</span>
+          <Users size={11} style={{ color: colors.textMuted }} />
+          <span className="text-[11px]" style={{ color: colors.textSecondary }}>{community.members.length} member{community.members.length !== 1 ? 's' : ''}</span>
         </div>
         {activeChallenges.length > 0 && (
           <div className="flex items-center gap-1.5">
@@ -466,7 +467,7 @@ const CommunityCard: React.FC<{
         return (
           <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${colors.divider}` }}>
             <div className="flex justify-between text-[10px] mb-1.5">
-              <span className="text-slate-500 font-semibold">{ch.name}</span>
+              <span className="font-semibold" style={{ color: colors.textMuted }}>{ch.name}</span>
               <span style={{ color: myPct >= 80 ? '#34d399' : myPct >= 40 ? '#fbbf24' : '#64748b' }} className="font-bold">
                 You: {myPct}%
               </span>
@@ -480,7 +481,7 @@ const CommunityCard: React.FC<{
                 }}
               />
             </div>
-            <p className="text-[10px] text-slate-600 mt-1">Community avg: {avg}%</p>
+            <p className="text-[10px] mt-1" style={{ color: colors.textMuted }}>Community avg: {avg}%</p>
           </div>
         );
       })()}

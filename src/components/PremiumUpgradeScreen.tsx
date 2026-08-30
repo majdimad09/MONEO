@@ -175,7 +175,7 @@ function UpgradeView({ upgrading, onUpgrade }: { upgrading: boolean; onUpgrade: 
         <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
           Always free
         </p>
-        <div className="card-dark rounded-2xl px-4 py-3 space-y-2">
+        <div className="rounded-2xl px-4 py-3 space-y-2" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
           {FREE_FEATURES.map(f => (
             <div key={f} className="flex items-center gap-2.5">
               <Check size={13} style={{ color: '#10b981' }} className="flex-shrink-0" />
@@ -244,7 +244,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
       </div>
 
       {/* Billing info */}
-      <div className="card-dark rounded-2xl overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
         <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `1px solid ${colors.divider}` }}>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>Subscription</p>
         </div>
@@ -269,7 +269,7 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
         <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-3" style={{ color: '#9ca3af' }}>
           Your Premium features
         </p>
-        <div className="card-dark rounded-2xl px-4 py-3 space-y-2.5">
+        <div className="rounded-2xl px-4 py-3 space-y-2.5" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
           {PREMIUM_FEATURES.map(f => (
             <div key={f.label} className="flex items-center gap-3">
               <f.icon size={14} style={{ color: f.color }} className="flex-shrink-0" />
