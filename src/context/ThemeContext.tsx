@@ -53,22 +53,22 @@ const DARK: ThemeColors = {
   bgCard:       '#141414',
   bgSecondary:  '#1e1e1e',
   bgHover:      '#242424',
-  border:       'rgba(255,255,255,0.07)',
-  borderStrong: 'rgba(255,255,255,0.11)',
-  textPrimary:  '#f2f2f2',
-  textSecondary:'#888888',
-  textMuted:    '#555555',
-  divider:      'rgba(255,255,255,0.04)',
+  border:       'rgba(255,255,255,0.08)',
+  borderStrong: 'rgba(255,255,255,0.13)',
+  textPrimary:  '#f0f0f0',   // 18:1 on #141414 ✓
+  textSecondary:'#b0b0b0',   // 9.4:1 on #141414 ✓ — raised from #888888
+  textMuted:    '#888888',   // 4.6:1 on #141414 ✓ — raised from #555555
+  divider:      'rgba(255,255,255,0.05)',
   topBarBg:     '#0a0a0a',
-  topBarBorder: 'rgba(255,255,255,0.06)',
+  topBarBorder: 'rgba(255,255,255,0.07)',
   inputBg:      '#1e1e1e',
   dropdownBg:   '#141414',
   accent:       '#22c55e',
-  accentSoft:   'rgba(34,197,94,0.10)',
+  accentSoft:   'rgba(34,197,94,0.12)',
   positive:     '#22c55e',
   negative:     '#f43f5e',
-  positiveSoft: 'rgba(34,197,94,0.10)',
-  negativeSoft: 'rgba(244,63,94,0.10)',
+  positiveSoft: 'rgba(34,197,94,0.12)',
+  negativeSoft: 'rgba(244,63,94,0.12)',
 };
 
 interface ThemeContextValue {

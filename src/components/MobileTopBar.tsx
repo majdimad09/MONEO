@@ -108,7 +108,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                     <p className="text-xs mb-3 leading-relaxed" style={{ color: colors.textSecondary }}>{t('resetDataMsg')}</p>
                     <div className="flex gap-2 justify-end">
                       <button onClick={() => setShowClear(false)}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: '#6b7280' }}>{t('cancel')}</button>
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer" style={{ color: colors.textSecondary }}>{t('cancel')}</button>
                       <button onClick={() => { onClearAllData(); setShowClear(false); }}
                         className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg cursor-pointer">{t('yesReset')}</button>
                     </div>
@@ -127,7 +127,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             style={{ background: colors.inputBg, border: `1px solid ${colors.borderStrong}`, color: colors.accent }}
           >
             <span className="font-mono" style={{ color: colors.accent }}>{selected.symbol}</span>
-            <span className="hidden sm:inline" style={{ color: '#6b7280' }}>{selected.code}</span>
+            <span className="hidden sm:inline" style={{ color: colors.textSecondary }}>{selected.code}</span>
             <ChevronDown size={11} className={`transition-transform ${showCurrency ? 'rotate-180' : ''}`} style={{ color: '#9ca3af' }} />
           </button>
 

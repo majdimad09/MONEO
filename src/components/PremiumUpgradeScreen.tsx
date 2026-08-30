@@ -50,6 +50,7 @@ const FREE_FEATURES = [
 export const PremiumUpgradeScreen: React.FC<PremiumUpgradeScreenProps> = ({
   isPremium, membershipStartedAt, onUpgrade, onCancelPremium, onGoBack,
 }) => {
+  const { colors } = useTheme();
   const [upgrading, setUpgrading]   = useState(false);
   const [showCancel, setShowCancel] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -76,7 +77,7 @@ export const PremiumUpgradeScreen: React.FC<PremiumUpgradeScreenProps> = ({
 
       {/* Back */}
       <div className="px-4 pt-3 mb-2">
-        <button onClick={onGoBack} className="flex items-center gap-1.5 text-sm cursor-pointer transition-colors" style={{ color: '#6b7280' }}>
+        <button onClick={onGoBack} className="flex items-center gap-1.5 text-sm cursor-pointer transition-colors" style={{ color: colors.textSecondary }}>
           <ChevronLeft size={16} /> Back
         </button>
       </div>
