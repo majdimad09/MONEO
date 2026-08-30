@@ -148,131 +148,166 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </button>
       </div>
 
-      {/* ── BALANCE HERO ────────────────────────────────────────── */}
-      <div className="px-5 pt-3 pb-4 stagger-1">
-        <p className="text-[11px] font-semibold uppercase tracking-widest mb-2" style={{ color: colors.textMuted }}>
-          {t('totalBalance')}
-        </p>
-        <div className="flex items-end gap-3">
-          <span
-            style={{
-              fontSize: 44,
-              fontWeight: 800,
-              letterSpacing: '-0.04em',
-              lineHeight: 1,
-              color: isPositive ? colors.textPrimary : '#f43f5e',
-              fontFeatureSettings: '"tnum"',
-            }}
-          >
-            {isPositive ? '' : '−'}{formatCurrency(Math.abs(balance), currency)}
-          </span>
-        </div>
-
-        {/* Month net change */}
-        {transactions.length > 0 && (
-          <div className="flex items-center gap-2 mt-2.5">
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold"
-              style={{
-                background: monthNet >= 0 ? colors.positiveSoft : colors.negativeSoft,
-                color: monthNet >= 0 ? colors.positive : colors.negative,
-              }}
-            >
-              {monthNet >= 0 ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}
-              {monthNet >= 0 ? '+' : ''}{formatCurrency(monthNet, currency)} {t('thisMonth')}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* ── MONTH SUMMARY CHIPS ─────────────────────────────────── */}
-      <div className="flex gap-2.5 px-5 pb-4 stagger-2">
-        {/* Income */}
+      {/* ── BALANCE HERO CARD ───────────────────────────────────── */}
+      <div className="px-4 pt-2 pb-3 stagger-1">
         <div
-          className="flex-1 rounded-2xl p-3"
-          style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
-        >
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: colors.positiveSoft }}>
-              <ArrowUpRight size={11} style={{ color: colors.positive }} strokeWidth={2.5} />
-            </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
-              {t('income')}
-            </span>
-          </div>
-          <p className="text-[16px] font-bold" style={{ color: colors.positive, letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
-            {formatCurrency(thisMonthIncome, currency)}
-          </p>
-        </div>
-
-        {/* Expenses */}
-        <div
-          className="flex-1 rounded-2xl p-3"
-          style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
-        >
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: colors.negativeSoft }}>
-              <ArrowDownRight size={11} style={{ color: colors.negative }} strokeWidth={2.5} />
-            </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
-              {t('expenses')}
-            </span>
-          </div>
-          <p className="text-[16px] font-bold" style={{ color: colors.negative, letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
-            {formatCurrency(thisMonthExpenses, currency)}
-          </p>
-        </div>
-
-        {/* Quick add */}
-        <button
-          onClick={onAddExpense}
-          className="w-[58px] rounded-2xl flex flex-col items-center justify-center gap-1 cursor-pointer transition-all"
           style={{
-            background: isDark ? 'rgba(34,197,94,0.10)' : 'rgba(5,150,105,0.08)',
-            border: `1px solid ${colors.accent}30`,
+            background: isDark
+              ? 'linear-gradient(145deg, #111115 0%, #17181e 60%, #0e1410 100%)'
+              : 'linear-gradient(145deg, #111 0%, #1a1a1a 100%)',
+            borderRadius: 22,
+            padding: '20px 18px 16px',
+            position: 'relative',
+            overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: isDark
+              ? '0 4px 24px rgba(0,0,0,0.5)'
+              : '0 8px 32px rgba(0,0,0,0.25)',
           }}
         >
-          <Plus size={18} style={{ color: colors.accent }} strokeWidth={2.5} />
-          <span className="text-[9px] font-bold uppercase tracking-wide" style={{ color: colors.accent }}>Add</span>
-        </button>
+          {/* Subtle green glow top-right */}
+          <div style={{
+            position: 'absolute', top: -40, right: -40,
+            width: 160, height: 160, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(34,197,94,0.14) 0%, transparent 65%)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Balance label */}
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>
+            {t('totalBalance')}
+          </p>
+
+          {/* Big balance number */}
+          <div className="flex items-baseline gap-2 mb-1">
+            <span
+              style={{
+                fontSize: 40,
+                fontWeight: 900,
+                letterSpacing: '-0.04em',
+                lineHeight: 1,
+                color: isPositive ? '#ffffff' : '#f43f5e',
+                fontFeatureSettings: '"tnum"',
+              }}
+            >
+              {isPositive ? '' : '−'}{formatCurrency(Math.abs(balance), currency)}
+            </span>
+          </div>
+
+          {/* Month net badge */}
+          {transactions.length > 0 && (
+            <div className="flex items-center gap-1.5 mb-4">
+              <span
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  fontSize: 11, fontWeight: 700,
+                  color: monthNet >= 0 ? '#4ade80' : '#f87171',
+                  background: monthNet >= 0 ? 'rgba(74,222,128,0.13)' : 'rgba(248,113,113,0.13)',
+                  border: `1px solid ${monthNet >= 0 ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
+                  borderRadius: 99, padding: '2px 8px',
+                }}
+              >
+                {monthNet >= 0 ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
+                {monthNet >= 0 ? '+' : ''}{formatCurrency(monthNet, currency)} {t('thisMonth')}
+              </span>
+            </div>
+          )}
+          {transactions.length === 0 && <div style={{ height: 16, marginBottom: 16 }} />}
+
+          {/* Income / Expenses / Add row */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'stretch' }}>
+            {/* Income */}
+            <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)', borderRadius: 14, padding: '10px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
+                <ArrowUpRight size={11} color="#4ade80" />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#4ade80' }}>
+                  {t('income')}
+                </span>
+              </div>
+              <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
+                {formatCurrency(thisMonthIncome, currency)}
+              </p>
+            </div>
+
+            {/* Expenses */}
+            <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)', borderRadius: 14, padding: '10px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
+                <ArrowDownRight size={11} color="#f87171" />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#f87171' }}>
+                  {t('expenses')}
+                </span>
+              </div>
+              <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
+                {formatCurrency(thisMonthExpenses, currency)}
+              </p>
+            </div>
+
+            {/* Add button */}
+            <button
+              onClick={onAddExpense}
+              style={{
+                width: 52, borderRadius: 14,
+                background: 'rgba(34,197,94,0.18)',
+                border: '1px solid rgba(34,197,94,0.3)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
+                cursor: 'pointer', flexShrink: 0,
+              }}
+            >
+              <Plus size={20} color="#22c55e" strokeWidth={2.5} />
+              <span style={{ fontSize: 9, fontWeight: 700, color: '#22c55e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Add</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* ── MONEO SCORE WIDGET ──────────────────────────────────── */}
-      <div className="px-5 pb-1 stagger-3">
+      <div className="px-4 pb-2 stagger-3">
         <button
           onClick={onNavigateScore}
-          className="w-full rounded-2xl p-4 flex items-center gap-4 cursor-pointer text-left transition-all"
-          style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
+          className="w-full text-left cursor-pointer"
+          style={{
+            borderRadius: 20,
+            padding: '14px 16px',
+            background: isDark
+              ? `linear-gradient(135deg, ${level.color}14 0%, transparent 100%)`
+              : `linear-gradient(135deg, ${level.color}10 0%, transparent 100%)`,
+            border: `1px solid ${level.color}30`,
+            display: 'flex', alignItems: 'center', gap: 14,
+            transition: 'all 0.2s ease',
+          }}
         >
-          {/* Ring */}
-          <div className="relative flex-shrink-0" style={{ width: 52, height: 52 }}>
-            <svg width={52} height={52} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={26} cy={26} r={scoreR} fill="none"
-                className="score-ring-track" strokeWidth={5} />
-              <circle cx={26} cy={26} r={scoreR} fill="none"
+          {/* Score ring — larger and more prominent */}
+          <div style={{ position: 'relative', flexShrink: 0, width: 62, height: 62 }}>
+            <svg width={62} height={62} style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx={31} cy={31} r={26} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={5} />
+              <circle cx={31} cy={31} r={26} fill="none"
                 stroke={level.color} strokeWidth={5} strokeLinecap="round"
-                strokeDasharray={scoreCirc}
-                strokeDashoffset={scoreResult.hasEnoughData ? scoreOffset : scoreCirc}
-                style={{ filter: `drop-shadow(0 0 5px ${level.color}60)`, transition: 'stroke-dashoffset 1.2s ease' }}
+                strokeDasharray={2 * Math.PI * 26}
+                strokeDashoffset={scoreResult.hasEnoughData
+                  ? 2 * Math.PI * 26 * (1 - scoreResult.score / 100)
+                  : 2 * Math.PI * 26}
+                style={{ filter: `drop-shadow(0 0 6px ${level.color}70)`, transition: 'stroke-dashoffset 1.2s ease' }}
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-bold text-[15px]" style={{ color: level.color }}>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.04em', color: level.color, lineHeight: 1 }}>
                 {scoreResult.hasEnoughData ? scoreResult.score : '?'}
               </span>
             </div>
           </div>
 
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: colors.textMuted }}>
+          {/* Label + status */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: colors.textMuted, marginBottom: 3 }}>
               {t('moneoScore')}
             </p>
-            <p className="text-[17px] font-bold leading-tight" style={{ color: scoreResult.hasEnoughData ? level.color : colors.textSecondary }}>
+            <p style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.02em', color: scoreResult.hasEnoughData ? level.color : colors.textSecondary, lineHeight: 1.15, marginBottom: 3 }}>
               {scoreResult.hasEnoughData ? level.name : t('buildYourScore')}
             </p>
-            <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
-              {scoreResult.hasEnoughData ? scoreResult.summary.slice(0, 50) + '…' : t('addMoreTransactions')}
+            <p style={{ fontSize: 11, color: colors.textMuted, lineHeight: 1.4 }}>
+              {scoreResult.hasEnoughData
+                ? (scoreResult.summary.length > 55 ? scoreResult.summary.slice(0, 55) + '…' : scoreResult.summary)
+                : t('addMoreTransactions')}
             </p>
           </div>
           <ChevronRight size={16} style={{ color: colors.textMuted, flexShrink: 0 }} />

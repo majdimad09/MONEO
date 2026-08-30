@@ -1,584 +1,837 @@
-import React, { useState } from 'react';
-import { ArrowRight, Shield, Sparkles, ChevronLeft } from 'lucide-react';
-import { LogoWordmark, LogoBrandBlock } from './Logo';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  ChevronRight, ArrowRight, TrendingUp, Shield, Zap,
+  BarChart2, PiggyBank, Users, Star, CheckCircle2, Repeat,
+  CalendarDays, Target, Sparkles, ChevronDown,
+} from 'lucide-react';
+
+const BRAND_FONT = "'Paytone One', 'Fredoka One', Impact, system-ui, sans-serif";
+const GREEN = '#22c55e';
+const GREEN_DIM = '#16a34a';
+const DARK_BG = '#070709';
+const CARD_BG = '#111115';
+const CARD_BORDER = 'rgba(255,255,255,0.08)';
 
 interface LandingPageProps {
   onGetStarted: (mode: 'signin' | 'signup') => void;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shared phone-frame wrapper (used by all mockups)
-// ─────────────────────────────────────────────────────────────────────────────
-export const PhoneFrame: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div
-    className={`relative mx-auto ${className}`}
-    style={{
-      width: 260,
-      background: '#f4f5f9',
-      border: '1px solid #e5e7eb',
-      borderRadius: 26,
-      padding: 14,
-      boxShadow: '0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)',
-      overflow: 'hidden',
-    }}
-  >
-    <div className="flex items-center justify-between mb-3 px-1">
-      <span style={{ fontSize: 9, color: '#9ca3af', fontWeight: 600 }}>9:41</span>
-      <div className="flex gap-1 items-center">
-        <div style={{ width: 12, height: 6, background: '#10b981', borderRadius: 2 }} />
-        <div style={{ width: 10, height: 6, background: '#d1d5db', borderRadius: 1.5 }} />
-      </div>
-    </div>
+// ─── Reusable mini-mockup primitives ────────────────────────────────────────
+
+const MiniCard: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
+  <div style={{
+    background: '#1a1a20',
+    border: '1px solid rgba(255,255,255,0.09)',
+    borderRadius: 14,
+    padding: '12px 14px',
+    ...style,
+  }}>
     {children}
   </div>
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Section label + heading (kept for OnboardingScreen compatibility)
-// ─────────────────────────────────────────────────────────────────────────────
-export const SectionHeader: React.FC<{ label: string; title: string; desc: string }> = ({ label, title, desc }) => (
-  <div className="max-w-sm">
-    <p className="section-label mb-3">{label}</p>
-    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 leading-tight">{title}</h2>
-    <p className="text-slate-400 text-sm sm:text-base leading-relaxed">{desc}</p>
+const MiniLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <p style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#666', marginBottom: 4 }}>
+    {children}
+  </p>
+);
+
+const MiniAmount: React.FC<{ children: React.ReactNode; green?: boolean; red?: boolean }> = ({ children, green, red }) => (
+  <p style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.03em', color: green ? GREEN : red ? '#f43f5e' : '#fff' }}>
+    {children}
+  </p>
+);
+
+const MiniBar: React.FC<{ pct: number; color?: string }> = ({ pct, color = GREEN }) => (
+  <div style={{ height: 5, background: 'rgba(255,255,255,0.08)', borderRadius: 99, overflow: 'hidden' }}>
+    <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 99, transition: 'width 1s ease' }} />
   </div>
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 1 — Dashboard
-// ─────────────────────────────────────────────────────────────────────────────
-export const DashboardMockup: React.FC = () => (
-  <PhoneFrame>
-    <div className="flex items-center justify-between mb-3">
-      <span style={{ fontSize: 12, color: '#111827', fontWeight: 800, letterSpacing: '-0.01em' }}>MONEO</span>
-      <div style={{ background: '#f0f1f5', border: '1px solid #e5e7eb', borderRadius: 7, padding: '2px 7px', fontSize: 9, color: '#6366f1', fontWeight: 700 }}>$ USD</div>
-    </div>
-    <div style={{ background: 'linear-gradient(135deg, #5b5bd6 0%, #7c3aed 60%, #9d34da 100%)', borderRadius: 18, padding: 13, marginBottom: 9, boxShadow: '0 4px 20px rgba(91,91,214,0.35)' }}>
-      <p style={{ fontSize: 8, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>Total Balance</p>
-      <p style={{ fontSize: 28, fontWeight: 800, color: 'white', marginBottom: 9, letterSpacing: '-0.02em' }}>$2,450</p>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
-        <div style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 11, padding: 7 }}>
-          <p style={{ fontSize: 7, color: '#6ee7b7', fontWeight: 700, textTransform: 'uppercase' }}>↑ Income</p>
-          <p style={{ fontSize: 12, fontWeight: 700, color: 'white', marginTop: 2 }}>$3,950</p>
+// ─── Section mockups ─────────────────────────────────────────────────────────
+
+const UnderstandMockup: React.FC = () => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <MiniCard>
+      <MiniLabel>Total Balance</MiniLabel>
+      <MiniAmount>$4,280</MiniAmount>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
+        <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 10, padding: '8px 10px' }}>
+          <p style={{ fontSize: 8, color: GREEN, fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>↑ Income</p>
+          <p style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>$5,800</p>
         </div>
-        <div style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 11, padding: 7 }}>
-          <p style={{ fontSize: 7, color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase' }}>↓ Expenses</p>
-          <p style={{ fontSize: 12, fontWeight: 700, color: 'white', marginTop: 2 }}>$1,500</p>
+        <div style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.18)', borderRadius: 10, padding: '8px 10px' }}>
+          <p style={{ fontSize: 8, color: '#f43f5e', fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>↓ Expenses</p>
+          <p style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>$1,520</p>
         </div>
       </div>
-    </div>
-    <div style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 14, overflow: 'hidden' }}>
-      <p style={{ fontSize: 8, fontWeight: 700, color: '#9ca3af', padding: '7px 11px 3px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Recent</p>
+    </MiniCard>
+    <MiniCard>
+      <div style={{ display: 'flex', gap: 8 }}>
+        {[
+          { emoji: '🛒', label: 'Groceries', amt: '$180', pct: 45 },
+          { emoji: '🏠', label: 'Rent', amt: '$900', pct: 80 },
+          { emoji: '☕', label: 'Coffee', amt: '$42', pct: 20 },
+        ].map(item => (
+          <div key={item.label} style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, marginBottom: 4 }}>{item.emoji}</div>
+            <p style={{ fontSize: 8, color: '#888', marginBottom: 2 }}>{item.label}</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{item.amt}</p>
+            <MiniBar pct={item.pct} color={item.pct > 70 ? '#f43f5e' : GREEN} />
+          </div>
+        ))}
+      </div>
+    </MiniCard>
+  </div>
+);
+
+const ScoreMockup: React.FC = () => {
+  const r = 44, cx = 52, cy = 52, stroke = 7;
+  const circ = 2 * Math.PI * r;
+  const score = 82;
+  const dash = (score / 100) * circ;
+  return (
+    <MiniCard style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '20px 16px' }}>
+      <div style={{ position: 'relative', width: 104, height: 104 }}>
+        <svg width={104} height={104} viewBox="0 0 104 104">
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={stroke} />
+          <circle
+            cx={cx} cy={cy} r={r} fill="none"
+            stroke={GREEN} strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${circ - dash}`}
+            strokeDashoffset={circ * 0.25}
+            style={{ filter: `drop-shadow(0 0 6px ${GREEN}80)` }}
+          />
+        </svg>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: '-0.04em' }}>82</span>
+          <span style={{ fontSize: 9, color: GREEN, fontWeight: 700 }}>GREAT</span>
+        </div>
+      </div>
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {[
+          { label: 'Savings Rate', pct: 78, color: GREEN },
+          { label: 'Budget Control', pct: 65, color: '#f59e0b' },
+          { label: 'Spending Habits', pct: 85, color: GREEN },
+        ].map(f => (
+          <div key={f.label}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+              <span style={{ fontSize: 9, color: '#aaa' }}>{f.label}</span>
+              <span style={{ fontSize: 9, color: f.color, fontWeight: 700 }}>{f.pct}%</span>
+            </div>
+            <MiniBar pct={f.pct} color={f.color} />
+          </div>
+        ))}
+      </div>
+    </MiniCard>
+  );
+};
+
+const BudgetMockup: React.FC = () => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <MiniCard>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
+        <div>
+          <MiniLabel>Monthly Budget</MiniLabel>
+          <MiniAmount>$2,000</MiniAmount>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ fontSize: 9, color: '#666' }}>Spent</p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#f59e0b' }}>$1,342</p>
+        </div>
+      </div>
+      <MiniBar pct={67} color='#f59e0b' />
+      <p style={{ fontSize: 9, color: '#666', marginTop: 6 }}>67% used · $658 remaining</p>
+    </MiniCard>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
       {[
-        { dot: '#10b981', desc: 'Monthly Salary', cat: 'Salary', amt: '+$3,500', green: true },
-        { dot: '#ef4444', desc: 'Apartment Rent', cat: 'Rent', amt: '-$900', green: false },
-        { dot: '#ef4444', desc: 'Groceries', cat: 'Food', amt: '-$150', green: false },
-      ].map((tx, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 11px', borderTop: '1px solid #f4f5f9' }}>
-          <div style={{ width: 24, height: 24, background: tx.green ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <div style={{ width: 5, height: 5, borderRadius: '50%', background: tx.dot }} />
+        { label: 'Food & Drink', pct: 82, emoji: '🍔', over: true },
+        { label: 'Transport', pct: 44, emoji: '🚗', over: false },
+        { label: 'Shopping', pct: 30, emoji: '🛍️', over: false },
+        { label: 'Bills', pct: 100, emoji: '⚡', over: true },
+      ].map(c => (
+        <MiniCard key={c.label} style={{ padding: '10px 12px' }}>
+          <div style={{ fontSize: 16, marginBottom: 4 }}>{c.emoji}</div>
+          <p style={{ fontSize: 9, color: '#888', marginBottom: 4 }}>{c.label}</p>
+          <MiniBar pct={c.pct} color={c.over ? '#f43f5e' : GREEN} />
+          <p style={{ fontSize: 9, fontWeight: 700, color: c.over ? '#f43f5e' : '#aaa', marginTop: 4 }}>{c.pct}%</p>
+        </MiniCard>
+      ))}
+    </div>
+  </div>
+);
+
+const InsightsMockup: React.FC = () => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    {[
+      { icon: '🔥', title: 'Weekend Spender', desc: 'You spend 3× more on weekends vs weekdays.', color: '#f59e0b' },
+      { icon: '✅', title: 'Great Saver', desc: 'You saved 24% of income this month — above average.', color: GREEN },
+      { icon: '⚠️', title: 'Subscription Alert', desc: 'You have $47/mo in unused subscriptions.', color: '#f43f5e' },
+    ].map(ins => (
+      <MiniCard key={ins.title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+        <div style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{ins.icon}</div>
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#fff', marginBottom: 3 }}>{ins.title}</p>
+          <p style={{ fontSize: 10, color: '#888', lineHeight: 1.4 }}>{ins.desc}</p>
+        </div>
+      </MiniCard>
+    ))}
+  </div>
+);
+
+const ProjectionMockup: React.FC = () => {
+  const bars = [35, 52, 61, 48, 70, 83];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  const maxH = 64;
+  return (
+    <MiniCard>
+      <MiniLabel>6-Month Projection</MiniLabel>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: maxH + 24, marginTop: 8 }}>
+        {bars.map((v, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            <div style={{
+              width: '100%', height: Math.round((v / 100) * maxH),
+              background: i === bars.length - 1
+                ? `linear-gradient(180deg, ${GREEN} 0%, ${GREEN_DIM} 100%)`
+                : 'rgba(255,255,255,0.1)',
+              borderRadius: 4,
+              border: i === bars.length - 1 ? `1px solid ${GREEN}40` : 'none',
+              transition: 'height 1s ease',
+            }} />
+            <span style={{ fontSize: 8, color: i === bars.length - 1 ? GREEN : '#555' }}>{months[i]}</span>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 10, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.desc}</p>
-            <p style={{ fontSize: 8, color: '#9ca3af' }}>{tx.cat}</p>
-          </div>
-          <span style={{ fontSize: 10, fontWeight: 700, color: tx.green ? '#10b981' : '#ef4444', fontFamily: 'monospace', flexShrink: 0 }}>{tx.amt}</span>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div>
+          <p style={{ fontSize: 9, color: '#666' }}>Projected Savings</p>
+          <p style={{ fontSize: 14, fontWeight: 800, color: GREEN }}>+$1,840</p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ fontSize: 9, color: '#666' }}>By Dec 2026</p>
+          <p style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>$9,200</p>
+        </div>
+      </div>
+    </MiniCard>
+  );
+};
+
+const SubscriptionsMockup: React.FC = () => (
+  <MiniCard>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+      <MiniLabel>Your Subscriptions</MiniLabel>
+      <span style={{ fontSize: 11, fontWeight: 800, color: '#f59e0b' }}>$47.97/mo</span>
+    </div>
+    {[
+      { name: 'Netflix', price: '$15.99', emoji: '🎬', active: true },
+      { name: 'Spotify', price: '$9.99', emoji: '🎵', active: true },
+      { name: 'Gym', price: '$22.00', emoji: '💪', active: false },
+    ].map(sub => (
+      <div key={sub.name} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ width: 28, height: 28, background: 'rgba(255,255,255,0.06)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>{sub.emoji}</div>
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{sub.name}</p>
+          <p style={{ fontSize: 9, color: '#666' }}>Monthly</p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: sub.active ? '#fff' : '#555' }}>{sub.price}</p>
+          <p style={{ fontSize: 8, color: sub.active ? GREEN : '#f43f5e', fontWeight: 700 }}>{sub.active ? 'Active' : 'Inactive'}</p>
+        </div>
+      </div>
+    ))}
+  </MiniCard>
+);
+
+const CommunityMockup: React.FC = () => (
+  <MiniCard>
+    <MiniLabel>Finance Squad</MiniLabel>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+      <div style={{ display: 'flex' }}>
+        {['👨', '👩', '🧑'].map((e, i) => (
+          <div key={i} style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: `hsl(${i * 80 + 140},60%,25%)`,
+            border: '2px solid #1a1a20',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
+            marginLeft: i ? -8 : 0,
+          }}>{e}</div>
+        ))}
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(34,197,94,0.2)', border: '2px solid #1a1a20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: GREEN, fontWeight: 700, marginLeft: -8 }}>+4</div>
+      </div>
+      <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>7 members</span>
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {[
+        { name: 'Alex', score: 91, rank: '🥇' },
+        { name: 'Sara', score: 87, rank: '🥈' },
+        { name: 'You', score: 82, rank: '🥉', you: true },
+      ].map(m => (
+        <div key={m.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', background: m.you ? 'rgba(34,197,94,0.08)' : 'transparent', borderRadius: 8, border: m.you ? '1px solid rgba(34,197,94,0.2)' : 'none' }}>
+          <span style={{ fontSize: 12 }}>{m.rank}</span>
+          <span style={{ flex: 1, fontSize: 10, fontWeight: 700, color: m.you ? GREEN : '#ccc' }}>{m.name}</span>
+          <span style={{ fontSize: 10, fontWeight: 800, color: '#fff' }}>{m.score}</span>
         </div>
       ))}
     </div>
-  </PhoneFrame>
+  </MiniCard>
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 2 — Safe to Spend
-// ─────────────────────────────────────────────────────────────────────────────
-export const SafeToSpendMockup: React.FC = () => (
-  <PhoneFrame>
-    <p style={{ fontSize: 8, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 9 }}>This Month</p>
-    <div style={{ background: 'linear-gradient(135deg, #064e3b, #065f46)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 18, padding: 13, marginBottom: 9 }}>
-      <div className="flex items-center justify-between mb-2">
-        <div>
-          <p style={{ fontSize: 8, color: '#34d399', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>Safe to Spend</p>
-          <p style={{ fontSize: 26, fontWeight: 800, color: 'white', letterSpacing: '-0.02em' }}>$1,140</p>
-        </div>
-        <div style={{ width: 34, height: 34, background: 'rgba(16,185,129,0.2)', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Shield size={17} color="#34d399" />
-        </div>
-      </div>
-      <div style={{ borderTop: '1px solid rgba(16,185,129,0.2)', paddingTop: 9, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {[
-          { label: "This month's income", val: '$3,950', color: '#94a3b8' },
-          { label: 'Spent so far', val: '− $1,500', color: '#f87171' },
-          { label: 'Upcoming subs', val: '− $810', color: '#fbbf24' },
-          { label: 'Savings buffer (10%)', val: '− $500', color: '#60a5fa' },
-        ].map((r, i) => (
-          <div key={i} className="flex justify-between" style={{ fontSize: 8 }}>
-            <span style={{ color: '#64748b' }}>{r.label}</span>
-            <span style={{ color: r.color, fontWeight: 600 }}>{r.val}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-    <div style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 13, padding: 11 }}>
-      <div className="flex justify-between mb-2">
-        <span style={{ fontSize: 9, color: '#6b7280', fontWeight: 600 }}>Monthly Budget</span>
-        <span style={{ fontSize: 9, color: '#6366f1', fontWeight: 700 }}>62% used</span>
-      </div>
-      <div style={{ background: '#e5e7eb', borderRadius: 4, height: 5, overflow: 'hidden' }}>
-        <div style={{ width: '62%', height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: 4 }} />
-      </div>
-      <p style={{ fontSize: 8, color: '#9ca3af', marginTop: 4 }}>$1,850 of $3,000 · $1,150 remaining</p>
-    </div>
-  </PhoneFrame>
-);
+// ─── Section definition ───────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 3 — Analytics
-// ─────────────────────────────────────────────────────────────────────────────
-export const AnalyticsMockup: React.FC = () => {
-  const slices = [
-    { pct: 35, color: '#6366f1', label: 'Rent', val: '$900' },
-    { pct: 22, color: '#f59e0b', label: 'Food', val: '$566' },
-    { pct: 18, color: '#10b981', label: 'Groceries', val: '$463' },
-    { pct: 14, color: '#3b82f6', label: 'Transport', val: '$360' },
-    { pct: 11, color: '#ec4899', label: 'Other', val: '$283' },
-  ];
-  const r = 44, stroke = 9, size = (r + stroke) * 2;
-  const cx = size / 2;
-  const circ = 2 * Math.PI * r;
-  let offset = 0;
-  return (
-    <PhoneFrame>
-      <p style={{ fontSize: 8, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 9 }}>August 2026</p>
-      <div className="flex items-center justify-center mb-8" style={{ position: 'relative' }}>
-        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
-          {slices.map((s, i) => {
-            const dashArray = `${(s.pct / 100) * circ} ${circ}`;
-            const el = <circle key={i} cx={cx} cy={cx} r={r} fill="none" stroke={s.color} strokeWidth={stroke} strokeDasharray={dashArray} strokeDashoffset={-offset} strokeLinecap="round" />;
-            offset += (s.pct / 100) * circ;
-            return el;
-          })}
-        </svg>
-        <div style={{ position: 'absolute', textAlign: 'center' }}>
-          <p style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>$2,572</p>
-          <p style={{ fontSize: 7, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Spent</p>
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        {slices.map((s, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: 9, color: '#6b7280', fontWeight: 500 }}>{s.label}</span>
-            <span style={{ fontSize: 9, color: '#111827', fontWeight: 700 }}>{s.val}</span>
-            <span style={{ fontSize: 8, color: '#9ca3af', width: 22, textAlign: 'right' }}>{s.pct}%</span>
-          </div>
-        ))}
-      </div>
-    </PhoneFrame>
-  );
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 4 — Insights
-// ─────────────────────────────────────────────────────────────────────────────
-export const InsightsMockup: React.FC = () => {
-  const insights = [
-    { type: 'warning', icon: '🔥', title: 'Food spending up 12%', body: 'You spent $566 on food this month — $62 more than your average.' },
-    { type: 'positive', icon: '✨', title: 'Best savings month yet', body: 'You saved $1,378 this month — your highest in 6 months.' },
-    { type: 'neutral', icon: '📊', title: 'Subscription tracker', body: '5 active subscriptions totalling $810/month.' },
-  ];
-  const colors: Record<string, { bg: string; border: string }> = {
-    warning: { bg: 'rgba(239,68,68,0.07)', border: 'rgba(239,68,68,0.2)' },
-    positive: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
-    neutral: { bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)' },
-  };
-  return (
-    <PhoneFrame>
-      <div className="flex items-center gap-1.5 mb-3">
-        <Sparkles size={11} color="#60a5fa" />
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Moneo Insights</span>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-        {insights.map((ins, i) => {
-          const c = colors[ins.type];
-          return (
-            <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 14, padding: 10 }}>
-              <div className="flex items-start gap-2">
-                <span style={{ fontSize: 14 }}>{ins.icon}</span>
-                <div>
-                  <p style={{ fontSize: 10, fontWeight: 700, color: '#374151', marginBottom: 2 }}>{ins.title}</p>
-                  <p style={{ fontSize: 9, color: '#64748b', lineHeight: 1.4 }}>{ins.body}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </PhoneFrame>
-  );
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 5 — Moneo Score
-// ─────────────────────────────────────────────────────────────────────────────
-export const ScoreMockup: React.FC = () => {
-  const score = 74;
-  const r = 48, stroke = 8, size = (r + stroke) * 2;
-  const cx = size / 2;
-  const circ = 2 * Math.PI * r;
-  const dashOffset = circ - (score / 100) * circ;
-  const scoreColor = '#8b5cf6';
-  const breakdown = [
-    { label: 'Savings rate', val: 35, color: '#10b981' },
-    { label: 'Budget adherence', val: 62, color: '#6366f1' },
-    { label: 'Expense control', val: 78, color: '#a78bfa' },
-    { label: 'Goal progress', val: 55, color: '#f59e0b' },
-  ];
-  return (
-    <PhoneFrame>
-      <p style={{ fontSize: 8, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 11 }}>Moneo Score</p>
-      <div className="flex items-center gap-4 mb-4">
-        <div style={{ position: 'relative', flexShrink: 0 }}>
-          <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-            <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
-            <circle cx={cx} cy={cx} r={r} fill="none" stroke={scoreColor} strokeWidth={stroke} strokeDasharray={circ} strokeDashoffset={dashOffset} strokeLinecap="round" style={{ filter: `drop-shadow(0 0 5px ${scoreColor}80)` }} />
-          </svg>
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: 20, fontWeight: 800, color: scoreColor }}>{score}</span>
-            <span style={{ fontSize: 8, color: '#9ca3af', textTransform: 'uppercase' }}>/ 100</span>
-          </div>
-        </div>
-        <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: scoreColor, marginBottom: 2 }}>Good</p>
-          <p style={{ fontSize: 9, color: '#6b7280', lineHeight: 1.4 }}>Your financial health is on track.</p>
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {breakdown.map((b, i) => (
-          <div key={i}>
-            <div className="flex justify-between mb-1">
-              <span style={{ fontSize: 8, color: '#6b7280' }}>{b.label}</span>
-              <span style={{ fontSize: 8, color: b.color, fontWeight: 700 }}>{b.val}%</span>
-            </div>
-            <div style={{ background: '#e5e7eb', borderRadius: 3, height: 3, overflow: 'hidden' }}>
-              <div style={{ width: `${b.val}%`, height: '100%', background: b.color, borderRadius: 3 }} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </PhoneFrame>
-  );
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCKUP 6 — Recurring Payments
-// ─────────────────────────────────────────────────────────────────────────────
-export const RecurringMockup: React.FC = () => {
-  const subs = [
-    { name: 'Netflix', freq: 'Monthly', amt: '$17.99', dot: '#ef4444' },
-    { name: 'Spotify Premium', freq: 'Monthly', amt: '$9.99', dot: '#22c55e' },
-    { name: 'iCloud Storage', freq: 'Monthly', amt: '$2.99', dot: '#60a5fa' },
-    { name: 'Adobe Creative', freq: 'Monthly', amt: '$55.00', dot: '#f59e0b' },
-    { name: 'Gym Membership', freq: 'Monthly', amt: '$39.00', dot: '#a78bfa' },
-  ];
-  return (
-    <PhoneFrame>
-      <div className="flex items-center justify-between mb-3">
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Recurring</span>
-        <span style={{ fontSize: 9, color: '#f87171', fontWeight: 700 }}>$124.97/mo</span>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        {subs.map((s, i) => (
-          <div key={i} style={{ background: '#ffffff', border: '1px solid #ececf0', borderRadius: 11, padding: '8px 11px', display: 'flex', alignItems: 'center', gap: 9 }}>
-            <div style={{ width: 27, height: 27, background: `${s.dot}18`, border: `1px solid ${s.dot}30`, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: s.dot }} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, color: '#111827' }}>{s.name}</p>
-              <p style={{ fontSize: 8, color: '#9ca3af' }}>{s.freq}</p>
-            </div>
-            <span style={{ fontSize: 10, fontWeight: 700, color: '#ef4444', fontFamily: 'monospace' }}>{s.amt}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ marginTop: 9, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: 11, padding: '7px 11px', textAlign: 'center' }}>
-        <p style={{ fontSize: 9, color: '#fca5a5', fontWeight: 600 }}>5 subscriptions · $1,499.64/year</p>
-      </div>
-    </PhoneFrame>
-  );
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// FeatureSection — kept for OnboardingScreen compatibility
-// ─────────────────────────────────────────────────────────────────────────────
-export interface FeatureSectionProps {
+interface Section {
+  id: string;
   label: string;
-  title: string;
-  desc: string;
-  mockup: React.ReactNode;
-  reverse?: boolean;
-  bullets?: string[];
-}
-
-export const FeatureSection: React.FC<FeatureSectionProps> = ({ label, title, desc, mockup, reverse }) => (
-  <section className="px-6 sm:px-12 py-16 sm:py-24">
-    <div className={`max-w-5xl mx-auto flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 lg:gap-24`}>
-      <div className="flex-1 text-center lg:text-left">
-        <SectionHeader label={label} title={title} desc={desc} />
-      </div>
-      <div className="flex-1 flex justify-center">
-        <div style={{ filter: 'drop-shadow(0 0 40px rgba(59,130,246,0.12))' }}>{mockup}</div>
-      </div>
-    </div>
-  </section>
-);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Slide data
-// ─────────────────────────────────────────────────────────────────────────────
-interface FeatureSlide {
-  label: string;
-  title: string;
-  desc: string;
-  mockup: React.ReactNode;
+  headline: string;
+  sub: string;
   accent: string;
+  mockup: React.ReactNode;
 }
 
-const FEATURE_SLIDES: FeatureSlide[] = [
+const SECTIONS: Section[] = [
   {
-    label: 'TRACK',
-    title: 'See where your money goes.',
-    desc: 'Log income and expenses in seconds. Real-time balance and a clear breakdown of every dollar.',
-    mockup: <DashboardMockup />,
-    accent: '#6366f1',
+    id: 'understand',
+    label: 'UNDERSTAND',
+    headline: 'Your money,\nmade clear.',
+    sub: 'See exactly where every dollar goes — balances, income, expenses, and category breakdowns at a glance.',
+    accent: GREEN,
+    mockup: <UnderstandMockup />,
   },
   {
-    label: 'SPEND SMART',
-    title: 'Know what you can actually spend.',
-    desc: 'Your Safe to Spend number accounts for subscriptions, a savings buffer, and everything spent this month.',
-    mockup: <SafeToSpendMockup />,
-    accent: '#10b981',
-  },
-  {
-    label: 'ANALYTICS',
-    title: 'Understand your spending.',
-    desc: 'See category breakdowns in a chart, navigate by month, and spot patterns the moment they form.',
-    mockup: <AnalyticsMockup />,
-    accent: '#6366f1',
-  },
-  {
-    label: 'MONEO SCORE',
-    title: 'Know your financial health.',
-    desc: 'A 0–100 score combining savings rate, budget adherence, expense control, and goal progress.',
+    id: 'score',
+    label: 'SCORE',
+    headline: 'Your financial\nhealth score.',
+    sub: 'The Moneo Score tracks your savings rate, budget control, and spending habits — and tells you how to improve.',
+    accent: GREEN,
     mockup: <ScoreMockup />,
-    accent: '#8b5cf6',
   },
   {
-    label: 'MONEO INSIGHTS',
-    title: 'Smart alerts, automatically.',
-    desc: 'Moneo detects unusual spending, celebrates savings milestones, and surfaces the patterns that matter.',
-    mockup: <InsightsMockup />,
+    id: 'control',
+    label: 'CONTROL',
+    headline: 'Budgets that\nactually work.',
+    sub: 'Set a monthly budget, create per-category limits, and get alerted before you overspend.',
     accent: '#f59e0b',
+    mockup: <BudgetMockup />,
+  },
+  {
+    id: 'discover',
+    label: 'DISCOVER',
+    headline: 'Insights you\ncan act on.',
+    sub: 'Moneo spots your spending patterns, identifies anomalies, and surfaces actionable observations — automatically.',
+    accent: GREEN,
+    mockup: <InsightsMockup />,
+  },
+  {
+    id: 'plan',
+    label: 'PLAN',
+    headline: 'See your\nfinancial future.',
+    sub: 'Projection shows your savings trajectory, recurring income, and goals progress — months ahead.',
+    accent: '#818cf8',
+    mockup: <ProjectionMockup />,
+  },
+  {
+    id: 'track',
+    label: 'TRACK',
+    headline: 'Never forget\na subscription.',
+    sub: "All your recurring expenses in one place. See what's active, what you can cut, and what's coming next.",
+    accent: '#f59e0b',
+    mockup: <SubscriptionsMockup />,
+  },
+  {
+    id: 'connect',
+    label: 'CONNECT',
+    headline: 'Finance with\nyour people.',
+    sub: 'Join a community, share your Moneo Score, take on challenges, and motivate each other — privately.',
+    accent: '#818cf8',
+    mockup: <CommunityMockup />,
   },
 ];
 
-// TOTAL: 0=hero, 1-5=features, 6=CTA
-const TOTAL = FEATURE_SLIDES.length + 2;
+// ─── Hero section ─────────────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main Landing Page — app-style full-screen onboarding
-// ─────────────────────────────────────────────────────────────────────────────
-export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
-  const [slide, setSlide] = useState(0);
-
-  const isHero = slide === 0;
-  const isCTA = slide === TOTAL - 1;
-  const isFeature = !isHero && !isCTA;
-  const feature = isFeature ? FEATURE_SLIDES[slide - 1] : null;
-
-  const next = () => setSlide(s => Math.min(s + 1, TOTAL - 1));
-  const prev = () => setSlide(s => Math.max(s - 1, 0));
-  const skip = () => setSlide(TOTAL - 1);
-
-  // Feature slide index for progress (0-based among features)
-  const featureIdx = slide - 1;
+const HeroSection: React.FC<{ onNext: () => void }> = ({ onNext }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 80); return () => clearTimeout(t); }, []);
 
   return (
-    <div className="desktop-bg">
-      <div className="app-shell" style={{ position: 'relative' }}>
+    <div style={{
+      minHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 28px 36px',
+      background: DARK_BG,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Background glow */}
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 320,
+        height: 320,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(34,197,94,0.09) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
 
-        {/* ── PROGRESS BAR + NAV (hidden on hero and CTA) ─────────────── */}
-        {isFeature && (
-          <div style={{ padding: '18px 20px 0', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            {/* Back */}
-            <button
-              onClick={prev}
-              style={{ width: 34, height: 34, borderRadius: 11, background: '#f0f1f5', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
-            >
-              <ChevronLeft size={16} color="#6b7280" />
-            </button>
-
-            {/* Progress pills */}
-            <div style={{ flex: 1, display: 'flex', gap: 5, alignItems: 'center' }}>
-              {FEATURE_SLIDES.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    height: 4,
-                    flex: i === featureIdx ? 2.4 : 1,
-                    borderRadius: 2,
-                    background: i < featureIdx ? '#6366f1' : i === featureIdx ? (feature?.accent ?? '#6366f1') : '#e5e7eb',
-                    transition: 'all 0.3s ease',
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Skip */}
-            <button
-              onClick={skip}
-              style={{ fontSize: 12, color: '#475569', cursor: 'pointer', background: 'none', border: 'none', fontWeight: 600, flexShrink: 0 }}
-            >
-              Skip
-            </button>
-          </div>
-        )}
-
-        {/* ── SLIDE CONTENT ────────────────────────────────────────────── */}
-        <div
-          key={slide}
-          className="page-enter"
-          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
-        >
-
-          {/* ── HERO ─────────────────────────────────────────────────── */}
-          {isHero && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px 0', position: 'relative', overflow: 'hidden' }}>
-              {/* Glow */}
-              <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 420, height: 420, background: 'radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-              {/* Logo */}
-              <div style={{ position: 'relative', zIndex: 1, marginBottom: 36 }}>
-                <LogoWordmark iconSize={48} textSize="lg" />
-              </div>
-
-              {/* Headline */}
-              <h1
-                className="hero-title"
-                style={{ fontSize: 38, fontWeight: 800, textAlign: 'center', letterSpacing: '-0.025em', lineHeight: 1.08, marginBottom: 14, position: 'relative', zIndex: 1 }}
-              >
-                Where did my<br />money go?
-              </h1>
-
-              {/* Sub */}
-              <p style={{ fontSize: 15, color: '#64748b', textAlign: 'center', lineHeight: 1.6, maxWidth: 260, marginBottom: 0, position: 'relative', zIndex: 1 }}>
-                Track, understand, and control your finances — all in one place.
-              </p>
-
-              <div style={{ flex: 1 }} />
-
-              {/* CTA */}
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 11, position: 'relative', zIndex: 1 }}>
-                <button
-                  onClick={next}
-                  className="btn-blue"
-                  style={{ width: '100%', padding: '17px', borderRadius: 18, fontSize: 16, fontWeight: 700, cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-                >
-                  Get Started <ArrowRight size={19} />
-                </button>
-                <button
-                  onClick={() => onGetStarted('signin')}
-                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: '#f7f8fc', color: '#6b7280', fontSize: 14, fontWeight: 600, cursor: 'pointer', border: '1px solid #e5e7eb' }}
-                >
-                  Already have an account? <span style={{ color: '#6366f1' }}>Sign In</span>
-                </button>
-              </div>
-
-              <div style={{ height: 32 }} />
-            </div>
-          )}
-
-          {/* ── FEATURE SLIDE ─────────────────────────────────────────── */}
-          {isFeature && feature && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              {/* Mockup area */}
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 16px 10px', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '45%', left: '50%', transform: 'translate(-50%,-50%)', width: 340, height: 340, background: `radial-gradient(circle, ${feature.accent}18 0%, transparent 70%)`, pointerEvents: 'none' }} />
-                <div style={{ transform: 'scale(0.92)', transformOrigin: 'center', filter: `drop-shadow(0 0 36px ${feature.accent}22)`, position: 'relative', zIndex: 1 }}>
-                  {feature.mockup}
-                </div>
-              </div>
-
-              {/* Text */}
-              <div style={{ padding: '0 24px', textAlign: 'center', flexShrink: 0 }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: feature.accent, letterSpacing: '0.13em', textTransform: 'uppercase', marginBottom: 7 }}>
-                  {feature.label}
-                </p>
-                <h2 style={{ fontSize: 23, fontWeight: 800, color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.15, marginBottom: 8 }}>
-                  {feature.title}
-                </h2>
-                <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
-                  {feature.desc}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* ── CTA SLIDE ─────────────────────────────────────────────── */}
-          {isCTA && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)', width: 420, height: 420, background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-              <div style={{ position: 'relative', zIndex: 1, marginBottom: 32 }}>
-                <LogoBrandBlock iconSize={46} cashlySize="30px" taglineSize="11px" className="mx-auto" />
-              </div>
-
-              <h2 style={{ fontSize: 26, fontWeight: 800, color: '#111827', textAlign: 'center', letterSpacing: '-0.015em', lineHeight: 1.18, marginBottom: 10, position: 'relative', zIndex: 1 }}>
-                Ready to take control<br />of your money?
-              </h2>
-
-              <p style={{ fontSize: 13, color: '#64748b', textAlign: 'center', lineHeight: 1.6, maxWidth: 240, position: 'relative', zIndex: 1 }}>
-                Your data is stored securely and only accessible to you.
-              </p>
-
-              <div style={{ flex: 1 }} />
-
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 11, position: 'relative', zIndex: 1 }}>
-                <button
-                  onClick={() => onGetStarted('signup')}
-                  className="btn-blue"
-                  style={{ width: '100%', padding: '17px', borderRadius: 18, fontSize: 16, fontWeight: 700, cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-                >
-                  Create Account <ArrowRight size={19} />
-                </button>
-                <button
-                  onClick={() => onGetStarted('signin')}
-                  style={{ width: '100%', padding: '15px', borderRadius: 18, background: '#f7f8fc', color: '#6b7280', fontSize: 15, fontWeight: 600, cursor: 'pointer', border: '1px solid #e5e7eb' }}
-                >
-                  Sign In
-                </button>
-              </div>
-
-              <div style={{ height: 32 }} />
-            </div>
-          )}
+      {/* Logo */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'scale(0.9) translateY(10px)',
+        transition: 'opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 40,
+      }}>
+        <div style={{
+          width: 80, height: 80,
+          borderRadius: 24,
+          background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 0 40px rgba(34,197,94,0.3), 0 8px 24px rgba(0,0,0,0.4)',
+        }}>
+          <span style={{ fontSize: 36, fontWeight: 900, color: '#fff', fontFamily: BRAND_FONT, letterSpacing: '-0.04em' }}>M</span>
         </div>
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ fontFamily: BRAND_FONT, fontSize: 48, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.02em', lineHeight: 1 }}>
+            MONEO
+          </h1>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.26em', color: GREEN, textTransform: 'uppercase', marginTop: 6 }}>
+            BY MJ / IA
+          </p>
+        </div>
+      </div>
 
-        {/* ── NEXT BUTTON (feature slides only) ────────────────────────── */}
-        {isFeature && (
-          <div style={{ padding: '12px 20px 28px', flexShrink: 0 }}>
-            <button
-              onClick={next}
-              className="btn-blue"
-              style={{ width: '100%', padding: '17px', borderRadius: 18, fontSize: 16, fontWeight: 700, cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-            >
-              {slide === TOTAL - 2 ? 'Finish' : 'Next'} <ArrowRight size={19} />
-            </button>
-          </div>
-        )}
+      {/* Tagline */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(20px)',
+        transition: 'opacity 0.55s ease 0.15s, transform 0.55s ease 0.15s',
+        textAlign: 'center',
+        marginBottom: 44,
+      }}>
+        <h2 style={{
+          fontSize: 28,
+          fontWeight: 800,
+          color: '#fff',
+          margin: '0 0 12px',
+          lineHeight: 1.2,
+          letterSpacing: '-0.02em',
+        }}>
+          Take control of<br />your money.
+        </h2>
+        <p style={{ fontSize: 15, color: '#888', lineHeight: 1.6, margin: 0 }}>
+          Track spending. Understand your habits.<br />Build a better financial life.
+        </p>
+      </div>
 
+      {/* Scroll hint */}
+      <button
+        onClick={onNext}
+        style={{
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 0.55s ease 0.3s',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: '#555',
+          padding: 12,
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em' }}>SEE WHAT MONEO DOES</span>
+        <ChevronDown size={18} color="#555" style={{ animation: 'splashDot 1.4s infinite ease-in-out' }} />
+      </button>
+    </div>
+  );
+};
+
+// ─── Feature section ─────────────────────────────────────────────────────────
+
+export const FeatureSection: React.FC<{
+  section: Section;
+  active: boolean;
+  onNext: () => void;
+  isLast: boolean;
+}> = ({ section, active, onNext, isLast }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (active) {
+      const t = setTimeout(() => setVisible(true), 60);
+      return () => clearTimeout(t);
+    } else {
+      setVisible(false);
+    }
+  }, [active]);
+
+  return (
+    <div style={{
+      minHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '32px 20px 28px',
+      background: DARK_BG,
+      position: 'relative',
+    }}>
+      {/* Label pill */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(12px)',
+        transition: 'all 0.4s ease',
+        marginBottom: 16,
+      }}>
+        <span style={{
+          display: 'inline-block',
+          fontSize: 10,
+          fontWeight: 800,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: section.accent,
+          background: `${section.accent}15`,
+          border: `1px solid ${section.accent}30`,
+          borderRadius: 99,
+          padding: '4px 12px',
+        }}>
+          {section.label}
+        </span>
+      </div>
+
+      {/* Headline */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(16px)',
+        transition: 'all 0.42s ease 0.06s',
+        marginBottom: 12,
+      }}>
+        <h2 style={{
+          fontSize: 30,
+          fontWeight: 900,
+          color: '#fff',
+          margin: 0,
+          lineHeight: 1.15,
+          letterSpacing: '-0.025em',
+          whiteSpace: 'pre-line',
+        }}>
+          {section.headline}
+        </h2>
+      </div>
+
+      {/* Description */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(12px)',
+        transition: 'all 0.42s ease 0.1s',
+        marginBottom: 24,
+      }}>
+        <p style={{ fontSize: 14, color: '#888', lineHeight: 1.65, margin: 0 }}>
+          {section.sub}
+        </p>
+      </div>
+
+      {/* Mockup */}
+      <div style={{
+        flex: 1,
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'scale(0.96) translateY(10px)',
+        transition: 'all 0.5s cubic-bezier(0.34,1.2,0.64,1) 0.14s',
+        marginBottom: 24,
+        overflow: 'hidden',
+      }}>
+        {section.mockup}
+      </div>
+
+      {/* Navigation */}
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.4s ease 0.2s',
+      }}>
+        <button
+          onClick={onNext}
+          style={{
+            width: '100%',
+            padding: '14px 20px',
+            borderRadius: 14,
+            background: isLast ? GREEN : 'rgba(255,255,255,0.06)',
+            border: isLast ? 'none' : '1px solid rgba(255,255,255,0.1)',
+            color: isLast ? '#050505' : '#fff',
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {isLast ? 'Get started' : 'Next'}
+          <ChevronRight size={16} />
+        </button>
       </div>
     </div>
   );
 };
+
+// ─── CTA / Final section ──────────────────────────────────────────────────────
+
+const CTASection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void }> = ({ onGetStarted }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 80); return () => clearTimeout(t); }, []);
+
+  return (
+    <div style={{
+      minHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 28px',
+      background: DARK_BG,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Glow */}
+      <div style={{
+        position: 'absolute',
+        bottom: '30%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 280,
+        height: 280,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'none' : 'translateY(20px)',
+        transition: 'all 0.55s ease',
+        textAlign: 'center',
+        width: '100%',
+        maxWidth: 340,
+      }}>
+        {/* Feature badges */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 32 }}>
+          {[
+            { icon: <BarChart2 size={12} />, text: 'Smart Insights' },
+            { icon: <Shield size={12} />, text: 'Secure & Private' },
+            { icon: <Zap size={12} />, text: 'Real-time Sync' },
+            { icon: <Star size={12} />, text: 'Moneo Score' },
+          ].map(b => (
+            <span key={b.text} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              fontSize: 11, fontWeight: 600, color: '#aaa',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              borderRadius: 99, padding: '5px 10px',
+            }}>
+              <span style={{ color: GREEN }}>{b.icon}</span>
+              {b.text}
+            </span>
+          ))}
+        </div>
+
+        <h2 style={{ fontSize: 34, fontWeight: 900, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
+          Take control of<br />
+          <span style={{ color: GREEN }}>your money.</span>
+        </h2>
+        <p style={{ fontSize: 15, color: '#777', margin: '0 0 36px', lineHeight: 1.6 }}>
+          Join thousands already building better financial habits with Moneo.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <button
+            onClick={() => onGetStarted('signup')}
+            style={{
+              width: '100%', padding: '16px',
+              borderRadius: 16, border: 'none',
+              background: `linear-gradient(135deg, ${GREEN} 0%, ${GREEN_DIM} 100%)`,
+              color: '#050505', fontSize: 16, fontWeight: 800,
+              cursor: 'pointer', letterSpacing: '-0.01em',
+              boxShadow: `0 4px 20px rgba(34,197,94,0.35)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            Create Free Account
+            <ArrowRight size={18} />
+          </button>
+          <button
+            onClick={() => onGetStarted('signin')}
+            style={{
+              width: '100%', padding: '16px',
+              borderRadius: 16,
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: '#fff', fontSize: 15, fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Sign In
+          </button>
+        </div>
+
+        <p style={{ fontSize: 11, color: '#555', marginTop: 20, lineHeight: 1.5 }}>
+          Free forever · No credit card · Your data stays yours
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// ─── Progress dots ────────────────────────────────────────────────────────────
+
+const ProgressDots: React.FC<{ total: number; current: number; accent: string }> = ({ total, current, accent }) => (
+  <div style={{
+    position: 'absolute',
+    top: 16,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    display: 'flex',
+    gap: 5,
+    zIndex: 10,
+  }}>
+    {Array.from({ length: total }).map((_, i) => (
+      <div
+        key={i}
+        style={{
+          height: 3,
+          width: i === current ? 20 : 6,
+          borderRadius: 99,
+          background: i === current ? accent : 'rgba(255,255,255,0.2)',
+          transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+        }}
+      />
+    ))}
+  </div>
+);
+
+// ─── Main LandingPage ─────────────────────────────────────────────────────────
+
+export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
+  const TOTAL_STEPS = SECTIONS.length + 2; // hero + sections + cta
+  const [step, setStep] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const goNext = useCallback(() => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1)), [TOTAL_STEPS]);
+
+  // Swipe support
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dy) > Math.abs(dx) && dy < -40) goNext();
+  };
+
+  const currentAccent = step === 0 ? GREEN
+    : step >= 1 && step <= SECTIONS.length ? SECTIONS[step - 1].accent
+    : GREEN;
+
+  return (
+    <div
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: DARK_BG,
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Progress dots — hidden on hero */}
+      {step > 0 && step < TOTAL_STEPS - 1 && (
+        <ProgressDots total={SECTIONS.length + 1} current={step - 1} accent={currentAccent} />
+      )}
+
+      {/* Slide container */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {step === 0 && <HeroSection onNext={goNext} />}
+
+        {SECTIONS.map((section, i) => (
+          <div
+            key={section.id}
+            style={{
+              display: step === i + 1 ? 'flex' : 'none',
+              flex: 1,
+              flexDirection: 'column',
+            }}
+          >
+            <FeatureSection
+              section={section}
+              active={step === i + 1}
+              onNext={goNext}
+              isLast={false}
+            />
+          </div>
+        ))}
+
+        {step === TOTAL_STEPS - 1 && <CTASection onGetStarted={onGetStarted} />}
+      </div>
+
+      {/* Skip link — visible on sections, hidden on hero and CTA */}
+      {step > 0 && step < TOTAL_STEPS - 1 && (
+        <button
+          onClick={() => setStep(TOTAL_STEPS - 1)}
+          style={{
+            position: 'absolute',
+            top: 14,
+            right: 16,
+            background: 'none',
+            border: 'none',
+            color: '#555',
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: 'pointer',
+            padding: '4px 8px',
+            zIndex: 10,
+          }}
+        >
+          Skip
+        </button>
+      )}
+    </div>
+  );
+};
+
+// Legacy exports kept for OnboardingScreen compatibility
+export const PhoneFrame: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <div className={`relative mx-auto ${className}`} style={{ width: 260, background: '#f4f5f9', border: '1px solid #e5e7eb', borderRadius: 26, padding: 14, boxShadow: '0 8px 40px rgba(0,0,0,0.1)' }}>
+    {children}
+  </div>
+);
+
+export const SectionHeader: React.FC<{ label: string; title: string; desc: string }> = ({ label, title, desc }) => (
+  <div className="max-w-sm">
+    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">{label}</p>
+    <h2 className="text-2xl font-bold text-slate-900 mb-4 leading-tight">{title}</h2>
+    <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+  </div>
+);
+
+// Named exports expected by OnboardingScreen (maps to equivalent new mockups)
+export const DashboardMockup: React.FC = () => <UnderstandMockup />;
+export const SafeToSpendMockup: React.FC = () => <SubscriptionsMockup />;
+export const AnalyticsMockup: React.FC = () => <InsightsMockup />;
+export const RecurringMockup: React.FC = () => <SubscriptionsMockup />;
+
+export { InsightsMockup, ScoreMockup };
+
+// FeatureSection is exported above from its definition

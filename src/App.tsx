@@ -38,6 +38,7 @@ import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
 
+import { SplashScreen } from './components/SplashScreen';
 import { LandingPage } from './components/LandingPage';
 import { AuthScreen } from './components/AuthScreen';
 import { MobileTopBar } from './components/MobileTopBar';
@@ -78,6 +79,7 @@ export default function App() {
   const { isPremium, membership, upgradeToPremium, cancelPremium } = usePremium(user?.id);
   const { isDark, colors } = useTheme();
 
+  const [showSplash, setShowSplash] = useState(true);
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [showAuthScreen, setShowAuthScreen] = useState(false);
   const [authInitialMode, setAuthInitialMode] = useState<'signin' | 'signup'>('signin');
@@ -385,12 +387,17 @@ export default function App() {
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  if (authLoading || cloudLoading) {
+  // Splash is shown on every app open, covering auth loading
+  if (showSplash || authLoading) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
+  if (cloudLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: colors.bgPrimary }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#050505' }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: `${colors.accent}20`, borderTopColor: colors.accent }} />
-          <span className="text-xs font-semibold" style={{ color: colors.textMuted }}>Loading Moneo…</span>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(34,197,94,0.2)', borderTopColor: '#22c55e' }} />
+          <span className="text-xs font-semibold" style={{ color: '#888' }}>Syncing your data…</span>
         </div>
       </div>
     );
