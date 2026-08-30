@@ -57,7 +57,6 @@ import { ActionMenu } from './components/ActionMenu';
 import { EditTransactionModal } from './components/EditTransactionModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 // Stage 1 — new screens
-import { FeaturesHub } from './components/FeaturesHub';
 import { InsightsHub } from './components/InsightsHub';
 import { ActivityScreen } from './components/ActivityScreen';
 import { MoneyCoachScreen } from './components/MoneyCoachScreen';
@@ -209,10 +208,10 @@ export default function App() {
     const skipped: MonthlyCheckIn = {
       month,
       completedAt: Date.now(),
-      monthlyIncomeEstimate: 0,
-      recurringExpenses: 0,
-      savingsGoalEnabled: false,
-      savingsGoalAmount: 0,
+      incomes: [],
+      expenses: [],
+      goals: [],
+      monthlyBudget: 0,
       upcomingExpenses: '',
       skipped: true,
     };
@@ -614,13 +613,6 @@ export default function App() {
             />
           )}
 
-          {currentView === 'more' && (
-            <FeaturesHub
-              isPremium={isPremium}
-              onNavigate={navigate}
-            />
-          )}
-
           {currentView === 'money-coach' && (
             <MoneyCoachScreen
               transactions={transactions}
@@ -663,6 +655,7 @@ export default function App() {
               subscriptions={subscriptions}
               currency={currency}
               monthlyBudget={monthlyBudget}
+              checkIn={checkIn}
               onNavigate={navigate}
             />
           )}
@@ -722,7 +715,7 @@ export default function App() {
               membershipStartedAt={membership.startedAt}
               onUpgrade={handleUpgradeToPremium}
               onCancelPremium={handleCancelPremium}
-              onGoBack={() => navigate('more')}
+              onGoBack={() => navigate('settings')}
             />
           )}
 
@@ -768,9 +761,18 @@ export default function App() {
         <BottomNav
           currentView={currentView}
           onNavigate={navigate}
-          onAddPress={() => setShowActionMenu(true)}
         />
       </div>
+
+      {/* Floating add button */}
+      <button
+        className="fab-add"
+        onClick={() => setShowActionMenu(true)}
+        aria-label="Add transaction"
+        style={{ position: 'fixed', bottom: 72, right: 20, zIndex: 40 }}
+      >
+        <span style={{ fontSize: 22, fontWeight: 300, lineHeight: 1, color: 'white' }}>+</span>
+      </button>
 
       {/* Toast */}
       {toastMessage && (
@@ -824,6 +826,7 @@ export default function App() {
           currency={currency}
           onComplete={handleCheckInComplete}
           onSkip={handleCheckInSkip}
+          onNavigate={navigate}
         />
       )}
     </div>

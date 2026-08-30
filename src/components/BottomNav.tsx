@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Lightbulb, Plus, Users, LayoutGrid } from 'lucide-react';
+import { Home, Lightbulb, Wallet, Users, Settings } from 'lucide-react';
 import { AppView } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -7,39 +7,30 @@ import { useLanguage } from '../i18n/LanguageContext';
 interface BottomNavProps {
   currentView: AppView;
   onNavigate: (view: AppView) => void;
-  onAddPress: () => void;
 }
 
-const HOME_VIEWS: AppView[]      = ['home', 'transactions', 'activity'];
-const INSIGHTS_VIEWS: AppView[]  = ['insights', 'statistics', 'money-coach', 'spending-patterns', 'what-if', 'moneo-score', 'projection', 'money-story', 'ask-moneo', 'safe-to-spend'];
-const COMMUNITY_VIEWS: AppView[] = ['community', 'community-detail'];
-const MORE_VIEWS: AppView[]      = ['more', 'budget', 'savings', 'recurring', 'recurring-income', 'settings', 'premium'];
+const HOME_VIEWS: AppView[]     = ['home', 'transactions', 'activity'];
+const INSIGHTS_VIEWS: AppView[] = ['insights', 'statistics', 'money-coach', 'spending-patterns', 'what-if', 'moneo-score', 'projection', 'money-story', 'ask-moneo', 'safe-to-spend'];
+const BUDGET_VIEWS: AppView[]   = ['budget', 'savings', 'recurring', 'recurring-income'];
+const COMMUNITY_VIEWS: AppView[]= ['community', 'community-detail'];
+const SETTINGS_VIEWS: AppView[] = ['settings', 'premium', 'more'];
 
-export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate, onAddPress }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate }) => {
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
-  const homeActive      = HOME_VIEWS.includes(currentView);
-  const insightsActive  = INSIGHTS_VIEWS.includes(currentView);
-  const communityActive = COMMUNITY_VIEWS.includes(currentView);
-  const moreActive      = MORE_VIEWS.includes(currentView);
+  const homeActive     = HOME_VIEWS.includes(currentView);
+  const insightsActive = INSIGHTS_VIEWS.includes(currentView);
+  const budgetActive   = BUDGET_VIEWS.includes(currentView);
+  const communityActive= COMMUNITY_VIEWS.includes(currentView);
+  const settingsActive = SETTINGS_VIEWS.includes(currentView);
 
   return (
     <div className="bottom-nav-bar">
-      <NavBtn label={t('navHome')}      Icon={Home}       active={homeActive}      accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('home')} />
-      <NavBtn label={t('navInsights')}  Icon={Lightbulb}  active={insightsActive}  accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('insights')} />
-
-      <div className="flex flex-col items-center" style={{ position: 'relative', bottom: 4 }}>
-        <button
-          className="fab-add"
-          onClick={onAddPress}
-          aria-label="Add transaction"
-        >
-          <Plus size={22} color="white" strokeWidth={2.8} />
-        </button>
-      </div>
-
-      <NavBtn label={t('navCommunity')} Icon={Users}       active={communityActive} accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('community')} />
-      <NavBtn label={t('navMore')}      Icon={LayoutGrid}  active={moreActive}      accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('more')} />
+      <NavBtn label={t('navHome')}      Icon={Home}      active={homeActive}      accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('home')} />
+      <NavBtn label={t('navInsights')}  Icon={Lightbulb} active={insightsActive}  accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('insights')} />
+      <NavBtn label={t('budget')}       Icon={Wallet}    active={budgetActive}    accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('budget')} />
+      <NavBtn label={t('navCommunity')} Icon={Users}     active={communityActive} accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('community')} />
+      <NavBtn label={t('settings')}     Icon={Settings}  active={settingsActive}  accent={colors.accent} muted={colors.textMuted} isDark={isDark} onClick={() => onNavigate('settings')} />
     </div>
   );
 };
@@ -59,7 +50,6 @@ function NavBtn({ label, Icon, active, accent, muted, isDark, onClick }: {
       className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl transition-all select-none cursor-pointer relative"
       style={{ minWidth: 52, WebkitTapHighlightColor: 'transparent' }}
     >
-      {/* Icon */}
       <div
         className="flex items-center justify-center rounded-xl transition-all"
         style={{
@@ -81,7 +71,6 @@ function NavBtn({ label, Icon, active, accent, muted, isDark, onClick }: {
         />
       </div>
 
-      {/* Label */}
       <span
         className="text-[10px] font-bold transition-colors leading-none"
         style={{ color: active ? accent : muted }}
@@ -89,7 +78,6 @@ function NavBtn({ label, Icon, active, accent, muted, isDark, onClick }: {
         {label}
       </span>
 
-      {/* Active dot indicator */}
       <div
         style={{
           width: active ? 16 : 0,

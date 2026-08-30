@@ -255,13 +255,37 @@ export interface CommunityPrivacy {
   appearOnLeaderboards: boolean;
 }
 
+export interface CheckInIncome {
+  id: string;
+  name: string;
+  amount: number;
+  frequency: RecurringIncomeFrequency;
+  nextPaymentDate: string;
+}
+
+export interface CheckInExpense {
+  id: string;
+  name: string;
+  amount: number;
+  frequency: SubscriptionFrequency;
+  nextPaymentDate: string;
+}
+
+export interface CheckInGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate?: string;
+}
+
 export interface MonthlyCheckIn {
-  month: string;                // 'YYYY-MM' — the month this check-in covers
-  completedAt: number;          // timestamp
-  monthlyIncomeEstimate: number;
-  recurringExpenses: number;    // rent + bills + fixed costs
-  savingsGoalEnabled: boolean;
-  savingsGoalAmount: number;
-  upcomingExpenses: string;     // free text, e.g. "car service, new laptop"
+  month: string;
+  completedAt: number;
+  incomes: CheckInIncome[];
+  expenses: CheckInExpense[];
+  goals: CheckInGoal[];
+  monthlyBudget: number;
+  upcomingExpenses: string;
   skipped: boolean;
 }
