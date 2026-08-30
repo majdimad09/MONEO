@@ -28,7 +28,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
         <div className="flex items-center gap-3">
           <button
             onClick={onFinish}
-            className="btn-blue px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
+            className="btn-primary px-5 py-2 rounded-xl text-sm cursor-pointer flex items-center gap-2"
           >
             Start Tracking <ArrowRight className="w-4 h-4" />
           </button>
@@ -136,7 +136,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onFinish }) 
           </p>
           <button
             onClick={onFinish}
-            className="btn-blue px-10 py-4 rounded-2xl text-base cursor-pointer inline-flex items-center gap-2"
+            className="btn-primary px-10 py-4 rounded-2xl text-base cursor-pointer inline-flex items-center gap-2"
           >
             Start Tracking My Money
             <ArrowRight className="w-5 h-5" />

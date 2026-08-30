@@ -90,7 +90,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       <div
         className="flex items-center gap-2 px-3.5 py-1.5 rounded-full"
         style={{
-          background: isDark ? 'rgba(34,197,94,0.10)' : 'rgba(5,150,105,0.07)',
+          background: isDark ? 'rgba(16,185,129,0.10)' : 'rgba(5,150,105,0.07)',
           border: `1px solid ${colors.accent}25`,
         }}
       >
@@ -188,8 +188,8 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
           className="rounded-3xl p-6 relative overflow-hidden"
           style={{
             background: isDark
-              ? `linear-gradient(145deg, #0f0f0f 0%, #141414 100%)`
-              : `linear-gradient(145deg, #f7f8fa 0%, #ffffff 100%)`,
+              ? `linear-gradient(145deg, #0d0d14 0%, #16161f 100%)`
+              : `linear-gradient(145deg, #f4f5f9 0%, #ffffff 100%)`,
             border: `1px solid ${result.color}30`,
             boxShadow: `0 4px 32px ${result.color}15`,
           }}
@@ -382,7 +382,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
                 key={i}
                 className="flex items-start gap-3 px-4 py-3 rounded-2xl"
                 style={{
-                  background: isDark ? 'rgba(34,197,94,0.06)' : 'rgba(5,150,105,0.05)',
+                  background: isDark ? 'rgba(16,185,129,0.07)' : 'rgba(16,185,129,0.05)',
                   border: `1px solid ${colors.accent}18`,
                   borderLeft: `3px solid ${colors.accent}`,
                   paddingLeft: 12,

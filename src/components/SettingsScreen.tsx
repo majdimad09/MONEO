@@ -3,6 +3,7 @@ import {
   User, Mail, Hash, Briefcase, ChevronRight, Check, Globe,
   Bell, BellOff, Lock, LogOut, Download, RotateCcw,
   Sparkles, Info, MessageCircle, Trash2, Eye, EyeOff, Crown,
+  Sun, Moon,
 } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -93,7 +94,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   isPremium = false, membershipStartedAt, onNavigatePremium,
 }) => {
   const { t, lang, setLanguage } = useLanguage();
-  const { colors } = useTheme();
+  const { colors, isDark, toggleTheme } = useTheme();
 
   // ── Account state ──────────────────────────────────────────────────────
   const [nameInput, setNameInput] = useState(userName);
@@ -174,7 +175,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       style={{ width: 44, height: 26 }}
     >
       <div className="absolute inset-0 rounded-full transition-all"
-        style={{ background: on ? 'rgba(59,130,246,0.8)' : colors.bgHover, border: '1px solid ' + (on ? 'rgba(59,130,246,0.5)' : colors.border) }} />
+        style={{ background: on ? colors.accent : colors.bgHover, border: '1px solid ' + (on ? colors.accent + '80' : colors.border) }} />
       <div className="absolute top-1 transition-all rounded-full bg-white"
         style={{ width: 18, height: 18, left: on ? 22 : 4, transition: 'left 0.18s ease' }} />
     </button>
@@ -191,7 +192,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           {/* Avatar + email header */}
           <div className="flex items-center gap-3.5 px-4 pt-4 pb-3" style={{ borderBottom: `1px solid ${colors.divider}` }}>
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold text-base"
-              style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.25)', color: '#93c5fd', letterSpacing: 0.5 }}>
+              style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}30`, color: colors.accent, letterSpacing: 0.5 }}>
               {initials}
             </div>
             <div className="min-w-0">
@@ -259,7 +260,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     onClick={() => setStatusInput(s)}
                     className="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all"
                     style={statusInput === s
-                      ? { background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.4)', color: '#93c5fd' }
+                      ? { background: colors.accentSoft, border: `1px solid ${colors.accent}40`, color: colors.accent }
                       : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                   >
                     {s}
@@ -274,7 +275,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             <button
               onClick={handleSaveProfile}
               className={`w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2 transition-all ${
-                profileSaved ? '' : 'btn-blue'
+                profileSaved ? '' : 'btn-primary'
               }`}
               style={profileSaved ? { background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#34d399' } : {}}
             >
@@ -314,15 +315,30 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   onClick={() => handleLanguageChange(l.code)}
                   className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer"
                   style={lang === l.code
-                    ? { background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#93c5fd' }
+                    ? { background: colors.accentSoft, border: `1px solid ${colors.accent}40`, color: colors.accent }
                     : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
                 >
-                  {lang === l.code && <Check size={13} className="text-blue-400 flex-shrink-0" />}
+                  {lang === l.code && <Check size={13} style={{ color: colors.accent }} className="flex-shrink-0" />}
                   <span className="truncate">{l.nativeName}</span>
                 </button>
               ))}
             </div>
           )}
+
+          {/* Theme toggle */}
+          <div className="flex items-center gap-3.5 px-4 py-3.5" style={{ borderBottom: `1px solid ${colors.divider}` }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: isDark ? 'rgba(251,191,36,0.1)' : 'rgba(99,102,241,0.1)', border: `1px solid ${isDark ? 'rgba(251,191,36,0.2)' : 'rgba(99,102,241,0.2)'}` }}>
+              {isDark
+                ? <Sun size={17} style={{ color: '#fbbf24' }} />
+                : <Moon size={17} style={{ color: '#818cf8' }} />}
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{isDark ? t('darkMode') : t('lightMode')}</p>
+              <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{isDark ? 'Switch to light mode' : 'Switch to dark mode'}</p>
+            </div>
+            <Toggle on={isDark} onToggle={toggleTheme} />
+          </div>
 
           {/* App notifications */}
           <div className="flex items-center gap-3.5 px-4 py-3.5" style={{ borderBottom: `1px solid ${colors.divider}` }}>
@@ -364,8 +380,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Lock size={17} style={{ color: '#60a5fa' }} />
+              style={{ background: colors.brandSoft, border: `1px solid ${colors.brand}25` }}>
+              <Lock size={17} style={{ color: colors.brand }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('changePassword')}</p>
@@ -409,7 +425,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   <button
                     onClick={handleChangePassword}
                     disabled={pwdLoading}
-                    className="w-full py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer disabled:opacity-50"
+                    className="w-full py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer disabled:opacity-50"
                   >
                     {pwdLoading ? '…' : t('updatePasswordBtnShort')}
                   </button>
@@ -472,8 +488,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
           <RowButton
             icon={Sparkles}
-            iconColor="#60a5fa"
-            iconBg="rgba(96,165,250,0.1)"
+            iconColor="#818cf8"
+            iconBg="rgba(129,140,248,0.1)"
             label={t('loadDemo')}
             desc={t('loadDemoDesc')}
             onClick={onLoadSampleData}

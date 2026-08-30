@@ -303,7 +303,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         {/* Submit Button */}
         <button
           type="submit"
-          className="btn-blue w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-primary w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>{activeTab === 'income' ? t('addIncome') : t('addExpense')}</span>

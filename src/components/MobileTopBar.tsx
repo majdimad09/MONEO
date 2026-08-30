@@ -87,7 +87,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
               onClick={onExportCSV}
               title="Export CSV"
               className="p-1.5 rounded-lg transition-colors cursor-pointer"
-              style={{ color: '#9ca3af' }}
+              style={{ color: colors.textMuted }}
             >
               <Download size={15} />
             </button>
@@ -95,7 +95,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
               <button
                 onClick={() => setShowClear(true)}
                 className="p-1.5 rounded-lg transition-colors cursor-pointer"
-                style={{ color: '#9ca3af' }}
+                style={{ color: colors.textMuted }}
               >
                 <RotateCcw size={15} />
               </button>
@@ -128,7 +128,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           >
             <span className="font-mono" style={{ color: colors.accent }}>{selected.symbol}</span>
             <span className="hidden sm:inline" style={{ color: colors.textSecondary }}>{selected.code}</span>
-            <ChevronDown size={11} className={`transition-transform ${showCurrency ? 'rotate-180' : ''}`} style={{ color: '#9ca3af' }} />
+            <ChevronDown size={11} className={`transition-transform ${showCurrency ? 'rotate-180' : ''}`} style={{ color: colors.textMuted }} />
           </button>
 
           {showCurrency && (
@@ -138,7 +138,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                 style={{ background: colors.dropdownBg, border: `1px solid ${colors.borderStrong}`, boxShadow: '0 16px 48px rgba(0,0,0,0.25)' }}>
                 <div className="p-2" style={{ borderBottom: `1px solid ${colors.border}` }}>
                   <div className="relative">
-                    <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#9ca3af' }} />
+                    <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                     <input
                       ref={searchRef}
                       value={search}
@@ -148,7 +148,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                       style={{ background: colors.inputBg, border: `1px solid ${colors.border}`, color: colors.textPrimary }}
                     />
                     {search && (
-                      <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2" style={{ color: '#9ca3af' }}>
+                      <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2" style={{ color: colors.textMuted }}>
                         <X size={11} />
                       </button>
                     )}
@@ -168,7 +168,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                     >
                       <span className="w-6 font-mono font-bold text-xs flex-shrink-0" style={{ color: colors.accent }}>{c.symbol}</span>
                       <span className="flex-1 truncate">{c.name}</span>
-                      <span className="font-mono" style={{ color: '#9ca3af' }}>{c.code}</span>
+                      <span className="font-mono" style={{ color: colors.textMuted }}>{c.code}</span>
                     </button>
                   ))}
                 </div>

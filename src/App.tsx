@@ -394,10 +394,10 @@ export default function App() {
 
   if (cloudLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#050505' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: colors.bgPrimary }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(34,197,94,0.2)', borderTopColor: '#22c55e' }} />
-          <span className="text-xs font-semibold" style={{ color: '#888' }}>Syncing your data…</span>
+          <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderColor: colors.accentSoft, borderTopColor: colors.accent }} />
+          <span className="text-xs font-semibold" style={{ color: colors.textMuted }}>Syncing your data…</span>
         </div>
       </div>
     );

@@ -98,12 +98,13 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('insights')} className="cursor-pointer text-slate-500 hover:text-slate-600">
+        <button onClick={() => onNavigate('insights')} className="cursor-pointer transition-colors"
+          style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-base font-bold text-slate-900 leading-none">What If?</h1>
-          <p className="text-[10px] text-slate-500 mt-0.5">Simulate decisions — nothing changes in your real data</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>What If?</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>Simulate decisions — nothing changes in your real data</p>
         </div>
       </div>
 
@@ -116,7 +117,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
 
         {/* Simulation type selector */}
         <div className="space-y-2 mb-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: '#9ca3af' }}>
+          <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2" style={{ color: colors.textMuted }}>
             What would happen if…
           </p>
           {([
@@ -128,10 +129,10 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
             <button
               key={opt.id}
               onClick={() => { setSimType(opt.id); setSimulated(false); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all text-left"
               style={simType === opt.id
-                ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                : { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
+                ? { background: colors.accentSoft, border: `1px solid ${colors.accent}40` }
+                : { background: colors.bgCard, border: `1px solid ${colors.border}` }}
             >
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -139,7 +140,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
               >
                 <opt.icon size={15} style={{ color: opt.color }} />
               </div>
-              <span className="text-sm font-semibold text-slate-700">{opt.label}</span>
+              <span className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{opt.label}</span>
             </button>
           ))}
         </div>
@@ -148,10 +149,10 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
         <div className="card-dark rounded-2xl p-4 mb-5 space-y-3">
           {simType === 'cancel_sub' ? (
             activeSubs.length === 0 ? (
-              <p className="text-sm text-slate-500">No active subscriptions found.</p>
+              <p className="text-sm" style={{ color: colors.textSecondary }}>No active subscriptions found.</p>
             ) : (
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest block mb-2" style={{ color: colors.textMuted }}>
                   Select subscription to cancel
                 </label>
                 <div className="space-y-1.5">
@@ -161,11 +162,11 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                       onClick={() => { setCancelSubId(s.id); setSimulated(false); }}
                       className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-left"
                       style={cancelSubId === s.id
-                        ? { background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)' }
-                        : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
+                        ? { background: colors.accentSoft, border: `1px solid ${colors.accent}40` }
+                        : { background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
                     >
-                      <span className="text-xs font-semibold text-slate-700">{s.name}</span>
-                      <span className="text-xs text-slate-400">{formatCurrency(s.amount, currency)}/mo</span>
+                      <span className="text-xs font-semibold" style={{ color: colors.textPrimary }}>{s.name}</span>
+                      <span className="text-xs" style={{ color: colors.textMuted }}>{formatCurrency(s.amount, currency)}/mo</span>
                     </button>
                   ))}
                 </div>
@@ -173,7 +174,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
             )
           ) : (
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest block mb-2" style={{ color: colors.textMuted }}>
                 Amount ({currency})
               </label>
               <input
@@ -190,7 +191,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
           <button
             onClick={() => setSimulated(true)}
             disabled={simType !== 'cancel_sub' ? (!amount || parseFloat(amount) <= 0) : !cancelSubId}
-            className="w-full py-3 rounded-xl text-sm font-bold text-white btn-blue cursor-pointer disabled:opacity-40"
+            className="w-full py-3 rounded-2xl text-sm font-bold text-white btn-primary cursor-pointer disabled:opacity-40"
           >
             Simulate
           </button>
@@ -199,7 +200,7 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
         {/* Results */}
         {simulated && result && diff && (
           <div className="space-y-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
               Simulated Impact
             </p>
 
@@ -232,13 +233,13 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
             ].map(row => (
               <div key={row.label} className="card-dark rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <row.icon size={14} className="text-slate-500" />
-                  <p className="text-xs font-bold text-slate-400">{row.label}</p>
+                  <row.icon size={14} style={{ color: colors.textMuted }} />
+                  <p className="text-xs font-bold" style={{ color: colors.textSecondary }}>{row.label}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-center">
-                    <p className="text-[10px] text-slate-600 mb-0.5">Now</p>
-                    <p className="text-base font-bold text-slate-600">{row.baseline}</p>
+                    <p className="text-[10px] mb-0.5" style={{ color: colors.textMuted }}>Now</p>
+                    <p className="text-base font-bold" style={{ color: colors.textSecondary }}>{row.baseline}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     {row.delta !== 0 && (
@@ -246,14 +247,14 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
                         ? <TrendingUp size={16} style={{ color: '#34d399' }} />
                         : <TrendingDown size={16} style={{ color: '#f87171' }} />
                     )}
-                    <span className="text-xs font-bold" style={{ color: row.delta === 0 ? '#64748b' : row.positive ? '#34d399' : '#f87171' }}>
+                    <span className="text-xs font-bold" style={{ color: row.delta === 0 ? colors.textMuted : row.positive ? '#34d399' : '#f87171' }}>
                       {row.delta === 0 ? 'no change'
                         : `${row.delta > 0 ? '+' : ''}${typeof row.baseline === 'string' && row.baseline.match(/^\d+$/) ? row.delta : formatCurrency(Math.abs(row.delta), currency)}`}
                     </span>
                   </div>
                   <div className="text-center">
-                    <p className="text-[10px] text-slate-600 mb-0.5">Simulated</p>
-                    <p className="text-base font-bold text-slate-900">{row.result}</p>
+                    <p className="text-[10px] mb-0.5" style={{ color: colors.textMuted }}>Simulated</p>
+                    <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{row.result}</p>
                   </div>
                 </div>
               </div>

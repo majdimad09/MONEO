@@ -1,17 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  Edit2,
-  Trash2,
-  ArrowUpRight,
-  ArrowDownRight,
-  Inbox,
-  X,
-} from 'lucide-react';
+import { Search, Edit2, Trash2, ArrowUpRight, ArrowDownRight, Inbox, X, SlidersHorizontal } from 'lucide-react';
 import { Transaction } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface TransactionHistoryProps {
   transactions: Transaction[];
@@ -21,35 +14,34 @@ interface TransactionHistoryProps {
 }
 
 export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
-  transactions,
-  onEdit,
-  onDelete,
-  currency,
+  transactions, onEdit, onDelete, currency,
 }) => {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'>('date-desc');
+  const [showFilters, setShowFilters] = useState(false);
 
   const availableCategories = useMemo(() => {
     const set = new Set<string>();
-    transactions.forEach((t) => set.add(t.category));
+    transactions.forEach(t => set.add(t.category));
     return Array.from(set).sort();
   }, [transactions]);
 
   const filteredTransactions = useMemo(() => {
     return transactions
-      .filter((t) => {
-        if (typeFilter !== 'all' && t.type !== typeFilter) return false;
-        if (selectedCategory !== 'all' && t.category.toLowerCase() !== selectedCategory.toLowerCase()) return false;
+      .filter(tx => {
+        if (typeFilter !== 'all' && tx.type !== typeFilter) return false;
+        if (selectedCategory !== 'all' && tx.category.toLowerCase() !== selectedCategory.toLowerCase()) return false;
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
           return (
-            t.description.toLowerCase().includes(q) ||
-            t.category.toLowerCase().includes(q) ||
-            t.amount.toString().includes(q) ||
-            t.date.includes(q)
+            tx.description.toLowerCase().includes(q) ||
+            tx.category.toLowerCase().includes(q) ||
+            tx.amount.toString().includes(q) ||
+            tx.date.includes(q)
           );
         }
         return true;
@@ -71,287 +63,228 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
 
   const hasActiveFilters = searchQuery !== '' || typeFilter !== 'all' || selectedCategory !== 'all';
 
-  const selectStyle = {
-    background: colors.bgSecondary,
-    border: `1px solid ${colors.borderStrong}`,
-    color: colors.textSecondary,
-  };
+  const totalIncome = filteredTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const totalExpenses = filteredTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
   return (
-    <div className="card-dark rounded-2xl overflow-hidden">
-      {/* Header & Filters */}
-      <div className="p-5 sm:p-6 space-y-4" style={{ borderBottom: `1px solid ${colors.borderStrong}` }}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-              <span>Recent Transactions</span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full text-blue-400"
-                style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
-                {filteredTransactions.length}
-              </span>
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Review, search, edit, or remove your financial records
-            </p>
-          </div>
+    <div className="space-y-4 page-enter">
 
-          {/* Type Filter */}
-          <div className="flex items-center p-1 rounded-xl self-start sm:self-auto gap-0.5"
-            style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-            {(['all', 'income', 'expense'] as const).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setTypeFilter(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all capitalize ${
-                  typeFilter === type
-                    ? type === 'income' ? 'text-green-400' : type === 'expense' ? 'text-red-400' : 'text-slate-700'
-                    : 'text-slate-500 hover:text-slate-600'
-                }`}
-                style={typeFilter === type ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}` } : {}}
-              >
-                {type === 'income' && <ArrowUpRight className="w-3.5 h-3.5 text-green-500" />}
-                {type === 'expense' && <ArrowDownRight className="w-3.5 h-3.5 text-red-500" />}
-                <span>
-                  {type === 'all' ? `All (${transactions.length})` : type.charAt(0).toUpperCase() + type.slice(1)}
-                </span>
-              </button>
-            ))}
-          </div>
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>{t('allTransactions')}</p>
+          <h2 className="text-xl font-bold mt-0.5" style={{ color: colors.textPrimary, letterSpacing: '-0.01em' }}>
+            {filteredTransactions.length} {filteredTransactions.length === 1 ? 'record' : 'records'}
+          </h2>
         </div>
+        <button
+          onClick={() => setShowFilters(v => !v)}
+          aria-label="Toggle filters"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl cursor-pointer transition-all"
+          style={{
+            background: showFilters ? colors.accentSoft : colors.bgCard,
+            border: `1px solid ${showFilters ? colors.accent + '40' : colors.border}`,
+            color: showFilters ? colors.accent : colors.textSecondary,
+          }}
+        >
+          <SlidersHorizontal size={14} />
+          <span className="text-xs font-semibold">Filter</span>
+          {hasActiveFilters && (
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
+              style={{ background: colors.accent, color: '#fff' }}
+            >
+              !
+            </span>
+          )}
+        </button>
+      </div>
 
-        {/* Search, Category, Sort */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-          <div className="sm:col-span-6 relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="w-4 h-4 text-slate-500" />
-            </div>
+      {/* ── Summary pills ── */}
+      <div className="grid grid-cols-2 gap-2.5">
+        <div className="rounded-2xl p-3.5" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
+          <div className="flex items-center gap-2 mb-1">
+            <ArrowUpRight size={13} style={{ color: colors.positive }} />
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>{t('income')}</span>
+          </div>
+          <p className="text-base font-bold" style={{ color: colors.positive, fontFeatureSettings: '"tnum"' }}>
+            +{formatCurrency(totalIncome, currency)}
+          </p>
+        </div>
+        <div className="rounded-2xl p-3.5" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
+          <div className="flex items-center gap-2 mb-1">
+            <ArrowDownRight size={13} style={{ color: colors.negative }} />
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>{t('expenses')}</span>
+          </div>
+          <p className="text-base font-bold" style={{ color: colors.negative, fontFeatureSettings: '"tnum"' }}>
+            −{formatCurrency(totalExpenses, currency)}
+          </p>
+        </div>
+      </div>
+
+      {/* ── Filters panel ── */}
+      {showFilters && (
+        <div className="rounded-2xl p-4 space-y-3" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
+
+          {/* Search */}
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
             <input
               type="text"
-              placeholder="Search description, category, or amount..."
+              placeholder="Search description, category…"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input-dark w-full pl-9 pr-8 py-2 text-xs font-medium rounded-xl"
+              onChange={e => setSearchQuery(e.target.value)}
+              className="input-dark w-full pl-9 pr-8 py-2.5 rounded-xl text-sm"
             />
             {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-600"
-              >
-                <X className="w-3.5 h-3.5" />
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer" style={{ color: colors.textMuted }}>
+                <X size={14} />
               </button>
             )}
           </div>
 
-          <div className="sm:col-span-3">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 text-xs font-medium rounded-xl focus:outline-none focus:border-blue-500 transition-all"
-              style={selectStyle}
-            >
-              <option value="all">All Categories</option>
-              {availableCategories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+          {/* Type filter */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: colors.textMuted }}>Type</p>
+            <div className="flex gap-2">
+              {(['all', 'income', 'expense'] as const).map(type => (
+                <button
+                  key={type}
+                  onClick={() => setTypeFilter(type)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all capitalize"
+                  style={typeFilter === type
+                    ? {
+                        background: type === 'income' ? colors.positiveSoft : type === 'expense' ? colors.negativeSoft : colors.accentSoft,
+                        border: `1px solid ${type === 'income' ? colors.positive + '40' : type === 'expense' ? colors.negative + '40' : colors.accent + '40'}`,
+                        color: type === 'income' ? colors.positive : type === 'expense' ? colors.negative : colors.accent,
+                      }
+                    : { background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textMuted }
+                  }
+                >
+                  {type === 'income' && <ArrowUpRight size={11} />}
+                  {type === 'expense' && <ArrowDownRight size={11} />}
+                  {type === 'all' ? `All (${transactions.length})` : type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
 
-          <div className="sm:col-span-3">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full px-3 py-2 text-xs font-medium rounded-xl focus:outline-none focus:border-blue-500 transition-all"
-              style={selectStyle}
-            >
-              <option value="date-desc">Newest First</option>
-              <option value="date-asc">Oldest First</option>
-              <option value="amount-desc">Highest Amount</option>
-              <option value="amount-asc">Lowest Amount</option>
-            </select>
+          {/* Category + Sort */}
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: colors.textMuted }}>Category</p>
+              <select
+                value={selectedCategory}
+                onChange={e => setSelectedCategory(e.target.value)}
+                className="input-dark w-full px-3 py-2 rounded-xl text-xs"
+              >
+                <option value="all">All</option>
+                {availableCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: colors.textMuted }}>Sort</p>
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value as typeof sortBy)}
+                className="input-dark w-full px-3 py-2 rounded-xl text-xs"
+              >
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="amount-desc">Highest amount</option>
+                <option value="amount-asc">Lowest amount</option>
+              </select>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Table / List */}
-      {filteredTransactions.length === 0 ? (
-        <div className="p-12 text-center flex flex-col items-center justify-center">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
-            style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-            <Inbox className="w-7 h-7 text-slate-600" />
-          </div>
-          <h4 className="text-sm sm:text-base font-bold text-slate-400 mb-1">
-            No transactions found
-          </h4>
-          <p className="text-xs text-slate-600 max-w-sm mb-4">
-            {hasActiveFilters
-              ? 'No records match your search or filter criteria. Try adjusting filters.'
-              : "You haven't recorded any transactions yet. Add your first income or expense above!"}
-          </p>
           {hasActiveFilters && (
             <button
-              type="button"
               onClick={clearFilters}
-              className="px-3.5 py-1.5 text-xs font-semibold text-blue-400 rounded-lg transition-colors"
-              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}
+              className="text-xs font-semibold cursor-pointer"
+              style={{ color: colors.negative }}
             >
               Clear all filters
             </button>
           )}
         </div>
+      )}
+
+      {/* ── List ── */}
+      {filteredTransactions.length === 0 ? (
+        <div
+          className="rounded-2xl px-4 py-10 text-center"
+          style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
+        >
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
+            style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}
+          >
+            <Inbox size={24} style={{ color: colors.textMuted }} />
+          </div>
+          <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>
+            {hasActiveFilters ? 'No matches' : t('noTransactionsYet')}
+          </p>
+          <p className="text-xs" style={{ color: colors.textSecondary }}>
+            {hasActiveFilters ? 'Try adjusting your filters.' : t('addFirstTransactionHint')}
+          </p>
+        </div>
       ) : (
-        <div>
-          {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="text-[11px] font-bold uppercase tracking-wider text-slate-600"
-                  style={{ borderBottom: `1px solid ${colors.borderStrong}`, background: colors.bgSecondary }}>
-                  <th className="py-3 px-6">Type</th>
-                  <th className="py-3 px-6">Description</th>
-                  <th className="py-3 px-6">Category</th>
-                  <th className="py-3 px-6">Date</th>
-                  <th className="py-3 px-6 text-right">Amount</th>
-                  <th className="py-3 px-6 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="text-xs divide-y divide-[#e5e7eb]">
-                {filteredTransactions.map((item) => {
-                  const isIncome = item.type === 'income';
-                  const catColor = getCategoryColor(item.category, item.type);
-
-                  return (
-                    <tr
-                      key={item.id}
-                      className="transition-colors group"
-                      style={{ ':hover': { background: '#ffffff' } as any }}
-                      onMouseEnter={e => (e.currentTarget.style.background = colors.bgHover)}
-                      onMouseLeave={e => (e.currentTarget.style.background = '')}
-                    >
-                      <td className="py-3.5 px-6">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold capitalize ${
-                          isIncome ? 'text-green-400' : 'text-red-400'
-                        }`}
-                          style={{
-                            background: isIncome ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                            border: `1px solid ${isIncome ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`,
-                          }}>
-                          {isIncome
-                            ? <ArrowUpRight className="w-3.5 h-3.5" />
-                            : <ArrowDownRight className="w-3.5 h-3.5" />}
-                          <span>{item.type}</span>
-                        </span>
-                      </td>
-
-                      <td className="py-3.5 px-6 font-semibold text-slate-700 max-w-xs truncate">
-                        {item.description}
-                      </td>
-
-                      <td className="py-3.5 px-6">
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-slate-400 font-medium"
-                          style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
-                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: catColor }} />
-                          <CategoryIcon category={item.category} type={item.type} size={12} className="text-slate-500" />
-                          <span>{item.category}</span>
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-6 text-slate-500 font-medium whitespace-nowrap">
-                        {formatDate(item.date)}
-                      </td>
-
-                      <td className="py-3.5 px-6 text-right font-mono font-bold text-sm whitespace-nowrap">
-                        <span className={isIncome ? 'text-green-400' : 'text-red-400'}>
-                          {isIncome ? '+' : '-'}{formatCurrency(item.amount, currency)}
-                        </span>
-                      </td>
-
-                      <td className="py-3.5 px-6 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={() => onEdit(item)}
-                            title="Edit transaction"
-                            className="p-1.5 text-slate-400 hover:text-blue-400 rounded-lg transition-colors"
-                            style={{ ':hover': { background: 'rgba(59,130,246,0.1)' } as any }}
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onDelete(item)}
-                            title="Delete transaction"
-                            className="p-1.5 text-slate-400 hover:text-red-400 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-[#e5e7eb]">
-            {filteredTransactions.map((item) => {
-              const isIncome = item.type === 'income';
-
-              return (
+        <div className="rounded-2xl overflow-hidden" style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}>
+          {filteredTransactions.map((item, i) => {
+            const isIncome = item.type === 'income';
+            const catColor = getCategoryColor(item.category, item.type);
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all"
+                style={{
+                  borderBottom: i < filteredTransactions.length - 1 ? `1px solid ${colors.divider}` : 'none',
+                  minHeight: 56,
+                }}
+                onClick={() => onEdit(item)}
+                onMouseEnter={e => (e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)')}
+                onMouseLeave={e => (e.currentTarget.style.background = '')}
+              >
+                {/* Icon */}
                 <div
-                  key={item.id}
-                  className="p-4 flex items-center justify-between gap-3 transition-colors"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${catColor}16`, border: `1px solid ${catColor}22` }}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0`}
-                      style={{
-                        background: isIncome ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                        border: `1px solid ${isIncome ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`,
-                        color: isIncome ? '#34d399' : '#f87171',
-                      }}>
-                      <CategoryIcon category={item.category} type={item.type} size={16} />
-                    </div>
-
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-slate-700 truncate">
-                        {item.description}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">
-                        <span className="truncate">{item.category}</span>
-                        <span>•</span>
-                        <span>{formatDate(item.date)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <span className={`font-mono font-bold text-xs sm:text-sm ${isIncome ? 'text-green-400' : 'text-red-400'}`}>
-                      {isIncome ? '+' : '-'}{formatCurrency(item.amount, currency)}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => onEdit(item)}
-                        className="p-1 text-slate-500 hover:text-blue-400 rounded-md transition-colors"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onDelete(item)}
-                        className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
+                  <CategoryIcon category={item.category} type={item.type} size={15} />
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Description + meta */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold truncate" style={{ color: colors.textPrimary }}>
+                    {item.description}
+                  </p>
+                  <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
+                    {item.category} · {formatDate(item.date)}
+                  </p>
+                </div>
+
+                {/* Amount + actions */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span
+                    className="text-[13px] font-bold"
+                    style={{ color: isIncome ? colors.positive : colors.negative, fontFeatureSettings: '"tnum"' }}
+                  >
+                    {isIncome ? '+' : '−'}{formatCurrency(item.amount, currency)}
+                  </span>
+                  <button
+                    onClick={e => { e.stopPropagation(); onDelete(item); }}
+                    aria-label="Delete transaction"
+                    className="w-7 h-7 flex items-center justify-center rounded-lg transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+                    style={{ color: colors.textMuted }}
+                    onMouseEnter={e => { e.currentTarget.style.color = colors.negative; e.currentTarget.style.background = colors.negativeSoft; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = colors.textMuted; e.currentTarget.style.background = ''; }}
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

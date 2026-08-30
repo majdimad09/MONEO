@@ -117,7 +117,7 @@ export function AuthScreen({
     }
   };
 
-  const inputBase = 'input-dark w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-all';
+  const inputBase = 'input-dark w-full rounded-2xl px-4 py-3.5 text-sm focus:outline-none transition-all';
 
   const subtitle: Record<AuthMode, string> = {
     signin: t('welcomeBack'),
@@ -135,35 +135,44 @@ export function AuthScreen({
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 relative"
+      className="min-h-screen flex items-center justify-center p-5 relative overflow-hidden"
       style={{
-        background: isDark
-          ? '#0a0a0a'
-          : 'linear-gradient(145deg, #f0f4ff 0%, #f7f8fa 50%, #f0fdf4 100%)',
+        background: isDark ? '#0d0d14' : '#f4f5f9',
       }}
     >
+      {/* Background glows */}
+      {isDark && <>
+        <div style={{ position: 'absolute', top: -100, right: -80, width: 380, height: 380, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -80, left: -60, width: 280, height: 280, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
+      </>}
+      {!isDark && <>
+        <div style={{ position: 'absolute', top: -60, right: -40, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -40, left: -40, width: 220, height: 220, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+      </>}
+
       {onGoBack && !isRecoveryMode && (
         <button
           onClick={onGoBack}
-          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
-          style={{ color: colors.textMuted }}
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm transition-colors cursor-pointer z-10"
+          style={{ color: colors.textSecondary }}
         >
           <ChevronLeft size={16} />
           Back
         </button>
       )}
       <div
-        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
+        className="w-full max-w-md rounded-3xl flex flex-col gap-5 relative z-10"
         style={{
           background: colors.bgCard,
           border: `1px solid ${colors.border}`,
-          boxShadow: isDark ? '0 8px 40px rgba(0,0,0,0.5)' : '0 8px 40px rgba(0,0,0,0.10)',
+          boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset' : '0 20px 60px rgba(0,0,0,0.10)',
+          padding: '32px 28px 28px',
         }}
       >
-        {/* Logo */}
-        <div className="flex flex-col items-center gap-2 pt-2">
-          <LogoWordmark iconSize={36} textSize="md" />
-          <p className="text-xs mt-1" style={{ color: colors.textMuted }}>{subtitle[mode]}</p>
+        {/* Logo + Subtitle */}
+        <div className="flex flex-col items-center gap-2.5 pb-1">
+          <LogoWordmark iconSize={42} textSize="lg" />
+          <p className="text-sm font-semibold mt-0.5 text-center" style={{ color: colors.textSecondary }}>{subtitle[mode]}</p>
         </div>
 
         {/* Success / Error */}
@@ -185,7 +194,7 @@ export function AuthScreen({
           {mode === 'update-password' ? (
             <>
               <div className="relative">
-                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                 <input
                   type={showPass ? 'text' : 'password'}
                   placeholder={t('newPassword')}
@@ -196,13 +205,13 @@ export function AuthScreen({
                   disabled={loading}
                 />
                 <button type="button" tabIndex={-1}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors" style={{ color: colors.textMuted }}
                   onClick={() => setShowPass(v => !v)}>
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
               <div className="relative">
-                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                 <input
                   type={showPass ? 'text' : 'password'}
                   placeholder={t('confirmNewPassword')}
@@ -221,7 +230,7 @@ export function AuthScreen({
                 <>
                   {/* Name */}
                   <div className="relative">
-                    <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                    <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                     <input
                       type="text"
                       placeholder={t('fullName')}
@@ -236,7 +245,7 @@ export function AuthScreen({
                   {/* Age + Status (side by side) */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="relative">
-                      <Hash size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                      <Hash size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                       <input
                         type="number"
                         placeholder={t('age')}
@@ -292,7 +301,7 @@ export function AuthScreen({
 
               {/* Email (all modes except update-password) */}
               <div className="relative">
-                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                 <input
                   type="email"
                   placeholder={t('email')}
@@ -307,7 +316,7 @@ export function AuthScreen({
               {/* Password (signin / signup only) */}
               {mode !== 'forgot' && (
                 <div className="relative">
-                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                   <input
                     type={showPass ? 'text' : 'password'}
                     placeholder={t('password')}
@@ -318,7 +327,7 @@ export function AuthScreen({
                     disabled={loading}
                   />
                   <button type="button" tabIndex={-1}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors" style={{ color: colors.textMuted }}
                     onClick={() => setShowPass(v => !v)}>
                     {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
@@ -328,7 +337,7 @@ export function AuthScreen({
               {/* Confirm password (signup only) */}
               {mode === 'signup' && (
                 <div className="relative">
-                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textMuted }} />
                   <input
                     type={showPass ? 'text' : 'password'}
                     placeholder={t('confirmNewPassword')}
@@ -357,10 +366,11 @@ export function AuthScreen({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer disabled:opacity-60"
+            className="w-full py-4 rounded-2xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer disabled:opacity-60"
             style={{
               background: loading ? `${colors.accent}80` : colors.accent,
-              boxShadow: loading ? 'none' : `0 4px 20px ${colors.accent}40`,
+              boxShadow: loading ? 'none' : `0 6px 24px ${colors.accent}45`,
+              letterSpacing: '0.01em',
             }}
           >
             {loading && <Loader2 size={15} className="animate-spin" />}

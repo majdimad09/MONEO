@@ -28,8 +28,8 @@ function getMonthPrefix() {
 function getProgressColor(pct: number): string {
   if (pct >= 100) return '#ef4444';
   if (pct >= 80) return '#f97316';
-  if (pct >= 60) return '#eab308';
-  return '#3b82f6';
+  if (pct >= 60) return '#f59e0b';
+  return '#10b981';
 }
 
 export const BudgetScreen: React.FC<BudgetScreenProps> = ({
@@ -130,15 +130,15 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Wallet size={17} style={{ color: '#60a5fa' }} />
+              style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}30` }}>
+              <Wallet size={17} style={{ color: colors.accent }} />
             </div>
             <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('monthlyBudgetLabel')}</p>
           </div>
           <button
             onClick={() => { setEditBudget(v => !v); setBudgetInput(monthlyBudget > 0 ? String(monthlyBudget) : ''); }}
             className="text-xs font-semibold cursor-pointer px-2 py-1 rounded-lg"
-            style={{ background: 'rgba(59,130,246,0.08)', color: '#60a5fa' }}
+            style={{ background: colors.accentSoft, color: colors.accent }}
           >
             {monthlyBudget > 0 ? t('edit') : t('setBudget')}
           </button>
@@ -157,7 +157,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             />
             <div className="flex gap-2">
               <button onClick={handleSaveBudget}
-                className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-1.5">
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer flex items-center justify-center gap-1.5">
                 <Check size={15} /> {t('save')}
               </button>
               <button onClick={() => setEditBudget(false)}
@@ -222,13 +222,13 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
           <div
             className="rounded-2xl p-5 text-center"
             style={{
-              background: isDark ? 'rgba(59,130,246,0.1)' : 'rgba(59,130,246,0.04)',
-              border: isDark ? '1px solid rgba(59,130,246,0.25)' : '1px solid rgba(59,130,246,0.12)',
+              background: colors.accentSoft,
+              border: `1px solid ${colors.accent}25`,
             }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
-              style={{ background: 'rgba(59,130,246,0.12)' }}>
-              <Wallet size={20} style={{ color: '#60a5fa' }} />
+              style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}30` }}>
+              <Wallet size={20} style={{ color: colors.accent }} />
             </div>
             <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('noBudgetSet')}</p>
             <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{t('setBudgetHint')}</p>
@@ -244,7 +244,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             <button
               onClick={() => { setShowAddLimit(true); setEditingLimit(null); setLimitCategory(availableCats[0]?.name || ''); setLimitAmount(''); }}
               className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-2 py-1 rounded-lg"
-              style={{ background: 'rgba(59,130,246,0.08)', color: '#60a5fa' }}
+              style={{ background: colors.accentSoft, color: colors.accent }}
             >
               <Plus size={13} /> {t('addCategoryLimit')}
             </button>
@@ -290,7 +290,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             {limitError && <p className="text-xs text-red-400 flex items-center gap-1"><AlertTriangle size={12} />{limitError}</p>}
             <div className="flex gap-2">
               <button onClick={handleAddLimit}
-                className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-1.5">
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer flex items-center justify-center gap-1.5">
                 <Check size={15} /> {editingLimit ? t('save') : t('add')}
               </button>
               <button onClick={cancelAddLimit}
@@ -305,8 +305,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
         {categoryLimits.length === 0 && !showAddLimit ? (
           <div className="card-dark rounded-2xl px-4 py-5 flex items-start gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'rgba(96,165,250,0.1)' }}>
-              <Target size={17} style={{ color: '#60a5fa' }} />
+              style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}25` }}>
+              <Target size={17} style={{ color: colors.accent }} />
             </div>
             <div>
               <p className="text-sm font-bold mb-1" style={{ color: colors.textPrimary }}>{t('categoryLimitsTitle')}</p>
@@ -380,8 +380,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             style={{ borderBottom: `1px solid ${colors.divider}` }}
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)' }}>
-              <RefreshCw size={17} style={{ color: '#60a5fa' }} />
+              style={{ background: colors.brandSoft, border: `1px solid ${colors.brand}25` }}>
+              <RefreshCw size={17} style={{ color: colors.brand }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('recurringPaymentsTitle')}</p>

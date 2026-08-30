@@ -43,8 +43,8 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
           <h2 className="text-base font-bold" style={{ color: colors.textPrimary }}>{t('addTransaction')}</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-600 transition-colors cursor-pointer"
-            style={{ background: colors.bgCard }}
+            className="w-8 h-8 flex items-center justify-center rounded-xl transition-colors cursor-pointer"
+            style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}`, color: colors.textSecondary }}
           >
             <X size={16} />
           </button>

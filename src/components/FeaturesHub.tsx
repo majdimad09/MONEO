@@ -42,7 +42,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
   {
     titleKey: 'sectionMoney',
     cards: [
-      { icon: Wallet,       iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  labelKey: 'budget',              descKey: 'descBudget',           view: 'budget' },
+      { icon: Wallet,       iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',  labelKey: 'budget',              descKey: 'descBudget',           view: 'budget' },
       { icon: Repeat,       iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featRecurring',       descKey: 'descRecurring',        view: 'recurring' },
       { icon: PiggyBank,    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'savingGoalsTitle',    descKey: 'descSavingsGoals',     view: 'savings' },
       { icon: DollarSign,   iconColor: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',  labelKey: 'featRecurringIncome', descKey: 'descRecurringIncome',  view: 'recurring-income' },
@@ -51,8 +51,8 @@ const SECTION_CONFIGS: SectionConfig[] = [
   {
     titleKey: 'sectionAnalytics',
     cards: [
-      { icon: BarChart2,   iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  labelKey: 'statisticsTitle',      descKey: 'descStatistics',       view: 'statistics' },
-      { icon: ShieldCheck, iconColor: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)',  labelKey: 'moneoScore',           descKey: 'descMoneoScore',       view: 'moneo-score' },
+      { icon: BarChart2,   iconColor: '#818cf8', iconBg: 'rgba(129,140,248,0.12)', labelKey: 'statisticsTitle',      descKey: 'descStatistics',       view: 'statistics' },
+      { icon: ShieldCheck, iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',  labelKey: 'moneoScore',           descKey: 'descMoneoScore',       view: 'moneo-score' },
       { icon: GitBranch,   iconColor: '#f97316', iconBg: 'rgba(249,115,22,0.12)',  labelKey: 'spendingPatternsTitle',descKey: 'descSpendingPatterns', view: 'spending-patterns', premium: true },
       { icon: BookOpen,    iconColor: '#c084fc', iconBg: 'rgba(192,132,252,0.12)', labelKey: 'monthlyStoryTitle',    descKey: 'descMoneyStory',       view: 'money-story', premium: true },
     ],
@@ -61,7 +61,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
     titleKey: 'sectionPlanningTools',
     cards: [
       { icon: Zap,         iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'safeToSpend',         descKey: 'descSafeToSpend',      view: 'safe-to-spend' },
-      { icon: CalendarDays,iconColor: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  labelKey: 'featTimeline',        descKey: 'descTimeline',         view: 'activity' },
+      { icon: CalendarDays,iconColor: '#818cf8', iconBg: 'rgba(129,140,248,0.12)', labelKey: 'featTimeline',        descKey: 'descTimeline',         view: 'activity' },
       { icon: TrendingUp,  iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',  labelKey: 'featWhatIf',          descKey: 'descWhatIf',           view: 'what-if', premium: true },
       { icon: Target,      iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featProjectionShort', descKey: 'descProjection',       view: 'projection', premium: true },
     ],
@@ -200,7 +200,7 @@ const FeatureCardButton: React.FC<{
         {card.badge ? (
           <span
             className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
-            style={{ background: 'rgba(59,130,246,0.09)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}
+            style={{ background: 'rgba(16,185,129,0.09)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}
           >
             {card.badge}
           </span>

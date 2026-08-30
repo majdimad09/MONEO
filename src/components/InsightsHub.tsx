@@ -34,7 +34,7 @@ function getInsightColors(isDark: boolean): Record<InsightType, { bg: string; bo
   return {
     positive: { bg: isDark ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.06)', border: isDark ? 'rgba(16,185,129,0.28)' : 'rgba(16,185,129,0.16)', icon: '#10b981', accent: '#10b981' },
     warning:  { bg: isDark ? 'rgba(239,68,68,0.12)'  : 'rgba(239,68,68,0.05)',  border: isDark ? 'rgba(239,68,68,0.28)'  : 'rgba(239,68,68,0.15)',  icon: '#ef4444', accent: '#ef4444' },
-    neutral:  { bg: isDark ? 'rgba(59,130,246,0.12)' : 'rgba(59,130,246,0.05)', border: isDark ? 'rgba(59,130,246,0.28)' : 'rgba(59,130,246,0.15)', icon: '#3b82f6', accent: '#3b82f6' },
+    neutral:  { bg: isDark ? 'rgba(129,140,248,0.12)' : 'rgba(129,140,248,0.05)', border: isDark ? 'rgba(129,140,248,0.28)' : 'rgba(129,140,248,0.15)', icon: '#818cf8', accent: '#818cf8' },
     info:     { bg: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(139,92,246,0.06)', border: isDark ? 'rgba(139,92,246,0.28)' : 'rgba(139,92,246,0.16)', icon: '#8b5cf6', accent: '#8b5cf6' },
   };
 }
@@ -51,7 +51,7 @@ interface ToolConfig {
 
 const TOOL_CONFIGS: ToolConfig[] = [
   { view: 'safe-to-spend',     icon: Zap,           color: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'safeToSpend',         descKey: 'descSafeToSpend' },
-  { view: 'statistics',        icon: BarChart2,      color: '#60a5fa', iconBg: 'rgba(96,165,250,0.12)',  labelKey: 'statisticsTitle',     descKey: 'descStatistics' },
+  { view: 'statistics',        icon: BarChart2,      color: '#818cf8', iconBg: 'rgba(129,140,248,0.12)', labelKey: 'statisticsTitle',     descKey: 'descStatistics' },
   { view: 'what-if',           icon: TrendingUp,     color: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featWhatIf',          descKey: 'descWhatIf',       premium: true },
   { view: 'spending-patterns', icon: GitBranch,      color: '#f97316', iconBg: 'rgba(249,115,22,0.12)',  labelKey: 'spendingPatternsTitle',descKey: 'descSpendingPatterns', premium: true },
   { view: 'projection',        icon: Sparkles,       color: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',  labelKey: 'featProjectionShort', descKey: 'descProjection',   premium: true },

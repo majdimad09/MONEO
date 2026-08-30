@@ -161,9 +161,9 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
                     <div
                       className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg"
                       style={{
-                        background: date === today() ? 'rgba(59,130,246,0.15)' : colors.bgSecondary,
-                        color: date === today() ? '#60a5fa' : colors.textSecondary,
-                        border: `1px solid ${date === today() ? 'rgba(59,130,246,0.3)' : colors.borderStrong}`,
+                        background: date === today() ? colors.accentSoft : colors.bgSecondary,
+                        color: date === today() ? colors.accent : colors.textSecondary,
+                        border: `1px solid ${date === today() ? colors.accent + '40' : colors.borderStrong}`,
                       }}
                     >
                       {formatEventDate(date, t('todayLabel'), t('tomorrowLabel'))}

@@ -6,8 +6,8 @@ import {
 } from 'lucide-react';
 
 const BRAND_FONT = "'Paytone One', 'Fredoka One', Impact, system-ui, sans-serif";
-const GREEN = '#22c55e';
-const GREEN_DIM = '#16a34a';
+const GREEN = '#10b981';
+const GREEN_DIM = '#059669';
 const DARK_BG = '#070709';
 const CARD_BG = '#111115';
 const CARD_BORDER = 'rgba(255,255,255,0.08)';
@@ -56,7 +56,7 @@ const UnderstandMockup: React.FC = () => (
       <MiniLabel>Total Balance</MiniLabel>
       <MiniAmount>$4,280</MiniAmount>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
-        <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 10, padding: '8px 10px' }}>
+        <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 10, padding: '8px 10px' }}>
           <p style={{ fontSize: 8, color: GREEN, fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>↑ Income</p>
           <p style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>$5,800</p>
         </div>
@@ -257,7 +257,7 @@ const CommunityMockup: React.FC = () => (
             marginLeft: i ? -8 : 0,
           }}>{e}</div>
         ))}
-        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(34,197,94,0.2)', border: '2px solid #1a1a20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: GREEN, fontWeight: 700, marginLeft: -8 }}>+4</div>
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(16,185,129,0.2)', border: '2px solid #1a1a20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: GREEN, fontWeight: 700, marginLeft: -8 }}>+4</div>
       </div>
       <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>7 members</span>
     </div>
@@ -267,7 +267,7 @@ const CommunityMockup: React.FC = () => (
         { name: 'Sara', score: 87, rank: '🥈' },
         { name: 'You', score: 82, rank: '🥉', you: true },
       ].map(m => (
-        <div key={m.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', background: m.you ? 'rgba(34,197,94,0.08)' : 'transparent', borderRadius: 8, border: m.you ? '1px solid rgba(34,197,94,0.2)' : 'none' }}>
+        <div key={m.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', background: m.you ? 'rgba(16,185,129,0.08)' : 'transparent', borderRadius: 8, border: m.you ? '1px solid rgba(16,185,129,0.2)' : 'none' }}>
           <span style={{ fontSize: 12 }}>{m.rank}</span>
           <span style={{ flex: 1, fontSize: 10, fontWeight: 700, color: m.you ? GREEN : '#ccc' }}>{m.name}</span>
           <span style={{ fontSize: 10, fontWeight: 800, color: '#fff' }}>{m.score}</span>
@@ -374,7 +374,7 @@ const HeroSection: React.FC<{ onNext: () => void }> = ({ onNext }) => {
         width: 320,
         height: 320,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(34,197,94,0.09) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -394,7 +394,7 @@ const HeroSection: React.FC<{ onNext: () => void }> = ({ onNext }) => {
           borderRadius: 24,
           background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 40px rgba(34,197,94,0.3), 0 8px 24px rgba(0,0,0,0.4)',
+          boxShadow: '0 0 40px rgba(16,185,129,0.3), 0 8px 24px rgba(0,0,0,0.4)',
         }}>
           <span style={{ fontSize: 36, fontWeight: 900, color: '#fff', fontFamily: BRAND_FONT, letterSpacing: '-0.04em' }}>M</span>
         </div>
@@ -608,7 +608,7 @@ const CTASection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void }
         width: 280,
         height: 280,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -658,7 +658,7 @@ const CTASection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void }
               background: `linear-gradient(135deg, ${GREEN} 0%, ${GREEN_DIM} 100%)`,
               color: '#050505', fontSize: 16, fontWeight: 800,
               cursor: 'pointer', letterSpacing: '-0.01em',
-              boxShadow: `0 4px 20px rgba(34,197,94,0.35)`,
+              boxShadow: `0 4px 20px rgba(16,185,129,0.35)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}
           >

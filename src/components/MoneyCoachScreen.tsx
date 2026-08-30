@@ -30,7 +30,7 @@ function getColors(isDark: boolean): Record<InsightType, { bg: string; border: s
   return {
     positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.08)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.2)',   icon: '#34d399', text: '#6ee7b7' },
     warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.07)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.2)',    icon: '#f87171', text: '#fca5a5' },
-    neutral:  { bg: isDark ? 'rgba(59,130,246,0.15)'  : 'rgba(59,130,246,0.07)',  border: isDark ? 'rgba(59,130,246,0.30)'  : 'rgba(59,130,246,0.18)',  icon: '#60a5fa', text: '#93c5fd' },
+    neutral:  { bg: isDark ? 'rgba(129,140,248,0.15)' : 'rgba(129,140,248,0.07)', border: isDark ? 'rgba(129,140,248,0.30)' : 'rgba(129,140,248,0.18)', icon: '#818cf8', text: '#c7d2fe' },
     info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.2)',   icon: '#a78bfa', text: '#c4b5fd' },
   };
 }
@@ -167,7 +167,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
                 className="progress-fill"
                 style={{
                   width: `${Math.min(budgetPct, 100)}%`,
-                  background: budgetPct >= 100 ? '#ef4444' : budgetPct >= 80 ? '#f97316' : '#3b82f6',
+                  background: budgetPct >= 100 ? '#ef4444' : budgetPct >= 80 ? '#f97316' : '#10b981',
                 }}
               />
             </div>

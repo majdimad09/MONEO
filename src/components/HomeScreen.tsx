@@ -41,10 +41,10 @@ function getCurrentMonthPrefix(): string {
 }
 
 function getBarColor(pct: number): string {
-  if (pct >= 100) return '#f43f5e';
+  if (pct >= 100) return '#ef4444';
   if (pct >= 80) return '#f97316';
   if (pct >= 60) return '#f59e0b';
-  return '#22c55e';
+  return '#10b981';
 }
 
 const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
@@ -113,30 +113,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     <div className="page-enter">
 
       {/* ── HEADER ─────────────────────────────────────────────── */}
-      <div className="flex items-center gap-3 px-5 pt-5 pb-2">
-        {/* Avatar */}
+      <div className="flex items-center gap-3 px-5 pt-5 pb-3">
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+          className="w-10 h-10 rounded-2xl flex items-center justify-center text-[13px] font-bold flex-shrink-0"
           style={{
-            background: isDark ? 'rgba(34,197,94,0.15)' : 'rgba(5,150,105,0.10)',
+            background: isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.10)',
             color: colors.accent,
-            border: `1px solid ${colors.accent}30`,
+            border: `1.5px solid ${colors.accent}35`,
           }}
         >
           {initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest leading-none" style={{ color: colors.textMuted }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest leading-none" style={{ color: colors.textMuted }}>
             {monthLabel}
           </p>
-          <p className="text-[15px] font-bold leading-tight mt-0.5 truncate" style={{ color: colors.textPrimary }}>
+          <p className="text-[16px] font-bold leading-tight mt-0.5 truncate" style={{ color: colors.textPrimary, letterSpacing: '-0.01em' }}>
             {greeting}
           </p>
         </div>
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer transition-all flex-shrink-0"
+          className="w-10 h-10 rounded-2xl flex items-center justify-center cursor-pointer transition-all flex-shrink-0"
           style={{
             background: colors.bgSecondary,
             border: `1px solid ${colors.border}`,
@@ -149,112 +148,115 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </div>
 
       {/* ── BALANCE HERO CARD ───────────────────────────────────── */}
-      <div className="px-4 pt-2 pb-3 stagger-1">
+      <div className="px-4 pt-1 pb-3 stagger-1">
         <div
           style={{
-            background: isDark
-              ? 'linear-gradient(145deg, #111115 0%, #17181e 60%, #0e1410 100%)'
-              : 'linear-gradient(145deg, #111 0%, #1a1a1a 100%)',
-            borderRadius: 22,
-            padding: '20px 18px 16px',
+            background: 'linear-gradient(145deg, #0e0e16 0%, #181826 55%, #0f1814 100%)',
+            borderRadius: 24,
+            padding: '22px 20px 18px',
             position: 'relative',
             overflow: 'hidden',
-            border: '1px solid rgba(255,255,255,0.07)',
-            boxShadow: isDark
-              ? '0 4px 24px rgba(0,0,0,0.5)'
-              : '0 8px 32px rgba(0,0,0,0.25)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.35), 0 2px 0 rgba(255,255,255,0.04) inset',
           }}
         >
-          {/* Subtle green glow top-right */}
+          {/* Green glow top-right */}
           <div style={{
-            position: 'absolute', top: -40, right: -40,
-            width: 160, height: 160, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34,197,94,0.14) 0%, transparent 65%)',
+            position: 'absolute', top: -60, right: -60,
+            width: 220, height: 220, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 62%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Subtle bottom-left secondary glow */}
+          <div style={{
+            position: 'absolute', bottom: -40, left: -30,
+            width: 140, height: 140, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
 
-          {/* Balance label */}
-          <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>
-            {t('totalBalance')}
-          </p>
+          {/* Balance label + month badge row */}
+          <div className="flex items-center justify-between mb-1.5">
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: 'rgba(255,255,255,0.4)' }}>
+              {t('totalBalance')}
+            </p>
+            {transactions.length > 0 && (
+              <span
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 3,
+                  fontSize: 10, fontWeight: 700,
+                  color: monthNet >= 0 ? '#34d399' : '#f87171',
+                  background: monthNet >= 0 ? 'rgba(52,211,153,0.12)' : 'rgba(248,113,113,0.12)',
+                  border: `1px solid ${monthNet >= 0 ? 'rgba(52,211,153,0.28)' : 'rgba(248,113,113,0.28)'}`,
+                  borderRadius: 99, padding: '2px 7px',
+                }}
+              >
+                {monthNet >= 0 ? <ArrowUpRight size={9} /> : <ArrowDownRight size={9} />}
+                {monthNet >= 0 ? '+' : ''}{formatCurrency(Math.abs(monthNet), currency)}
+              </span>
+            )}
+          </div>
 
           {/* Big balance number */}
-          <div className="flex items-baseline gap-2 mb-1">
+          <div className="mb-5">
             <span
               style={{
-                fontSize: 40,
+                fontSize: 44,
                 fontWeight: 900,
                 letterSpacing: '-0.04em',
                 lineHeight: 1,
-                color: isPositive ? '#ffffff' : '#f43f5e',
+                color: isPositive ? '#ffffff' : '#f87171',
                 fontFeatureSettings: '"tnum"',
+                display: 'block',
               }}
             >
               {isPositive ? '' : '−'}{formatCurrency(Math.abs(balance), currency)}
             </span>
           </div>
 
-          {/* Month net badge */}
-          {transactions.length > 0 && (
-            <div className="flex items-center gap-1.5 mb-4">
-              <span
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 4,
-                  fontSize: 11, fontWeight: 700,
-                  color: monthNet >= 0 ? '#4ade80' : '#f87171',
-                  background: monthNet >= 0 ? 'rgba(74,222,128,0.13)' : 'rgba(248,113,113,0.13)',
-                  border: `1px solid ${monthNet >= 0 ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
-                  borderRadius: 99, padding: '2px 8px',
-                }}
-              >
-                {monthNet >= 0 ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
-                {monthNet >= 0 ? '+' : ''}{formatCurrency(monthNet, currency)} {t('thisMonth')}
-              </span>
-            </div>
-          )}
-          {transactions.length === 0 && <div style={{ height: 16, marginBottom: 16 }} />}
-
           {/* Income / Expenses / Add row */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'stretch' }}>
-            {/* Income */}
-            <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)', borderRadius: 14, padding: '10px 12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
-                <ArrowUpRight size={11} color="#4ade80" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#4ade80' }}>
+            {/* Income sub-card */}
+            <div style={{ background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.22)', borderRadius: 14, padding: '11px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
+                <ArrowUpRight size={11} color="#34d399" />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#34d399' }}>
                   {t('income')}
                 </span>
               </div>
-              <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
+              <p style={{ fontSize: 15, fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
                 {formatCurrency(thisMonthIncome, currency)}
               </p>
             </div>
 
-            {/* Expenses */}
-            <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)', borderRadius: 14, padding: '10px 12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
+            {/* Expenses sub-card */}
+            <div style={{ background: 'rgba(248,113,113,0.09)', border: '1px solid rgba(248,113,113,0.18)', borderRadius: 14, padding: '11px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
                 <ArrowDownRight size={11} color="#f87171" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#f87171' }}>
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#f87171' }}>
                   {t('expenses')}
                 </span>
               </div>
-              <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
+              <p style={{ fontSize: 15, fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', fontFeatureSettings: '"tnum"' }}>
                 {formatCurrency(thisMonthExpenses, currency)}
               </p>
             </div>
 
-            {/* Add button */}
+            {/* Add button (44px touch target) */}
             <button
               onClick={onAddExpense}
+              aria-label="Add transaction"
               style={{
-                width: 52, borderRadius: 14,
-                background: 'rgba(34,197,94,0.18)',
-                border: '1px solid rgba(34,197,94,0.3)',
+                width: 54, minHeight: 54, borderRadius: 14,
+                background: 'linear-gradient(145deg, rgba(16,185,129,0.25) 0%, rgba(16,185,129,0.14) 100%)',
+                border: '1px solid rgba(16,185,129,0.35)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
                 cursor: 'pointer', flexShrink: 0,
+                boxShadow: '0 2px 8px rgba(16,185,129,0.20)',
               }}
             >
-              <Plus size={20} color="#22c55e" strokeWidth={2.5} />
-              <span style={{ fontSize: 9, fontWeight: 700, color: '#22c55e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Add</span>
+              <Plus size={20} color="#10b981" strokeWidth={2.5} />
+              <span style={{ fontSize: 9, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Add</span>
             </button>
           </div>
         </div>
@@ -264,33 +266,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="px-4 pb-2 stagger-3">
         <button
           onClick={onNavigateScore}
-          className="w-full text-left cursor-pointer"
+          className="w-full text-left cursor-pointer active:scale-[0.98] transition-transform"
           style={{
-            borderRadius: 20,
-            padding: '14px 16px',
+            borderRadius: 22,
+            padding: '16px 18px',
             background: isDark
-              ? `linear-gradient(135deg, ${level.color}14 0%, transparent 100%)`
-              : `linear-gradient(135deg, ${level.color}10 0%, transparent 100%)`,
-            border: `1px solid ${level.color}30`,
-            display: 'flex', alignItems: 'center', gap: 14,
-            transition: 'all 0.2s ease',
+              ? `linear-gradient(135deg, ${level.color}18 0%, rgba(22,22,31,0.8) 100%)`
+              : `linear-gradient(135deg, ${level.color}12 0%, rgba(255,255,255,0.9) 100%)`,
+            border: `1px solid ${level.color}35`,
+            boxShadow: isDark ? `0 2px 16px ${level.color}12` : `0 2px 12px ${level.color}10`,
+            display: 'flex', alignItems: 'center', gap: 16,
           }}
         >
-          {/* Score ring — larger and more prominent */}
-          <div style={{ position: 'relative', flexShrink: 0, width: 62, height: 62 }}>
-            <svg width={62} height={62} style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx={31} cy={31} r={26} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={5} />
-              <circle cx={31} cy={31} r={26} fill="none"
-                stroke={level.color} strokeWidth={5} strokeLinecap="round"
-                strokeDasharray={2 * Math.PI * 26}
+          {/* Score ring — 70px, glowing */}
+          <div style={{ position: 'relative', flexShrink: 0, width: 70, height: 70 }}>
+            <svg width={70} height={70} style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx={35} cy={35} r={29} fill="none"
+                stroke={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)'}
+                strokeWidth={6} />
+              <circle cx={35} cy={35} r={29} fill="none"
+                stroke={level.color} strokeWidth={6} strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 29}
                 strokeDashoffset={scoreResult.hasEnoughData
-                  ? 2 * Math.PI * 26 * (1 - scoreResult.score / 100)
-                  : 2 * Math.PI * 26}
-                style={{ filter: `drop-shadow(0 0 6px ${level.color}70)`, transition: 'stroke-dashoffset 1.2s ease' }}
+                  ? 2 * Math.PI * 29 * (1 - scoreResult.score / 100)
+                  : 2 * Math.PI * 29}
+                style={{
+                  filter: `drop-shadow(0 0 8px ${level.color}80)`,
+                  transition: 'stroke-dashoffset 1.3s cubic-bezier(0.34,1.2,0.64,1)',
+                }}
               />
             </svg>
             <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.04em', color: level.color, lineHeight: 1 }}>
+              <span style={{ fontSize: 20, fontWeight: 900, letterSpacing: '-0.04em', color: level.color, lineHeight: 1 }}>
                 {scoreResult.hasEnoughData ? scoreResult.score : '?'}
               </span>
             </div>
@@ -298,15 +305,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Label + status */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: colors.textMuted, marginBottom: 3 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: colors.textMuted, marginBottom: 4 }}>
               {t('moneoScore')}
             </p>
-            <p style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.02em', color: scoreResult.hasEnoughData ? level.color : colors.textSecondary, lineHeight: 1.15, marginBottom: 3 }}>
+            <p style={{ fontSize: 19, fontWeight: 900, letterSpacing: '-0.02em', color: scoreResult.hasEnoughData ? level.color : colors.textSecondary, lineHeight: 1.1, marginBottom: 4 }}>
               {scoreResult.hasEnoughData ? level.name : t('buildYourScore')}
             </p>
-            <p style={{ fontSize: 11, color: colors.textMuted, lineHeight: 1.4 }}>
+            <p style={{ fontSize: 11, color: colors.textMuted, lineHeight: 1.45 }}>
               {scoreResult.hasEnoughData
-                ? (scoreResult.summary.length > 55 ? scoreResult.summary.slice(0, 55) + '…' : scoreResult.summary)
+                ? (scoreResult.summary.length > 60 ? scoreResult.summary.slice(0, 60) + '…' : scoreResult.summary)
                 : t('addMoreTransactions')}
             </p>
           </div>
@@ -316,39 +323,41 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {/* ── BUDGET STRIP ────────────────────────────────────────── */}
       {monthlyBudget > 0 && (
-        <div className="px-5 pt-3 pb-1 stagger-4">
+        <div className="px-4 pt-2 pb-1 stagger-4">
           <button
             onClick={onNavigateBudget}
-            className="w-full rounded-2xl p-4 text-left cursor-pointer transition-all"
+            className="w-full rounded-2xl p-4 text-left cursor-pointer active:scale-[0.99] transition-transform"
             style={{ background: colors.bgCard, border: `1px solid ${colors.border}` }}
           >
-            <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Wallet size={14} style={{ color: colors.textMuted }} />
-                <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: colors.textMuted }}>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ background: isDark ? `${barColor}20` : `${barColor}12` }}>
+                  <Wallet size={14} style={{ color: barColor }} />
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
                   {t('budget')}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[12px] font-bold" style={{ color: barColor }}>
+              <div className="flex items-center gap-1.5">
+                {budgetPct >= 80 && <AlertTriangle size={12} style={{ color: barColor }} />}
+                <span className="text-[13px] font-bold" style={{ color: barColor }}>
                   {Math.min(budgetPct, 999).toFixed(0)}%
                 </span>
-                {budgetPct >= 80 && (
-                  <AlertTriangle size={12} style={{ color: barColor }} />
-                )}
               </div>
             </div>
+            {/* Thick progress bar */}
             <div
-              className="h-[5px] rounded-full overflow-hidden mb-2"
-              style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)' }}
+              className="rounded-full overflow-hidden mb-3"
+              style={{ height: 8, background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)' }}
             >
               <div
                 className="h-full rounded-full"
                 style={{
                   width: `${Math.min(budgetPct, 100)}%`,
                   background: barColor,
-                  boxShadow: `0 0 6px ${barColor}50`,
-                  transition: 'width 0.9s ease',
+                  boxShadow: `0 0 8px ${barColor}55`,
+                  transition: 'width 1s cubic-bezier(0.34,1.2,0.64,1)',
                 }}
               />
             </div>
@@ -356,7 +365,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="text-[11px]" style={{ color: colors.textSecondary }}>
                 {formatCurrency(thisMonthExpenses, currency)} {t('spent').toLowerCase()}
               </span>
-              <span className="text-[11px]" style={{ color: budgetRemaining < 0 ? colors.negative : colors.textSecondary }}>
+              <span className="text-[11px] font-semibold" style={{ color: budgetRemaining < 0 ? colors.negative : colors.positive }}>
                 {budgetRemaining >= 0
                   ? `${formatCurrency(budgetRemaining, currency)} ${t('remaining').toLowerCase()}`
                   : `${formatCurrency(Math.abs(budgetRemaining), currency)} ${t('overBudget').toLowerCase()}`}

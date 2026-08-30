@@ -39,9 +39,6 @@ function getWeekRange(offset: number): { start: Date; end: Date; label: string }
   const label = offset === 0 ? 'This week' : offset === -1 ? 'Last week' : `${fmt(monday)} – ${fmt(sunday)}`;
   return { start: monday, end: sunday, label };
 }
-function getYearLabel(offset: number): string {
-  return String(new Date().getFullYear() + offset);
-}
 
 export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions, currency }) => {
   const { isDark, colors } = useTheme();
@@ -55,7 +52,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
   const months = useMemo(() => getAvailableMonths(transactions), [transactions]);
   const currentMonthPrefix = getMonthPrefix(new Date());
 
-  // ── Filter transactions by view mode ──────────────────────────────
   const { filteredTx, prevFilteredTx, periodLabel, prevLabel } = useMemo(() => {
     let filtered: Transaction[] = [];
     let prevFiltered: Transaction[] = [];
@@ -109,7 +105,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
   const diff = totalExpenses - prevExpenses;
   const diffPct = prevExpenses > 0 ? ((totalExpenses - prevExpenses) / prevExpenses) * 100 : 0;
 
-  // ── Selected category breakdown ───────────────────────────────────
   const selectedCatTx = useMemo(() => {
     if (!selectedCat) return [];
     return filteredTx.filter(t => t.type === 'expense' && t.category === selectedCat)
@@ -117,7 +112,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       .slice(0, 8);
   }, [filteredTx, selectedCat]);
 
-  // ── Unusual spending alerts ───────────────────────────────────────
   const alerts = useMemo(() => {
     if (viewMode !== 'month' || months[monthIdx] !== currentMonthPrefix) return [];
     const monthCatMap: Record<string, Record<string, number>> = {};
@@ -142,7 +136,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     return result.sort((a, b) => b.excessPct - a.excessPct).slice(0, 3);
   }, [transactions, viewMode, monthIdx, months, currentMonthPrefix]);
 
-  // ── Donut slices ──────────────────────────────────────────────────
   const donutSlices = useMemo(() => {
     if (totalExpenses === 0 || !categoryData.length) return [];
     const radius = 90, inner = 58, cx = 100, cy = 100;
@@ -167,7 +160,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     });
   }, [categoryData, totalExpenses]);
 
-  // ── Navigation helpers ────────────────────────────────────────────
   const canGoPrev = viewMode === 'month' ? monthIdx < months.length - 1 : viewMode === 'week' ? true : yearOffset > -5;
   const canGoNext = viewMode === 'month' ? monthIdx > 0 : viewMode === 'week' ? weekOffset < 0 : yearOffset < 0;
   const handlePrev = () => {
@@ -181,15 +173,17 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
     else setYearOffset(y => y + 1);
   };
 
-  // ── Monthly recap (for past months) ──────────────────────────────
   const isCurrentPeriod = viewMode === 'month' && months[monthIdx] === currentMonthPrefix;
   const prevMonthForRecap = !isCurrentPeriod && viewMode === 'month' ? months[monthIdx] : null;
+
+  // suppress unused variable warnings
+  void expenses;
 
   return (
     <div className="page-enter px-4 pt-3 pb-6 space-y-4">
 
       {/* ── VIEW MODE TABS ──────────────────────────── */}
-      <div className="flex p-1 gap-1 rounded-2xl card-float-1" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
+      <div className="flex p-1 gap-1 rounded-2xl" style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}>
         {(['week', 'month', 'year'] as ViewMode[]).map(m => (
           <button key={m} onClick={() => setViewMode(m)}
             className={`stat-filter-btn capitalize ${viewMode === m ? 'active' : ''}`}>
@@ -199,11 +193,11 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
       </div>
 
       {/* ── PERIOD NAVIGATION ──────────────────────── */}
-      <div className="flex items-center justify-between py-0.5 card-float-1">
+      <div className="flex items-center justify-between">
         <button onClick={handlePrev} disabled={!canGoPrev}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
           style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}>
-          <ChevronLeft size={16} className="text-slate-600" />
+          <ChevronLeft size={16} style={{ color: colors.textSecondary }} />
         </button>
         <div className="text-center">
           <p className="text-base font-bold" style={{ color: colors.textPrimary }}>{periodLabel}</p>
@@ -212,17 +206,33 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         <button onClick={handleNext} disabled={!canGoNext}
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-25 cursor-pointer"
           style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}>
-          <ChevronRight size={16} className="text-slate-600" />
+          <ChevronRight size={16} style={{ color: colors.textSecondary }} />
         </button>
       </div>
 
+      {/* ── INCOME / EXPENSES SUMMARY — shown above donut ── */}
+      {(income > 0 || totalExpenses > 0) && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl p-3.5" style={{ background: colors.positiveSoft, border: `1px solid ${colors.positive}28` }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: colors.positive }}>{t('income')}</p>
+            <p className="text-[15px] font-bold leading-tight" style={{ color: colors.positive }}>{formatCurrency(income, currency)}</p>
+            <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{periodLabel}</p>
+          </div>
+          <div className="rounded-2xl p-3.5" style={{ background: colors.negativeSoft, border: `1px solid ${colors.negative}28` }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: colors.negative }}>{t('expenses')}</p>
+            <p className="text-[15px] font-bold leading-tight" style={{ color: colors.negative }}>{formatCurrency(totalExpenses, currency)}</p>
+            <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{categoryData.length} {t('categories')}</p>
+          </div>
+        </div>
+      )}
+
       {/* ── DONUT CHART CARD ────────────────────────── */}
-      <div className="card-dark rounded-3xl p-5 card-float-2">
+      <div className="card-dark rounded-3xl p-5">
         {totalExpenses === 0 ? (
           <div className="flex flex-col items-center py-10 text-center">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <TrendingUp size={28} className="text-blue-400" />
+              style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}28` }}>
+              <TrendingUp size={28} style={{ color: colors.accent }} />
             </div>
             <p className="font-semibold text-sm" style={{ color: colors.textSecondary }}>{t('noExpensesYet')}</p>
             <p className="text-xs mt-1" style={{ color: colors.textMuted }}>{t('navigatePeriodHint')}</p>
@@ -231,7 +241,8 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
           <>
             <div className="donut-enter flex justify-center mb-4">
               <div className="relative" style={{ width: 210, height: 210 }}>
-                <svg viewBox="0 0 200 200" className="w-full h-full" style={{ filter: 'drop-shadow(0 0 20px rgba(59,130,246,0.1))' }}>
+                <svg viewBox="0 0 200 200" className="w-full h-full"
+                  style={{ filter: `drop-shadow(0 0 20px ${colors.brand}18)` }}>
                   {donutSlices.map((slice, i) => {
                     const isSelected = selectedCat === slice.category;
                     return (
@@ -239,7 +250,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         key={slice.category + i}
                         d={slice.d}
                         fill={slice.color}
-                        stroke="#ffffff"
+                        stroke={colors.bgPrimary}
                         strokeWidth={isSelected ? 1 : 3}
                         style={{
                           filter: isSelected ? `drop-shadow(0 0 8px ${slice.color}80)` : `drop-shadow(0 0 3px ${slice.color}30)`,
@@ -257,20 +268,20 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-4">
                   {selectedCat ? (
                     <>
-                      <span className="text-xs font-bold text-slate-400 mb-1">{selectedCat}</span>
-                      <span className="text-xl font-bold text-slate-900 leading-tight">
+                      <span className="text-xs font-bold mb-1" style={{ color: colors.textMuted }}>{selectedCat}</span>
+                      <span className="text-xl font-bold leading-tight" style={{ color: colors.textPrimary }}>
                         {formatCurrency(categoryData.find(c => c.category === selectedCat)?.total || 0, currency)}
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-1">
+                      <span className="text-[10px] mt-1" style={{ color: colors.textMuted }}>
                         {categoryData.find(c => c.category === selectedCat)?.percentage.toFixed(0)}% {t('ofSpending')}
                       </span>
                     </>
                   ) : (
                     <>
-                      <span className="text-xl font-bold text-slate-900 leading-tight">
+                      <span className="text-xl font-bold leading-tight" style={{ color: colors.textPrimary }}>
                         {formatCurrency(totalExpenses, currency)}
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-1">
+                      <span className="text-[10px] mt-1" style={{ color: colors.textMuted }}>
                         {income > 0 ? `${((totalExpenses / income) * 100).toFixed(0)}% ${t('ofIncome')}` : t('total')}
                       </span>
                     </>
@@ -282,20 +293,20 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
             {/* vs prev period pill */}
             {prevLabel && (
               <div className="flex justify-center mb-4">
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
-                  diff > 0 ? 'text-red-400' : diff < 0 ? 'text-green-400' : 'text-slate-400'
-                }`} style={{
-                  background: diff > 0
-                    ? (isDark ? 'rgba(239,68,68,0.18)'     : 'rgba(239,68,68,0.08)')
-                    : diff < 0
-                    ? (isDark ? 'rgba(16,185,129,0.16)'    : 'rgba(16,185,129,0.08)')
-                    : (isDark ? 'rgba(100,116,139,0.18)'   : 'rgba(100,116,139,0.08)'),
-                  border: diff > 0
-                    ? (isDark ? '1px solid rgba(239,68,68,0.32)'     : '1px solid rgba(239,68,68,0.2)')
-                    : diff < 0
-                    ? (isDark ? '1px solid rgba(16,185,129,0.3)'     : '1px solid rgba(16,185,129,0.2)')
-                    : (isDark ? '1px solid rgba(100,116,139,0.32)'   : '1px solid rgba(100,116,139,0.2)'),
-                }}>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+                  style={{
+                    color: diff > 0 ? colors.negative : diff < 0 ? colors.positive : colors.textMuted,
+                    background: diff > 0
+                      ? (isDark ? 'rgba(239,68,68,0.18)' : 'rgba(239,68,68,0.08)')
+                      : diff < 0
+                      ? (isDark ? 'rgba(16,185,129,0.16)' : 'rgba(16,185,129,0.08)')
+                      : (isDark ? 'rgba(100,116,139,0.18)' : 'rgba(100,116,139,0.08)'),
+                    border: diff > 0
+                      ? (isDark ? '1px solid rgba(239,68,68,0.32)' : '1px solid rgba(239,68,68,0.2)')
+                      : diff < 0
+                      ? (isDark ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(16,185,129,0.2)')
+                      : (isDark ? '1px solid rgba(100,116,139,0.32)' : '1px solid rgba(100,116,139,0.2)'),
+                  }}>
                   {diff > 0 ? <TrendingUp size={12} /> : diff < 0 ? <TrendingDown size={12} /> : <Minus size={12} />}
                   <span>{diff === 0 ? `Same as ${prevLabel}` : `${diff > 0 ? '+' : ''}${formatCurrency(Math.abs(diff), currency)} vs ${prevLabel}`}</span>
                   {diff !== 0 && prevExpenses > 0 && <span>({diff > 0 ? '+' : ''}{diffPct.toFixed(1)}%)</span>}
@@ -319,8 +330,8 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-semibold text-slate-600 truncate">{cat.category}</span>
-                        <span className="text-xs font-bold text-slate-800 font-mono ml-2 flex-shrink-0">
+                        <span className="text-xs font-semibold truncate" style={{ color: colors.textSecondary }}>{cat.category}</span>
+                        <span className="text-xs font-bold font-mono ml-2 flex-shrink-0" style={{ color: colors.textPrimary }}>
                           {formatCurrency(cat.total, currency)}
                         </span>
                       </div>
@@ -332,7 +343,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                         }} />
                       </div>
                     </div>
-                    <span className="text-[10px] text-slate-500 font-mono w-9 text-right flex-shrink-0">
+                    <span className="text-[10px] font-mono w-9 text-right flex-shrink-0" style={{ color: colors.textMuted }}>
                       {cat.percentage.toFixed(0)}%
                     </span>
                   </div>
@@ -348,7 +359,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
         <div className="card-dark rounded-2xl overflow-hidden expand-in">
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
             <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{selectedCat}</p>
-            <button onClick={() => setSelectedCat(null)} className="text-slate-500 cursor-pointer">
+            <button onClick={() => setSelectedCat(null)} style={{ color: colors.textMuted }} className="cursor-pointer">
               <X size={16} />
             </button>
           </div>
@@ -356,45 +367,29 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
             <div key={tx.id} className="flex items-center justify-between px-4 py-2.5"
               style={{ borderBottom: i < selectedCatTx.length - 1 ? `1px solid ${colors.divider}` : 'none' }}>
               <div>
-                <p className="text-[13px] font-semibold text-slate-700">{tx.description}</p>
-                <p className="text-[11px] text-slate-500">{formatDate(tx.date)}</p>
+                <p className="text-[13px] font-semibold" style={{ color: colors.textPrimary }}>{tx.description}</p>
+                <p className="text-[11px]" style={{ color: colors.textMuted }}>{formatDate(tx.date)}</p>
               </div>
-              <span className="text-sm font-bold text-red-400 font-mono">−{formatCurrency(tx.amount, currency)}</span>
+              <span className="text-sm font-bold font-mono" style={{ color: colors.negative }}>−{formatCurrency(tx.amount, currency)}</span>
             </div>
           ))}
         </div>
       )}
 
-      {/* ── INCOME / EXPENSES SUMMARY ───────────────── */}
-      {totalExpenses > 0 && (
-        <div className="grid grid-cols-2 gap-3 card-float-3">
-          <div className="card-dark rounded-2xl p-4">
-            <p className="text-[10px] uppercase tracking-wider font-bold mb-1.5" style={{ color: colors.textMuted }}>{t('income')}</p>
-            <p className="text-lg font-bold text-green-400">{formatCurrency(income, currency)}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">{periodLabel}</p>
-          </div>
-          <div className="card-dark rounded-2xl p-4">
-            <p className="text-[10px] uppercase tracking-wider font-bold mb-1.5" style={{ color: colors.textMuted }}>{t('expenses')}</p>
-            <p className="text-lg font-bold text-red-400">{formatCurrency(totalExpenses, currency)}</p>
-            <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{categoryData.length} {t('categories')}</p>
-          </div>
-        </div>
-      )}
-
       {/* ── MONTHLY RECAP (past months) ─────────────── */}
       {prevMonthForRecap && income > 0 && (
-        <div className="recap-card p-5 card-float-4">
+        <div className="recap-card p-5">
           <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: 'rgba(147,197,253,0.6)' }}>
             {getMonthLabel(prevMonthForRecap)} {t('recap')}
           </p>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { label: t('income'), val: income, color: '#34d399' },
-              { label: t('spent'), val: totalExpenses, color: '#f87171' },
-              { label: t('savedLabel'), val: Math.max(0, income - totalExpenses), color: '#60a5fa' },
+              { label: t('income'), val: income, color: colors.positive },
+              { label: t('spent'), val: totalExpenses, color: colors.negative },
+              { label: t('savedLabel'), val: Math.max(0, income - totalExpenses), color: colors.brand },
             ].map(({ label, val, color }) => (
               <div key={label} className="text-center">
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">{label}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: colors.textMuted }}>{label}</p>
                 <p className="text-sm font-bold leading-tight" style={{ color }}>{formatCurrency(val, currency)}</p>
               </div>
             ))}
@@ -404,9 +399,9 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
 
       {/* ── SPENDING ALERTS ─────────────────────────── */}
       {alerts.length > 0 && (
-        <div className="card-float-4">
+        <div>
           <div className="flex items-center gap-2 mb-3">
-            <Zap size={14} className="text-yellow-400" />
+            <Zap size={14} style={{ color: colors.amber }} />
             <h3 className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('spendingAlerts')}</h3>
           </div>
           <div className="space-y-2.5">
@@ -415,11 +410,11 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ transactions
                 style={{ background: isDark ? 'rgba(234,179,8,0.16)' : 'rgba(234,179,8,0.06)', border: isDark ? '1px solid rgba(234,179,8,0.32)' : '1px solid rgba(234,179,8,0.2)' }}>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.25)' }}>
-                  <AlertTriangle size={14} className="text-yellow-400" />
+                  <AlertTriangle size={14} style={{ color: colors.amber }} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-yellow-300">{alert.category} is {alert.excessPct.toFixed(0)}% above average</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-xs font-bold" style={{ color: colors.amber }}>{alert.category} is {alert.excessPct.toFixed(0)}% above average</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                     This month: {formatCurrency(alert.current, currency)} vs avg {formatCurrency(alert.avg, currency)}
                   </p>
                 </div>

@@ -130,13 +130,13 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#9ca3af' }}
+          style={{ color: colors.textMuted }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
           <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Ask Moneo</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>Query your finances in plain language</p>
+          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>Query your finances in plain language</p>
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle size={13} style={{ color: '#818cf8' }} />
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9ca3af' }}>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
               Suggested Questions
             </p>
           </div>
@@ -201,7 +201,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         {/* Conversation */}
         {messages.length > 0 && (
           <div className="space-y-4">
-            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
+            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
               Answers
             </p>
             {messages.map(({ q, a }, i) => (

@@ -24,7 +24,7 @@ interface PremiumFeature {
 const PREMIUM_FEATURES: PremiumFeature[] = [
   { icon: Brain,     color: '#a78bfa', label: 'Money Coach',            desc: 'Personalized observations from your real data' },
   { icon: Zap,       color: '#fbbf24', label: 'What If? Simulator',     desc: 'Simulate decisions before making them' },
-  { icon: TrendingUp,color: '#60a5fa', label: 'Future Projections',     desc: 'See where your finances are headed' },
+  { icon: TrendingUp,color: '#818cf8', label: 'Future Projections',     desc: 'See where your finances are headed' },
   { icon: GitBranch, color: '#f97316', label: 'Spending Pattern Analysis', desc: 'Detect trends in your spending habits' },
   { icon: BookOpen,  color: '#c084fc', label: 'Monthly Money Story',    desc: 'A full narrative summary of each month' },
   { icon: BarChart2, color: '#34d399', label: 'Advanced Moneo Score',   desc: 'Score history, factor breakdown, improvement tips' },

@@ -28,7 +28,7 @@ const BLANK: Omit<RecurringIncome, 'id' | 'createdAt'> = {
 export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
   items, currency, onSave, onNavigate,
 }) => {
-  const { isDark, colors } = useTheme();
+  const { colors } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...BLANK, amount: '' as string | number });
@@ -85,12 +85,12 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('more')} className="cursor-pointer text-slate-500 hover:text-slate-600">
+        <button onClick={() => onNavigate('more')} className="cursor-pointer" style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
         <div className="flex-1">
-          <h1 className="text-base font-bold text-slate-900 leading-none">Recurring Income</h1>
-          <p className="text-[10px] text-slate-500 mt-0.5">Set up salary & income you receive regularly</p>
+          <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Recurring Income</h1>
+          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>Set up salary & income you receive regularly</p>
         </div>
         <button
           onClick={openAdd}
@@ -104,13 +104,13 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
       {items.length > 0 && (
         <div
           className="rounded-2xl p-4 mb-5 flex items-center justify-between"
-          style={{ background: isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.07)', border: isDark ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: colors.positiveSoft, border: `1px solid ${colors.positive}28` }}
         >
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Expected Monthly</p>
-            <p className="text-2xl font-bold text-slate-900 mt-0.5">{formatCurrency(totalMonthly, currency)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: colors.positive }}>Expected Monthly</p>
+            <p className="text-2xl font-bold mt-0.5" style={{ color: colors.textPrimary }}>{formatCurrency(totalMonthly, currency)}</p>
           </div>
-          <DollarSign size={28} style={{ color: 'rgba(52,211,153,0.4)' }} />
+          <DollarSign size={28} style={{ color: `${colors.positive}60` }} />
         </div>
       )}
 
@@ -118,18 +118,18 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
       {showForm && (
         <div
           className="card-dark rounded-2xl p-4 mb-5 space-y-3"
-          style={{ border: '1px solid rgba(59,130,246,0.3)' }}
+          style={{ border: `1px solid ${colors.accent}30` }}
         >
           <div className="flex items-center justify-between mb-1">
-            <p className="text-sm font-bold text-slate-700">{editId ? 'Edit Income' : 'New Recurring Income'}</p>
-            <button onClick={() => setShowForm(false)} className="cursor-pointer text-slate-500 hover:text-slate-600">
+            <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{editId ? 'Edit Income' : 'New Recurring Income'}</p>
+            <button onClick={() => setShowForm(false)} className="cursor-pointer" style={{ color: colors.textMuted }}>
               <X size={16} />
             </button>
           </div>
 
           {/* Name */}
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Name</label>
+            <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Name</label>
             <input
               type="text"
               placeholder="e.g. Monthly Salary"
@@ -142,7 +142,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
           {/* Amount + Frequency */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Amount</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Amount</label>
               <input
                 type="number"
                 placeholder="0.00"
@@ -153,7 +153,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
               />
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">Frequency</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Frequency</label>
               <select
                 value={form.frequency}
                 onChange={e => setForm(f => ({ ...f, frequency: e.target.value as RecurringIncomeFrequency }))}
@@ -175,7 +175,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
 
           {/* Next payment date */}
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>
               Next Payment Date
             </label>
             <input
@@ -203,9 +203,9 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
           className="rounded-2xl px-4 py-10 text-center"
           style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
         >
-          <DollarSign size={28} className="mx-auto mb-3 text-slate-600" />
-          <p className="text-sm font-semibold text-slate-400 mb-1">No recurring income yet</p>
-          <p className="text-xs text-slate-600 mb-4">
+          <DollarSign size={28} className="mx-auto mb-3" style={{ color: colors.textMuted }} />
+          <p className="text-sm font-semibold mb-1" style={{ color: colors.textSecondary }}>No recurring income yet</p>
+          <p className="text-xs mb-4" style={{ color: colors.textMuted }}>
             Add your salary or any income you receive regularly so Moneo can track it automatically.
           </p>
           <button onClick={openAdd} className="btn-blue px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer">
@@ -225,19 +225,19 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
               >
                 {deleteId === item.id ? (
                   <div className="p-4 space-y-3">
-                    <p className="text-sm font-bold text-red-400">Remove "{item.name}"?</p>
+                    <p className="text-sm font-bold" style={{ color: colors.negative }}>Remove "{item.name}"?</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setDeleteId(null)}
-                        className="flex-1 py-2 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
+                        className="flex-1 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+                        style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: colors.textMuted }}
                       >
                         Cancel
                       </button>
                       <button
                         onClick={() => deleteItem(item.id)}
-                        className="flex-1 py-2 rounded-xl text-xs font-bold text-slate-900 cursor-pointer"
-                        style={{ background: '#dc2626' }}
+                        className="flex-1 py-2 rounded-xl text-xs font-bold cursor-pointer"
+                        style={{ background: '#dc2626', color: '#fff' }}
                       >
                         Remove
                       </button>
@@ -249,24 +249,24 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <div className="flex items-center gap-2.5">
                         <div
                           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)' }}
+                          style={{ background: colors.positiveSoft, border: `1px solid ${colors.positive}28` }}
                         >
-                          <DollarSign size={16} style={{ color: '#34d399' }} />
+                          <DollarSign size={16} style={{ color: colors.positive }} />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-700">{item.name}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{item.name}</p>
+                          <p className="text-xs mt-0.5" style={{ color: colors.textMuted }}>
                             {frequencyLabel(item.frequency)}
                             {item.frequency !== 'monthly' && ` · ${formatCurrency(monthly, currency)}/mo`}
                           </p>
                         </div>
                       </div>
-                      <p className="text-base font-bold text-emerald-400">{formatCurrency(item.amount, currency)}</p>
+                      <p className="text-base font-bold" style={{ color: colors.positive }}>{formatCurrency(item.amount, currency)}</p>
                     </div>
 
                     <div className="flex items-center gap-1.5 mb-3">
-                      <Calendar size={11} className="text-slate-600" />
-                      <p className="text-[10px] text-slate-500">
+                      <Calendar size={11} style={{ color: colors.textMuted }} />
+                      <p className="text-[10px]" style={{ color: colors.textMuted }}>
                         {item.isActive ? `Next: ${nextDate}` : 'Paused'}
                       </p>
                     </div>
@@ -274,8 +274,8 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openEdit(item)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-400 cursor-pointer"
-                        style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}` }}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer"
+                        style={{ background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textMuted }}
                       >
                         <Edit2 size={11} /> Edit
                       </button>
@@ -283,8 +283,8 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                         onClick={() => toggleActive(item.id)}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer"
                         style={item.isActive
-                          ? { background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', color: '#fbbf24' }
-                          : { background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399' }
+                          ? { background: colors.amberSoft, border: `1px solid ${colors.amber}28`, color: colors.amber }
+                          : { background: colors.positiveSoft, border: `1px solid ${colors.positive}28`, color: colors.positive }
                         }
                       >
                         {item.isActive ? <><Pause size={11} /> Pause</> : <><Play size={11} /> Resume</>}
@@ -292,7 +292,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                       <button
                         onClick={() => setDeleteId(item.id)}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer ml-auto"
-                        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}
+                        style={{ background: colors.negativeSoft, border: `1px solid ${colors.negative}28`, color: colors.negative }}
                       >
                         <Trash2 size={11} />
                       </button>

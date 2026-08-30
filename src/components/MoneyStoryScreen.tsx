@@ -125,13 +125,13 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#9ca3af' }}
+          style={{ color: colors.textMuted }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
           <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Monthly Story</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>A narrative recap of your finances</p>
+          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>A narrative recap of your finances</p>
         </div>
       </div>
 
@@ -180,7 +180,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 <p className="text-sm font-bold" style={{ color }}>
                   {value < 0 ? '-' : ''}{formatCurrency(Math.abs(value), currency)}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>{label}</p>
+                <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{label}</p>
               </div>
             ))}
           </div>
@@ -222,7 +222,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
         {/* Top categories */}
         {story.topCats.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
+            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
               Top Categories This Month
             </p>
             {story.topCats.map(([cat, amt], i) => {
@@ -236,7 +236,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold" style={{ color: '#9ca3af' }}>
+                      <span className="text-xs font-bold" style={{ color: colors.textMuted }}>
                         #{i + 1}
                       </span>
                       <span className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{cat}</span>
@@ -254,7 +254,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
                       }}
                     />
                   </div>
-                  <p className="text-[10px] mt-1" style={{ color: '#9ca3af' }}>
+                  <p className="text-[10px] mt-1" style={{ color: colors.textMuted }}>
                     {pct.toFixed(0)}% of total spending
                   </p>
                 </div>

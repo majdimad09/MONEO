@@ -71,13 +71,13 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
         <button
           onClick={() => onNavigate('insights')}
           className="cursor-pointer transition-colors"
-          style={{ color: '#9ca3af' }}
+          style={{ color: colors.textMuted }}
         >
           <ChevronLeft size={20} />
         </button>
         <div>
           <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Future Projections</h1>
-          <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>6-month financial forecast</p>
+          <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>6-month financial forecast</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
             >
               <Icon size={13} style={{ color }} className="mx-auto mb-1.5" />
               <p className="text-sm font-bold truncate" style={{ color }}>{formatCurrency(value, currency)}</p>
-              <p className="text-[10px] mt-0.5" style={{ color: '#9ca3af' }}>{label}/mo</p>
+              <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{label}/mo</p>
             </div>
           ))}
         </div>
@@ -113,7 +113,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
         >
           <p
             className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ color: '#9ca3af' }}
+            style={{ color: colors.textMuted }}
           >
             Projected Cumulative Savings
           </p>
@@ -138,7 +138,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
           <div className="flex">
             {projections.futureMonths.map(m => (
               <div key={m.label} className="flex-1 text-center">
-                <p className="text-[9px]" style={{ color: '#9ca3af' }}>{m.label}</p>
+                <p className="text-[9px]" style={{ color: colors.textMuted }}>{m.label}</p>
               </div>
             ))}
           </div>
@@ -146,7 +146,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
 
         {/* Month breakdown */}
         <div className="space-y-2 mb-5">
-          <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
+          <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
             Month by Month
           </p>
           {projections.futureMonths.map((m, i) => (
@@ -157,7 +157,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
             >
               <div>
                 <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{m.label}</p>
-                <p className="text-[11px] mt-0.5" style={{ color: '#9ca3af' }}>
+                <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                   In {formatCurrency(m.income, currency)} · Out {formatCurrency(m.expenses, currency)}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
                 >
                   {m.savings >= 0 ? '+' : ''}{formatCurrency(m.savings, currency)}
                 </p>
-                <p className="text-[10px]" style={{ color: '#9ca3af' }}>
+                <p className="text-[10px]" style={{ color: colors.textMuted }}>
                   Total: {formatCurrency(m.cumulative, currency)}
                 </p>
               </div>
@@ -191,7 +191,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
         {/* Goal alignment */}
         {savingGoals.length > 0 && projections.avgSavings > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: '#9ca3af' }}>
+            <p className="text-xs font-bold uppercase tracking-widest px-1" style={{ color: colors.textMuted }}>
               Goal Alignment
             </p>
             {savingGoals.map(goal => {
@@ -208,7 +208,7 @@ export const ProjectionScreen: React.FC<ProjectionScreenProps> = ({
                   <Target size={14} style={{ color: '#fbbf24' }} className="flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate" style={{ color: colors.textPrimary }}>{goal.name}</p>
-                    <p className="text-[11px]" style={{ color: '#9ca3af' }}>
+                    <p className="text-[11px]" style={{ color: colors.textMuted }}>
                       {remaining <= 0
                         ? 'Goal reached!'
                         : `~${monthsToGoal} month${monthsToGoal !== 1 ? 's' : ''} at current rate`}

@@ -152,7 +152,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
           <button
             onClick={() => { setShowJoin(v => !v); setShowCreate(false); }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer text-xs font-bold transition-all"
-            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa' }}
+            style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}40`, color: colors.accent }}
           >
             <UserPlus size={13} /> {t('joinBtn').split(' ')[0]}
           </button>
@@ -170,7 +170,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
 
       {/* Join panel */}
       {showJoin && (
-        <div className="card-dark rounded-2xl p-4 mb-4 space-y-3" style={{ border: '1px solid rgba(59,130,246,0.25)' }}>
+        <div className="card-dark rounded-2xl p-4 mb-4 space-y-3" style={{ border: `1px solid ${colors.accent}30` }}>
           <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{t('joinCommunityTitle')}</p>
           <p className="text-xs" style={{ color: colors.textSecondary }}>Ask the community admin for the 6-character invite code.</p>
           {joinSuccess ? (
@@ -191,7 +191,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
               <button
                 onClick={handleJoin}
                 disabled={joinLoading || joinCode.trim().length < 4}
-                className="w-full py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer disabled:opacity-40"
+                className="w-full py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer disabled:opacity-40"
               >
                 {joinLoading ? t('joinLoading') : t('joinBtn')}
               </button>
@@ -217,11 +217,11 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({
                   style={{ background: isDark ? 'rgba(139,92,246,0.18)' : 'rgba(139,92,246,0.08)', border: isDark ? '1px solid rgba(139,92,246,0.35)' : '1px solid rgba(139,92,246,0.2)' }}
                 >
                   <span className="text-2xl font-bold tracking-[0.25em]" style={{ color: '#a78bfa' }}>{createdCode}</span>
-                  <button onClick={() => copyCode(createdCode)} className="cursor-pointer text-slate-500 hover:text-slate-600">
+                  <button onClick={() => copyCode(createdCode)} className="cursor-pointer" style={{ color: colors.textMuted }}>
                     {codeCopied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
                   </button>
                 </div>
-                <button onClick={finishCreate} className="btn-blue w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer">
+                <button onClick={finishCreate} className="btn-primary w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer">
                   {t('done')}
                 </button>
               </div>
@@ -327,7 +327,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
       {/* Hero */}
       <div
         className="rounded-3xl p-6 text-center"
-        style={{ background: isDark ? 'rgba(59,130,246,0.14)' : 'rgba(59,130,246,0.05)', border: isDark ? '1px solid rgba(59,130,246,0.28)' : '1px solid rgba(59,130,246,0.12)' }}
+        style={{ background: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(16,185,129,0.04)', border: isDark ? '1px solid rgba(16,185,129,0.22)' : '1px solid rgba(16,185,129,0.12)' }}
       >
         <div
           className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4"
@@ -346,7 +346,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
       <div className="space-y-2.5">
         {[
           { icon: Trophy, color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', title: 'Challenges', desc: 'Take on group financial challenges and track progress together' },
-          { icon: Target,  color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',  title: 'Leaderboard', desc: 'See how your Moneo Score compares — only if you choose to share' },
+          { icon: Target,  color: '#818cf8', bg: 'rgba(129,140,248,0.1)',  title: 'Leaderboard', desc: 'See how your Moneo Score compares — only if you choose to share' },
           { icon: Zap,     color: '#34d399', bg: 'rgba(52,211,153,0.1)',  title: 'Streaks & Badges', desc: 'Earn badges for consistency and completing challenges' },
         ].map(({ icon: Icon, color, bg, title, desc }) => (
           <div key={title} className="card-dark rounded-2xl px-4 py-3 flex items-start gap-3">
@@ -365,7 +365,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
       <div className="space-y-2.5 pt-1">
         <button
           onClick={onJoin}
-          className="w-full py-3.5 rounded-2xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-2xl text-sm font-bold btn-primary cursor-pointer flex items-center justify-center gap-2"
         >
           <Hash size={16} /> Join with Invite Code
         </button>
@@ -477,7 +477,7 @@ const CommunityCard: React.FC<{
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${myPct}%`,
-                  background: myPct >= 80 ? '#34d399' : myPct >= 40 ? '#fbbf24' : '#3b82f6',
+                  background: myPct >= 80 ? '#34d399' : myPct >= 40 ? '#fbbf24' : '#10b981',
                 }}
               />
             </div>

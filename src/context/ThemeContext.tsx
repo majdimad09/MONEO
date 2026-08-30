@@ -6,6 +6,7 @@ export interface ThemeColors {
   bgPrimary: string;
   bgCard: string;
   bgSecondary: string;
+  bgElevated: string;
   bgHover: string;
   border: string;
   borderStrong: string;
@@ -19,56 +20,77 @@ export interface ThemeColors {
   dropdownBg: string;
   accent: string;
   accentSoft: string;
+  brand: string;
+  brandSoft: string;
+  premium: string;
+  premiumSoft: string;
   positive: string;
   negative: string;
   positiveSoft: string;
   negativeSoft: string;
+  amber: string;
+  amberSoft: string;
 }
 
+// ── Exact awesome-design palette ─────────────────────────────────────────────
 const LIGHT: ThemeColors = {
-  bgPrimary:    '#f7f8fa',
+  bgPrimary:    '#f4f5f9',
   bgCard:       '#ffffff',
-  bgSecondary:  '#f0f2f5',
-  bgHover:      '#e8eaed',
+  bgSecondary:  '#f0f2f6',
+  bgElevated:   '#e8eaef',
+  bgHover:      '#eceef3',
   border:       'rgba(0,0,0,0.07)',
-  borderStrong: 'rgba(0,0,0,0.11)',
-  textPrimary:  '#111111',
-  textSecondary:'#666666',
-  textMuted:    '#999999',
+  borderStrong: 'rgba(0,0,0,0.12)',
+  textPrimary:  '#0f1117',
+  textSecondary:'#52576b',
+  textMuted:    '#8b91a6',
   divider:      'rgba(0,0,0,0.05)',
   topBarBg:     '#ffffff',
   topBarBorder: 'rgba(0,0,0,0.07)',
-  inputBg:      '#f0f2f5',
+  inputBg:      '#f0f2f6',
   dropdownBg:   '#ffffff',
-  accent:       '#059669',
-  accentSoft:   'rgba(5,150,105,0.09)',
-  positive:     '#059669',
-  negative:     '#e11d48',
-  positiveSoft: 'rgba(5,150,105,0.09)',
-  negativeSoft: 'rgba(225,29,72,0.08)',
+  accent:       '#10b981',
+  accentSoft:   'rgba(16,185,129,0.10)',
+  brand:        '#6366f1',
+  brandSoft:    'rgba(99,102,241,0.10)',
+  premium:      '#8b5cf6',
+  premiumSoft:  'rgba(139,92,246,0.10)',
+  positive:     '#10b981',
+  negative:     '#ef4444',
+  positiveSoft: 'rgba(16,185,129,0.09)',
+  negativeSoft: 'rgba(239,68,68,0.08)',
+  amber:        '#f59e0b',
+  amberSoft:    'rgba(245,158,11,0.10)',
 };
 
 const DARK: ThemeColors = {
-  bgPrimary:    '#0a0a0a',
-  bgCard:       '#141414',
-  bgSecondary:  '#1e1e1e',
-  bgHover:      '#242424',
-  border:       'rgba(255,255,255,0.08)',
-  borderStrong: 'rgba(255,255,255,0.13)',
-  textPrimary:  '#f0f0f0',   // 18:1 on #141414 ✓
-  textSecondary:'#b0b0b0',   // 9.4:1 on #141414 ✓ — raised from #888888
-  textMuted:    '#888888',   // 4.6:1 on #141414 ✓ — raised from #555555
+  bgPrimary:    '#0d0d14',
+  bgCard:       '#16161f',
+  bgSecondary:  '#1e1f2a',
+  bgElevated:   '#252636',
+  bgHover:      '#2a2b3d',
+  border:       'rgba(255,255,255,0.07)',
+  borderStrong: 'rgba(255,255,255,0.12)',
+  textPrimary:  '#eeeef2',
+  textSecondary:'#a8a9be',
+  textMuted:    '#6b6d85',
   divider:      'rgba(255,255,255,0.05)',
-  topBarBg:     '#0a0a0a',
+  topBarBg:     '#0d0d14',
   topBarBorder: 'rgba(255,255,255,0.07)',
-  inputBg:      '#1e1e1e',
-  dropdownBg:   '#141414',
-  accent:       '#22c55e',
-  accentSoft:   'rgba(34,197,94,0.12)',
-  positive:     '#22c55e',
-  negative:     '#f43f5e',
-  positiveSoft: 'rgba(34,197,94,0.12)',
-  negativeSoft: 'rgba(244,63,94,0.12)',
+  inputBg:      '#1e1f2a',
+  dropdownBg:   '#16161f',
+  accent:       '#10b981',
+  accentSoft:   'rgba(16,185,129,0.14)',
+  brand:        '#818cf8',
+  brandSoft:    'rgba(129,140,248,0.14)',
+  premium:      '#a78bfa',
+  premiumSoft:  'rgba(167,139,250,0.14)',
+  positive:     '#34d399',
+  negative:     '#f87171',
+  positiveSoft: 'rgba(52,211,153,0.13)',
+  negativeSoft: 'rgba(248,113,113,0.13)',
+  amber:        '#fbbf24',
+  amberSoft:    'rgba(251,191,36,0.13)',
 };
 
 interface ThemeContextValue {
