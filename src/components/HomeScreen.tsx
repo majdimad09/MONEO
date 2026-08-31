@@ -216,15 +216,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Income & Expenses — vivid gradient cards inspired by reference */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
 
-            {/* Income — emerald gradient card */}
+            {/* Income — emerald gradient card (dark: near-black + green accent) */}
             <button
               onClick={onAddIncome}
               className="income-gradient-card text-left cursor-pointer active:scale-[0.97] transition-transform"
               style={{ padding: '12px 14px' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
-                <ArrowUpRight size={11} color="rgba(255,255,255,0.80)" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.80)' }}>
+                <ArrowUpRight size={11} color={isDark ? '#22c55e' : 'rgba(255,255,255,0.80)'} />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: isDark ? '#22c55e' : 'rgba(255,255,255,0.80)' }}>
                   {t('income')}
                 </span>
               </div>
@@ -233,15 +233,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
             </button>
 
-            {/* Expenses — coral gradient card */}
+            {/* Expenses — coral gradient card (dark: near-black + red accent) */}
             <button
               onClick={onAddExpense}
               className="expense-gradient-card text-left cursor-pointer active:scale-[0.97] transition-transform"
               style={{ padding: '12px 14px' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
-                <ArrowDownRight size={11} color="rgba(255,255,255,0.80)" />
-                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.80)' }}>
+                <ArrowDownRight size={11} color={isDark ? '#f87171' : 'rgba(255,255,255,0.80)'} />
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: isDark ? '#f87171' : 'rgba(255,255,255,0.80)' }}>
                   {t('expenses')}
                 </span>
               </div>
