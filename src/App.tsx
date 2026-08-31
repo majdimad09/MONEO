@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Transaction, TransactionType, CategoryLimit, SavingGoal, Subscription, RecurringIncome, Community, AppView, MonthlyCheckIn } from './types/finance';
 import {
   loadTransactions, saveTransactions,
@@ -85,6 +85,9 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [navHistory, setNavHistory] = useState<AppView[]>([]);
+  // Ref mirrors navHistory so navigate/goBack always read the latest value
+  // without capturing stale closures or calling setState inside updaters.
+  const navHistoryRef = useRef<AppView[]>([]);
   const [showAuthScreen, setShowAuthScreen] = useState(false);
   const [authInitialMode, setAuthInitialMode] = useState<'signin' | 'signup'>('signin');
   const [cloudLoading, setCloudLoading] = useState(false);
@@ -352,16 +355,22 @@ export default function App() {
 
   const navigate = (view: AppView) => {
     if (view === currentView) return;
-    setNavHistory(prev => ROOT_VIEWS.includes(view) ? [] : [...prev, currentView]);
+    const history = navHistoryRef.current;
+    const next = ROOT_VIEWS.includes(view) ? [] : [...history, currentView];
+    navHistoryRef.current = next;
+    setNavHistory(next);
     setCurrentView(view);
   };
 
+  // goBack is stable (no deps) — reads/writes via ref so there's no stale
+  // closure and no setState-inside-updater side effects.
   const goBack = useCallback(() => {
-    setNavHistory(prev => {
-      const target = prev.length > 0 ? prev[prev.length - 1] : 'home';
-      setCurrentView(target);
-      return prev.slice(0, -1);
-    });
+    const history = navHistoryRef.current;
+    const target = history.length > 0 ? history[history.length - 1] : 'home';
+    const next = history.slice(0, -1);
+    navHistoryRef.current = next;
+    setNavHistory(next);
+    setCurrentView(target);
   }, []);
 
   // ── Community helpers ─────────────────────────────────────────────────────
@@ -372,7 +381,9 @@ export default function App() {
 
   const handleSelectCommunity = useCallback((id: string) => {
     setSelectedCommunityId(id);
-    setNavHistory(prev => [...prev, 'community']);
+    const next = [...navHistoryRef.current, 'community'];
+    navHistoryRef.current = next;
+    setNavHistory(next);
     setCurrentView('community-detail');
   }, []);
 
