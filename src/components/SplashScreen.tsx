@@ -137,7 +137,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               fontWeight: 700,
               letterSpacing: '0.28em',
               textTransform: 'uppercase',
-              color: '#10b981',
+              color: '#22c55e',
               opacity: glowActive ? 1 : 0,
               transition: 'opacity 0.6s ease 0.2s',
             }}
@@ -165,7 +165,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               width: 4,
               height: 4,
               borderRadius: '50%',
-              background: '#10b981',
+              background: '#22c55e',
               animation: `splashDot 0.9s ${i * 0.18}s infinite ease-in-out`,
             }}
           />

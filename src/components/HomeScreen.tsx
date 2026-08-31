@@ -296,7 +296,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           className="w-full text-left cursor-pointer active:scale-[0.98] transition-transform rounded-3xl overflow-hidden"
           style={{
             background: isDark
-              ? `linear-gradient(135deg, ${level.color}1a 0%, rgba(22,22,31,0.85) 100%)`
+              ? `linear-gradient(135deg, ${level.color}18 0%, rgba(8,8,12,0.92) 100%)`
               : `linear-gradient(135deg, ${level.color}14 0%, rgba(255,255,255,0.95) 100%)`,
             border: `1px solid ${level.color}38`,
             boxShadow: isDark ? `0 4px 24px ${level.color}14` : `0 4px 20px ${level.color}12`,
