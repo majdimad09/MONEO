@@ -163,7 +163,18 @@ export type AppView =
   | 'spending-patterns' | 'safe-to-spend' | 'ask-moneo'
   // Stage 2 — Community
   | 'community'           // Community hub tab
-  | 'community-detail';   // Specific community view
+  | 'community-detail'    // Specific community view
+  // Stage 3 — Earn
+  | 'earn'                // Earn hub
+  | 'earn-detail';        // Opportunity detail
+
+export type EarnStatus = 'saved' | 'interested' | 'in-progress' | 'completed';
+
+export interface EarnProgress {
+  opportunityId: string;
+  status: EarnStatus;
+  savedAt: number;
+}
 
 export type RecurringIncomeFrequency = 'weekly' | 'biweekly' | 'monthly';
 

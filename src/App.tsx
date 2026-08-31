@@ -75,6 +75,12 @@ import { SpendingPatternsScreen } from './components/SpendingPatternsScreen';
 import { SafeToSpendScreen } from './components/SafeToSpendScreen';
 import { AskMoneoScreen } from './components/AskMoneoScreen';
 import { MonthlyCheckInModal } from './components/MonthlyCheckInModal';
+// Stage 3 — Earn
+import { EarnScreen } from './components/EarnScreen';
+import { EarnDetailScreen } from './components/EarnDetailScreen';
+import { loadEarnProgress, saveEarnProgress } from './utils/earnStorage';
+import { EarnProgress } from './types/finance';
+import { EARN_OPPORTUNITIES } from './utils/earnData';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -105,6 +111,8 @@ export default function App() {
   const [recurringIncome, setRecurringIncome] = useState<RecurringIncome[]>(() => loadRecurringIncome());
   const [communities, setCommunities]         = useState<Community[]>(() => loadCommunities());
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
+  const [earnProgress, setEarnProgress] = useState<EarnProgress[]>(() => loadEarnProgress());
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null);
 
   // ── Check-in state ────────────────────────────────────────────────────────
   const [checkIn, setCheckIn] = useState<MonthlyCheckIn | null>(() => loadCheckIn());
@@ -351,7 +359,7 @@ export default function App() {
     await handleSignOut();
   };
 
-  const ROOT_VIEWS: AppView[] = ['home', 'insights', 'budget', 'community', 'settings'];
+  const ROOT_VIEWS: AppView[] = ['home', 'insights', 'budget', 'earn', 'community', 'settings'];
 
   const navigate = (view: AppView) => {
     if (view === currentView) return;
@@ -371,6 +379,20 @@ export default function App() {
     navHistoryRef.current = next;
     setNavHistory(next);
     setCurrentView(target);
+  }, []);
+
+  // ── Earn helpers ──────────────────────────────────────────────────────────
+  const handleEarnProgressChange = useCallback((updated: EarnProgress[]) => {
+    setEarnProgress(updated);
+    saveEarnProgress(updated);
+  }, []);
+
+  const handleSelectOpportunity = useCallback((id: string) => {
+    setSelectedOpportunityId(id);
+    const next = [...navHistoryRef.current, 'earn' as AppView];
+    navHistoryRef.current = next;
+    setNavHistory(next);
+    setCurrentView('earn-detail');
   }, []);
 
   // ── Community helpers ─────────────────────────────────────────────────────
@@ -744,6 +766,33 @@ export default function App() {
               onUpgrade={handleUpgradeToPremium}
             />
           )}
+
+          {/* ── Stage 3 — Earn ────────────────────────────────── */}
+          {currentView === 'earn' && (
+            <EarnScreen
+              userAge={userAge}
+              userStatus={userStatus}
+              userName={userName}
+              earnProgress={earnProgress}
+              onProgressChange={handleEarnProgressChange}
+              onNavigate={navigate}
+              onSelectOpportunity={handleSelectOpportunity}
+              onAddRecurringIncome={() => navigate('recurring-income')}
+            />
+          )}
+
+          {currentView === 'earn-detail' && (() => {
+            const opp = EARN_OPPORTUNITIES.find(o => o.id === selectedOpportunityId);
+            if (!opp) return null;
+            return (
+              <EarnDetailScreen
+                opportunity={opp}
+                earnProgress={earnProgress}
+                onProgressChange={handleEarnProgressChange}
+                onAddRecurringIncome={() => navigate('recurring-income')}
+              />
+            );
+          })()}
 
           {currentView === 'premium' && (
             <PremiumUpgradeScreen

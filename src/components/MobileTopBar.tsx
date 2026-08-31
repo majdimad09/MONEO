@@ -60,6 +60,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     premium:             t('featPremium'),
     'community-detail':  t('navCommunity'),
     'what-if':           t('featWhatIf'),
+    'earn-detail':       'Earn',
   };
   const backLabel = BACK_LABELS[currentView];
 
