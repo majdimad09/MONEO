@@ -34,13 +34,13 @@ export interface ThemeColors {
 
 // ── Exact awesome-design palette ─────────────────────────────────────────────
 const LIGHT: ThemeColors = {
-  bgPrimary:    '#f4f5f9',
+  bgPrimary:    '#f4f3ff',
   bgCard:       '#ffffff',
-  bgSecondary:  '#f0f2f6',
-  bgElevated:   '#e8eaef',
-  bgHover:      '#eceef3',
-  border:       'rgba(0,0,0,0.07)',
-  borderStrong: 'rgba(0,0,0,0.12)',
+  bgSecondary:  '#eceaff',
+  bgElevated:   '#e4e1ff',
+  bgHover:      '#e8e5ff',
+  border:       'rgba(99,102,241,0.10)',
+  borderStrong: 'rgba(99,102,241,0.16)',
   textPrimary:  '#0f1117',
   textSecondary:'#52576b',
   textMuted:    '#8b91a6',
