@@ -38,6 +38,7 @@ import { useTheme } from './context/ThemeContext';
 import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
+import { SetupRemindersProvider } from './context/SetupRemindersContext';
 
 import { SplashScreen } from './components/SplashScreen';
 import { LandingPage } from './components/LandingPage';
@@ -474,6 +475,11 @@ export default function App() {
 
   // Authenticated: go straight to dashboard — no onboarding inside the app.
   return (
+    <SetupRemindersProvider
+      data={{ recurringIncome, subscriptions, monthlyBudget, savingGoals, checkIn }}
+      onNavigate={navigate}
+      onTriggerCheckIn={() => setShowCheckIn(true)}
+    >
     <div className="desktop-bg">
       <div className="app-shell">
 
@@ -508,6 +514,7 @@ export default function App() {
               onNavigateStats={() => navigate('statistics')}
               onNavigateBudget={() => navigate('budget')}
               onNavigateScore={() => navigate('moneo-score')}
+              onNavigate={navigate}
             />
           )}
 
@@ -830,5 +837,6 @@ export default function App() {
         />
       )}
     </div>
+    </SetupRemindersProvider>
   );
 }

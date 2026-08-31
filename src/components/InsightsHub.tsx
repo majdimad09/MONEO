@@ -12,6 +12,7 @@ import {
 } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { ContextualSetupCallout } from './SetupReminderCard';
 
 interface InsightsHubProps {
   transactions: Transaction[];
@@ -169,6 +170,12 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
             : <Moon size={16} style={{ color: '#6366f1' }} />}
         </button>
       </div>
+
+      {/* Setup callout — if key data is missing */}
+      <ContextualSetupCallout
+        relevantKeys={['monthly-budget', 'recurring-income', 'savings-goal']}
+        headerText="Improve your insights"
+      />
 
       {/* Moneo Score Card — richer gradient */}
       <button

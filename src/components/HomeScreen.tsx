@@ -7,13 +7,14 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
-import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome } from '../types/finance';
+import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome, AppView } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
 import {
   generateInsights, calculateCashlyScore,
   getGreeting, getScoreLevel, InsightIcon,
 } from '../utils/insights';
+import { SetupSection } from './SetupReminderCard';
 
 interface HomeScreenProps {
   transactions: Transaction[];
@@ -33,6 +34,7 @@ interface HomeScreenProps {
   onNavigateStats: () => void;
   onNavigateBudget: () => void;
   onNavigateScore: () => void;
+  onNavigate: (view: AppView) => void;
 }
 
 function getCurrentMonthPrefix(): string {
@@ -64,6 +66,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   savingGoals, recurringIncome, userName,
   onViewAllTransactions, onEdit, onLoadSample,
   onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
+  // onNavigate is consumed by SetupSection via context — accepted here for prop typing
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onNavigate: _onNavigate,
 }) => {
   const { isDark, toggleTheme, colors } = useTheme();
   const { t } = useLanguage();
@@ -533,6 +538,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <ChevronRight size={16} style={{ color: level.color, opacity: 0.55, flexShrink: 0 }} />
         </button>
       </div>
+
+      {/* ── SETUP REMINDERS ───────────────────────────────────── */}
+      <SetupSection />
 
       {/* ── BUDGET STRIP ──────────────────────────────────────── */}
       {monthlyBudget > 0 && (

@@ -5,6 +5,8 @@ import {
 import { SavingGoal } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { useTheme } from '../context/ThemeContext';
+import { SetupReminderCard } from './SetupReminderCard';
+import { useSetupReminders } from '../context/SetupRemindersContext';
 
 interface SavingsScreenProps {
   currency: string;
@@ -34,7 +36,9 @@ const GOAL_COLORS = ['#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#63
 const emptyForm = { name: '', targetAmount: '', currentAmount: '', targetDate: getTodayMonth() };
 
 export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, onSaveGoals }) => {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { activeItems } = useSetupReminders();
+  const goalReminderItem = activeItems.find(i => i.key === 'savings-goal');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -180,19 +184,60 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
 
       {/* ── GOALS ─────────────────────────────────────── */}
       {goals.length === 0 ? (
-        <div className="card-dark rounded-3xl p-10 text-center">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}28` }}>
-            <Flag size={28} style={{ color: colors.accent }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Setup reminder card — shown when the reminder is active */}
+          {goalReminderItem && !showForm && (
+            <SetupReminderCard item={goalReminderItem} />
+          )}
+
+          {/* Standard empty state */}
+          <div
+            style={{
+              borderRadius: 24,
+              padding: '36px 20px',
+              textAlign: 'center',
+              background: isDark
+                ? 'linear-gradient(160deg, #0e0e16, #09090f)'
+                : '#f8f9fb',
+              border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+            }}
+          >
+            <div
+              style={{
+                width: 64, height: 64, borderRadius: 22,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 16px',
+                background: isDark ? 'rgba(251,191,36,0.14)' : 'rgba(251,191,36,0.10)',
+                border: `1.5px solid rgba(251,191,36,0.30)`,
+                boxShadow: '0 4px 20px rgba(251,191,36,0.14)',
+              }}
+            >
+              <Flag size={28} style={{ color: '#fbbf24' }} />
+            </div>
+            <h3
+              style={{
+                fontSize: 16, fontWeight: 800, color: colors.textPrimary,
+                letterSpacing: '-0.02em', marginBottom: 8,
+              }}
+            >
+              No saving goals yet
+            </h3>
+            <p style={{ fontSize: 13, color: colors.textSecondary, lineHeight: 1.55, marginBottom: 20 }}>
+              Set a goal and Moneo will track your progress automatically.
+            </p>
+            <button
+              onClick={() => setShowForm(true)}
+              style={{
+                padding: '10px 24px', borderRadius: 14, border: 'none',
+                background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+                color: '#1a1000', fontSize: 13, fontWeight: 800,
+                cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
+                boxShadow: '0 4px 18px rgba(251,191,36,0.35)',
+              }}
+            >
+              <Plus size={15} /> Create First Goal
+            </button>
           </div>
-          <h3 className="font-bold mb-2" style={{ color: colors.textSecondary }}>No saving goals yet</h3>
-          <p className="text-sm mb-5 leading-relaxed" style={{ color: colors.textMuted }}>
-            Set a financial goal to start tracking your progress toward it.
-          </p>
-          <button onClick={() => setShowForm(true)}
-            className="btn-primary px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2">
-            <Plus size={16} /> Create First Goal
-          </button>
         </div>
       ) : (
         <div className="space-y-4">

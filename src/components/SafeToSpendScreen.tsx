@@ -5,6 +5,7 @@ import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { ContextualSetupCallout } from './SetupReminderCard';
 
 interface SafeToSpendProps {
   transactions: Transaction[];
@@ -84,6 +85,12 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>{t('safeToSpendDesc')}</p>
         </div>
       </div>
+
+      {/* Setup callout — show when income or budget is missing */}
+      <ContextualSetupCallout
+        relevantKeys={['recurring-income', 'monthly-budget']}
+        headerText="Your Safe to Spend could be more accurate"
+      />
 
       {/* Main amount card */}
       <div
