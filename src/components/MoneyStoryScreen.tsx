@@ -6,6 +6,7 @@ import { Transaction, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { PremiumGate } from './PremiumGate';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface MoneyStoryProps {
   transactions: Transaction[];
@@ -43,6 +44,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
   transactions, currency, isPremium, onNavigate, onUpgrade,
 }) => {
   const { isDark, colors } = useTheme();
+  const { goBack } = useNavigation();
   const months = useMemo(() => availableMonths(transactions), [transactions]);
   const [idx, setIdx] = useState(0);
   const selected = months[idx] ?? mp();
@@ -123,7 +125,7 @@ export const MoneyStoryScreen: React.FC<MoneyStoryProps> = ({
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
         <button
-          onClick={() => onNavigate('insights')}
+          onClick={goBack}
           className="cursor-pointer transition-colors"
           style={{ color: colors.textMuted }}
         >

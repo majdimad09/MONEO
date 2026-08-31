@@ -374,8 +374,9 @@ export const CategoryIcon: React.FC<CategoryIconProps> = ({
   size = 18,
   className = '',
 }) => {
-  const color = getCategoryColor(category, type);
-  const IconShape = resolveIcon(category, type);
+  const resolvedType = (type ?? 'expense') as 'income' | 'expense';
+  const color = getCategoryColor(category, resolvedType);
+  const IconShape = resolveIcon(category, resolvedType);
 
   return (
     <svg

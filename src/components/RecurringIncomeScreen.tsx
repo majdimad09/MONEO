@@ -8,6 +8,7 @@ import { formatCurrency } from '../utils/formatters';
 import { frequencyLabel, getNextOccurrence, monthlyEquivalent } from '../utils/recurringUtils';
 import { AppView } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface RecurringIncomeScreenProps {
   items: RecurringIncome[];
@@ -29,6 +30,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
   items, currency, onSave, onNavigate,
 }) => {
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...BLANK, amount: '' as string | number });
@@ -85,7 +87,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('more')} className="cursor-pointer" style={{ color: colors.textMuted }}>
+        <button onClick={goBack} className="cursor-pointer" style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
         <div className="flex-1">

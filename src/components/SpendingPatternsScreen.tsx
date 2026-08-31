@@ -4,6 +4,7 @@ import { Transaction, AppView } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { PremiumGate } from './PremiumGate';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface SpendingPatternsProps {
   transactions: Transaction[];
@@ -76,12 +77,13 @@ export const SpendingPatternsScreen: React.FC<SpendingPatternsProps> = ({
 
   const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
 
   return (
     <div className="page-enter px-4 pt-3 pb-8">
       <div className="flex items-center gap-3 pt-1 mb-5">
         <button
-          onClick={() => onNavigate('insights')}
+          onClick={goBack}
           className="cursor-pointer transition-colors"
           style={{ color: colors.textMuted }}
         >

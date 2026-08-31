@@ -6,6 +6,7 @@ import { calculateSafeToSpend } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ContextualSetupCallout } from './SetupReminderCard';
+import { useNavigation } from '../context/NavigationContext';
 
 interface SafeToSpendProps {
   transactions: Transaction[];
@@ -21,6 +22,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
 }) => {
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
+  const { goBack } = useNavigation();
   const result = useMemo(
     () => calculateSafeToSpend(transactions, subscriptions),
     [transactions, subscriptions],
@@ -74,7 +76,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
         <button
-          onClick={() => onNavigate('insights')}
+          onClick={goBack}
           className="cursor-pointer transition-colors"
           style={{ color: colors.textMuted }}
         >

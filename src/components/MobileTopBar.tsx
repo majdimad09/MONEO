@@ -4,6 +4,7 @@ import { LogoWordmark } from './Logo';
 import { SUPPORTED_CURRENCIES, AppView } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface MobileTopBarProps {
   currentView: AppView;
@@ -23,6 +24,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
 }) => {
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
+  const { goBack } = useNavigation();
   const [showCurrency, setShowCurrency] = useState(false);
   const [showClear, setShowClear] = useState(false);
   const [search, setSearch] = useState('');
@@ -39,25 +41,27 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     if (!showCurrency) setSearch('');
   }, [showCurrency]);
 
-  const BACK_VIEWS: Partial<Record<string, { label: string; dest: AppView }>> = {
-    transactions:       { label: t('allTransactions'),       dest: 'home' },
-    'moneo-score':      { label: t('moneoScore'),            dest: 'home' },
-    savings:            { label: t('savingGoalsTitle'),      dest: 'budget' },
-    recurring:          { label: t('featRecurring'),         dest: 'budget' },
-    budget:             { label: t('budget'),                dest: 'more' },
-    statistics:         { label: t('statisticsTitle'),       dest: 'insights' },
-    activity:           { label: t('featActivity'),          dest: 'home' },
-    'money-coach':      { label: t('featMoneyCoach'),        dest: 'insights' },
-    'recurring-income': { label: t('featRecurringIncome'),   dest: 'more' },
-    settings:           { label: t('settings'),              dest: 'more' },
-    projection:         { label: t('projectionTitle'),       dest: 'insights' },
-    'money-story':      { label: t('monthlyStoryTitle'),     dest: 'insights' },
-    'spending-patterns':{ label: t('spendingPatternsTitle'), dest: 'insights' },
-    'safe-to-spend':    { label: t('safeToSpend'),           dest: 'insights' },
-    'ask-moneo':        { label: t('featAskMoneo'),          dest: 'insights' },
-    premium:            { label: t('featPremium'),           dest: 'more' },
+  const BACK_LABELS: Partial<Record<string, string>> = {
+    transactions:        t('allTransactions'),
+    'moneo-score':       t('moneoScore'),
+    savings:             t('savingGoalsTitle'),
+    recurring:           t('featRecurring'),
+    budget:              t('budget'),
+    statistics:          t('statisticsTitle'),
+    activity:            t('featActivity'),
+    'money-coach':       t('featMoneyCoach'),
+    'recurring-income':  t('featRecurringIncome'),
+    settings:            t('settings'),
+    projection:          t('projectionTitle'),
+    'money-story':       t('monthlyStoryTitle'),
+    'spending-patterns': t('spendingPatternsTitle'),
+    'safe-to-spend':     t('safeToSpend'),
+    'ask-moneo':         t('featAskMoneo'),
+    premium:             t('featPremium'),
+    'community-detail':  t('navCommunity'),
+    'what-if':           t('featWhatIf'),
   };
-  const backInfo = BACK_VIEWS[currentView];
+  const backLabel = BACK_LABELS[currentView];
 
   return (
     <div
@@ -65,14 +69,14 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
       style={{ height: 56, borderBottom: `1px solid ${colors.topBarBorder}`, background: colors.topBarBg }}
     >
       {/* Left: logo or back */}
-      {backInfo ? (
+      {backLabel ? (
         <button
-          onClick={() => onNavigate(backInfo.dest)}
+          onClick={goBack}
           className="flex items-center gap-2 text-sm font-bold cursor-pointer"
           style={{ color: colors.textSecondary, WebkitTapHighlightColor: 'transparent' }}
         >
           <ArrowLeft size={18} style={{ color: colors.accent }} />
-          <span>{backInfo.label}</span>
+          <span>{backLabel}</span>
         </button>
       ) : (
         <LogoWordmark iconSize={26} textSize="sm" />
@@ -81,7 +85,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
       {/* Right: actions */}
       <div className="flex items-center gap-2">
         {/* Export when transactions exist (not on sub-pages) */}
-        {transactionCount > 0 && !backInfo ? (
+        {transactionCount > 0 && !backLabel ? (
           <>
             <button
               onClick={onExportCSV}

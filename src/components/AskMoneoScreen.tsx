@@ -10,6 +10,7 @@ import {
 import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend, calculateCashlyScore } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface AskMoneoProps {
   transactions: Transaction[];
@@ -58,6 +59,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
   savingGoals, isPremium, onNavigate, onUpgrade,
 }) => {
   const { isDark, colors } = useTheme();
+  const { goBack } = useNavigation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [custom, setCustom] = useState('');
 
@@ -231,7 +233,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-4 pb-2">
         <button
-          onClick={() => onNavigate('insights')}
+          onClick={goBack}
           className="cursor-pointer transition-colors"
           style={{ color: colors.textMuted }}
         >

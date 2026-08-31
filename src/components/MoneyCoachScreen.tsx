@@ -9,6 +9,7 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 import { generateInsights, InsightIcon, InsightType } from '../utils/insights';
 import { getNextOccurrence } from '../utils/recurringUtils';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface MoneyCoachScreenProps {
   transactions: Transaction[];
@@ -46,6 +47,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
   savingGoals, recurringIncome, onNavigate,
 }) => {
   const { isDark, colors } = useTheme();
+  const { goBack } = useNavigation();
   const COLORS = getColors(isDark);
   const insights = useMemo(
     () => generateInsights(transactions, currency, subscriptions),
@@ -87,7 +89,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1">
-        <button onClick={() => onNavigate('insights')} className="cursor-pointer" style={{ color: colors.textMuted }}>
+        <button onClick={goBack} className="cursor-pointer" style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
         <div className="flex items-center gap-2">

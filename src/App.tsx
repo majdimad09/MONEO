@@ -39,6 +39,7 @@ import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
 import { SetupRemindersProvider } from './context/SetupRemindersContext';
+import { NavigationProvider } from './context/NavigationContext';
 
 import { SplashScreen } from './components/SplashScreen';
 import { LandingPage } from './components/LandingPage';
@@ -83,6 +84,7 @@ export default function App() {
 
   const [showSplash, setShowSplash] = useState(true);
   const [currentView, setCurrentView] = useState<AppView>('home');
+  const [navHistory, setNavHistory] = useState<AppView[]>([]);
   const [showAuthScreen, setShowAuthScreen] = useState(false);
   const [authInitialMode, setAuthInitialMode] = useState<'signin' | 'signup'>('signin');
   const [cloudLoading, setCloudLoading] = useState(false);
@@ -346,7 +348,21 @@ export default function App() {
     await handleSignOut();
   };
 
-  const navigate = (view: AppView) => setCurrentView(view);
+  const ROOT_VIEWS: AppView[] = ['home', 'insights', 'budget', 'community', 'settings'];
+
+  const navigate = (view: AppView) => {
+    if (view === currentView) return;
+    setNavHistory(prev => ROOT_VIEWS.includes(view) ? [] : [...prev, currentView]);
+    setCurrentView(view);
+  };
+
+  const goBack = useCallback(() => {
+    setNavHistory(prev => {
+      const target = prev.length > 0 ? prev[prev.length - 1] : 'home';
+      setCurrentView(target);
+      return prev.slice(0, -1);
+    });
+  }, []);
 
   // ── Community helpers ─────────────────────────────────────────────────────
   const handleCommunitiesChange = useCallback((updated: Community[]) => {
@@ -356,6 +372,7 @@ export default function App() {
 
   const handleSelectCommunity = useCallback((id: string) => {
     setSelectedCommunityId(id);
+    setNavHistory(prev => [...prev, 'community']);
     setCurrentView('community-detail');
   }, []);
 
@@ -475,6 +492,7 @@ export default function App() {
 
   // Authenticated: go straight to dashboard — no onboarding inside the app.
   return (
+    <NavigationProvider goBack={goBack}>
     <SetupRemindersProvider
       data={{ recurringIncome, subscriptions, monthlyBudget, savingGoals, checkIn }}
       onNavigate={navigate}
@@ -722,7 +740,7 @@ export default function App() {
               membershipStartedAt={membership.startedAt}
               onUpgrade={handleUpgradeToPremium}
               onCancelPremium={handleCancelPremium}
-              onGoBack={() => navigate('settings')}
+              onGoBack={goBack}
             />
           )}
 
@@ -757,7 +775,7 @@ export default function App() {
                 savingGoals={savingGoals}
                 currency={currency}
                 currentScore={currentScore}
-                onBack={() => navigate('community')}
+                onBack={goBack}
                 onCommunityUpdate={handleCommunityUpdate}
                 onNavigate={navigate}
               />
@@ -838,5 +856,6 @@ export default function App() {
       )}
     </div>
     </SetupRemindersProvider>
+    </NavigationProvider>
   );
 }

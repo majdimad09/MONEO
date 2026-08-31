@@ -9,6 +9,7 @@ import { calculateCashlyScore, calculateSafeToSpend } from '../utils/insights';
 import { PremiumGate } from './PremiumGate';
 import { AppView } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface WhatIfScreenProps {
   transactions: Transaction[];
@@ -92,13 +93,14 @@ export const WhatIfScreen: React.FC<WhatIfScreenProps> = ({
 
   const activeSubs = subscriptions.filter(s => s.isActive);
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
 
   return (
     <div className="page-enter px-4 pt-3 pb-8">
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1 mb-5">
-        <button onClick={() => onNavigate('insights')} className="cursor-pointer transition-colors"
+        <button onClick={goBack} className="cursor-pointer transition-colors"
           style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
