@@ -938,15 +938,15 @@ const DEMO_FEATURES = [
 
 const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void }> = ({ onGetStarted }) => {
   const { isDark, toggleTheme } = useTheme();
-  const { lang, setLanguage } = useLanguage();
+  const { lang, setLanguage, t } = useLanguage();
   const [langOpen, setLangOpen]       = useState(false);
   const [featureIdx, setFeatureIdx]   = useState(0);
   const [fading, setFading]           = useState(false);
   const [visible, setVisible]         = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 80);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(timer);
   }, []);
 
   // Auto-cycle features every 3 s
@@ -966,7 +966,7 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
   return (
     <div style={{
       minHeight: '100%',
-      background: DARK_BG,
+      background: isDark ? DARK_BG : '#f4f5f7',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
@@ -997,13 +997,13 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
             aria-label="Select language"
             style={{
               width: 42, height: 42, borderRadius: 15,
-              background: langOpen ? 'rgba(34,197,94,0.12)' : 'rgba(255,255,255,0.06)',
-              border: `1px solid ${langOpen ? 'rgba(34,197,94,0.32)' : 'rgba(255,255,255,0.10)'}`,
+              background: langOpen ? 'rgba(34,197,94,0.12)' : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+              border: `1px solid ${langOpen ? 'rgba(34,197,94,0.32)' : isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', transition: 'all 0.2s ease',
             }}
           >
-            <Globe size={18} color={langOpen ? GREEN : '#888'} />
+            <Globe size={18} color={langOpen ? GREEN : isDark ? '#888' : '#555'} />
           </button>
 
           {langOpen && (
@@ -1016,11 +1016,11 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
               {/* Dropdown */}
               <div style={{
                 position: 'absolute', top: 50, left: 0,
-                background: '#151518',
-                border: '1px solid rgba(255,255,255,0.11)',
+                background: isDark ? '#151518' : '#fff',
+                border: `1px solid ${isDark ? 'rgba(255,255,255,0.11)' : 'rgba(0,0,0,0.11)'}`,
                 borderRadius: 18,
                 overflow: 'hidden',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.70), 0 4px 16px rgba(0,0,0,0.50)',
+                boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.70), 0 4px 16px rgba(0,0,0,0.50)' : '0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)',
                 zIndex: 50, minWidth: 196,
               }}>
                 {LANGUAGES.map((l, i) => (
@@ -1032,12 +1032,12 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
                       display: 'flex', alignItems: 'center', gap: 10,
                       background: l.code === lang ? 'rgba(34,197,94,0.10)' : 'transparent',
                       border: 'none',
-                      borderTop: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                      borderTop: i > 0 ? `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}` : 'none',
                       cursor: 'pointer', textAlign: 'left',
                     }}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 700, color: l.code === lang ? GREEN : '#e5e7eb', flex: 1 }}>{l.nativeName}</span>
-                    <span style={{ fontSize: 10, color: '#555' }}>{l.name}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: l.code === lang ? GREEN : isDark ? '#e5e7eb' : '#111', flex: 1 }}>{l.nativeName}</span>
+                    <span style={{ fontSize: 10, color: isDark ? '#555' : '#888' }}>{l.name}</span>
                     {l.code === lang && <CheckCircle2 size={13} color={GREEN} style={{ flexShrink: 0 }} />}
                   </button>
                 ))}
@@ -1052,8 +1052,8 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
           aria-label="Toggle theme"
           style={{
             width: 42, height: 42, borderRadius: 15,
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.10)',
+            background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)'}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', transition: 'all 0.2s ease',
           }}
@@ -1129,7 +1129,7 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
               onClick={() => { setFading(true); setTimeout(() => { setFeatureIdx(i); setFading(false); }, 280); }}
               style={{
                 height: 4, width: i === featureIdx ? 22 : 5, borderRadius: 99,
-                background: i === featureIdx ? GREEN : 'rgba(255,255,255,0.20)',
+                background: i === featureIdx ? GREEN : isDark ? 'rgba(255,255,255,0.20)' : 'rgba(0,0,0,0.18)',
                 border: 'none', cursor: 'pointer', padding: 0,
                 transition: 'all 0.35s cubic-bezier(0.34,1.56,0.64,1)',
               }}
@@ -1155,7 +1155,7 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
             {feat.tag}
           </span>
           <p style={{
-            fontSize: 22, fontWeight: 900, color: '#fff',
+            fontSize: 22, fontWeight: 900, color: isDark ? '#fff' : '#0f172a',
             letterSpacing: '-0.03em', lineHeight: 1.2,
             margin: 0, whiteSpace: 'pre-line',
           }}>
@@ -1184,7 +1184,7 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}
         >
-          Create Free Account
+          {t('createAccount')}
           <ArrowRight size={18} />
         </button>
         <button
@@ -1192,14 +1192,14 @@ const DemoSection: React.FC<{ onGetStarted: (mode: 'signin' | 'signup') => void 
           style={{
             width: '100%', padding: '14px',
             borderRadius: 16,
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            color: '#bbb', fontSize: 14, fontWeight: 600,
+            background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.09)'}`,
+            color: isDark ? '#bbb' : '#666', fontSize: 14, fontWeight: 600,
             cursor: 'pointer',
           }}
         >
-          Already have an account?{' '}
-          <strong style={{ color: '#fff', fontWeight: 800 }}>Sign In</strong>
+          {t('alreadyHaveAccount')}{' '}
+          <strong style={{ color: isDark ? '#fff' : '#111', fontWeight: 800 }}>{t('signIn')}</strong>
         </button>
       </div>
     </div>
