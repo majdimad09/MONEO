@@ -37,30 +37,31 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 text-slate-500 hover:text-slate-600 rounded-lg transition-colors"
+            className="p-1 rounded-lg transition-colors cursor-pointer"
+            style={{ color: colors.textMuted }}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <h3 className="text-base font-bold text-slate-800 mb-1">
+        <h3 className="text-base font-bold mb-1" style={{ color: colors.textPrimary }}>
           Delete Transaction?
         </h3>
-        <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+        <p className="text-xs mb-4 leading-relaxed" style={{ color: colors.textSecondary }}>
           Are you sure you want to delete this transaction? This action cannot be undone and will immediately recalculate your dashboard balance.
         </p>
 
         {/* Transaction Preview */}
         <div className="rounded-xl p-3 mb-5 space-y-1 text-xs"
           style={{ background: colors.bgSecondary, border: `1px solid ${colors.border}` }}>
-          <div className="flex items-center justify-between font-bold text-slate-700 text-xs sm:text-sm">
+          <div className="flex items-center justify-between font-bold text-xs sm:text-sm" style={{ color: colors.textPrimary }}>
             <span className="truncate">{transaction.description}</span>
             <span className={`font-mono flex-shrink-0 ${transaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
               {transaction.type === 'income' ? '+' : '-'}
               {formatCurrency(transaction.amount, currency)}
             </span>
           </div>
-          <div className="flex items-center justify-between text-slate-500 text-[11px] font-medium">
+          <div className="flex items-center justify-between text-[11px] font-medium" style={{ color: colors.textMuted }}>
             <span>Category: {transaction.category}</span>
             <span>{formatDate(transaction.date)}</span>
           </div>
@@ -71,7 +72,8 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 rounded-lg transition-colors"
+            className="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            style={{ color: colors.textSecondary }}
           >
             Cancel
           </button>

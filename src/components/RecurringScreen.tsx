@@ -138,7 +138,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
         {!showForm && (
           <button
             onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
-            className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-3 py-1.5 rounded-xl btn-blue"
+            className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-3 py-1.5 rounded-xl btn-primary"
           >
             <Plus size={14} /> Add
           </button>
@@ -246,7 +246,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
 
           <div className="flex gap-2">
             <button onClick={handleSubmit}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer flex items-center justify-center gap-1.5">
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer flex items-center justify-center gap-1.5">
               <Check size={15} /> {editingId ? 'Save Changes' : 'Add'}
             </button>
             <button onClick={cancel}
@@ -271,7 +271,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
           </p>
           <button
             onClick={() => { setShowForm(true); setForm(emptyForm); }}
-            className="btn-blue px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2"
+            className="btn-primary px-6 py-2.5 rounded-xl text-sm cursor-pointer inline-flex items-center gap-2"
           >
             <Plus size={16} /> Add First Payment
           </button>

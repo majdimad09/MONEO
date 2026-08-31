@@ -157,12 +157,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── BALANCE HERO CARD ─────────────────────────────────── */}
       <div className="px-4 pb-3 stagger-1">
         <div
-          className="balance-card"
-          style={{ padding: '22px 20px 20px' }}
+          className={isDark ? 'balance-card' : ''}
+          style={isDark ? { padding: '22px 20px 20px' } : {
+            padding: '22px 20px 20px',
+            background: '#ffffff',
+            borderRadius: 28,
+            border: '1.5px solid rgba(99,102,241,0.14)',
+            boxShadow: '0 4px 32px rgba(99,102,241,0.08), 0 1px 0 rgba(255,255,255,0.80) inset',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
         >
           {/* Month net badge */}
           <div className="flex items-center justify-between mb-1.5">
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: 'rgba(255,255,255,0.38)' }}>
+            <p style={{
+              fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em',
+              color: isDark ? 'rgba(255,255,255,0.38)' : colors.brand,
+            }}>
               {t('totalBalance')}
             </p>
             {transactions.length > 0 && (
@@ -170,9 +181,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 3,
                   fontSize: 10, fontWeight: 700,
-                  color: monthNet >= 0 ? '#34d399' : '#f87171',
-                  background: monthNet >= 0 ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)',
-                  border: `1px solid ${monthNet >= 0 ? 'rgba(52,211,153,0.32)' : 'rgba(248,113,113,0.32)'}`,
+                  color: monthNet >= 0 ? (isDark ? '#34d399' : '#059669') : (isDark ? '#f87171' : '#dc2626'),
+                  background: monthNet >= 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.10)',
+                  border: `1px solid ${monthNet >= 0 ? 'rgba(16,185,129,0.28)' : 'rgba(239,68,68,0.25)'}`,
                   borderRadius: 99, padding: '2px 8px',
                 }}
               >
@@ -190,10 +201,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 fontWeight: 900,
                 letterSpacing: '-0.05em',
                 lineHeight: 1,
-                color: isPositive ? '#ffffff' : '#f87171',
+                color: isPositive
+                  ? (isDark ? '#ffffff' : colors.textPrimary)
+                  : (isDark ? '#f87171' : '#dc2626'),
                 fontFeatureSettings: '"tnum"',
                 display: 'block',
-                textShadow: isPositive ? '0 2px 20px rgba(255,255,255,0.10)' : 'none',
+                textShadow: isDark && isPositive ? '0 2px 20px rgba(255,255,255,0.10)' : 'none',
               }}
             >
               {isPositive ? '' : '−'}{formatCurrency(Math.abs(balance), currency)}

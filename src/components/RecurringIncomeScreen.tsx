@@ -94,7 +94,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer btn-blue text-xs font-bold"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer btn-primary text-xs font-bold"
         >
           <Plus size={13} /> Add
         </button>
@@ -190,7 +190,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
           <button
             onClick={saveForm}
             disabled={!form.name.trim() || !form.amount || parseFloat(String(form.amount)) <= 0}
-            className="w-full py-2.5 rounded-xl text-sm font-bold btn-blue cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl text-sm font-bold btn-primary cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
           >
             <Check size={14} /> {editId ? 'Save Changes' : 'Add Income'}
           </button>
@@ -208,7 +208,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
           <p className="text-xs mb-4" style={{ color: colors.textMuted }}>
             Add your salary or any income you receive regularly so Moneo can track it automatically.
           </p>
-          <button onClick={openAdd} className="btn-blue px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer">
+          <button onClick={openAdd} className="btn-primary px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer">
             Add Recurring Income
           </button>
         </div>

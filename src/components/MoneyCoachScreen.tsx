@@ -87,7 +87,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
 
       {/* Header */}
       <div className="flex items-center gap-3 pt-1">
-        <button onClick={() => onNavigate('insights')} className="cursor-pointer text-slate-500 hover:text-slate-600">
+        <button onClick={() => onNavigate('insights')} className="cursor-pointer" style={{ color: colors.textMuted }}>
           <ChevronLeft size={20} />
         </button>
         <div className="flex items-center gap-2">
@@ -98,8 +98,8 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
             <Lightbulb size={16} style={{ color: '#fbbf24' }} />
           </div>
           <div>
-            <h1 className="text-base font-bold text-slate-900 leading-none">Money Coach</h1>
-            <p className="text-[10px] text-slate-500 mt-0.5">Insights based on your real data</p>
+            <h1 className="text-base font-bold leading-none" style={{ color: colors.textPrimary }}>Money Coach</h1>
+            <p className="text-[10px] mt-0.5" style={{ color: colors.textMuted }}>Insights based on your real data</p>
           </div>
         </div>
       </div>
@@ -119,8 +119,8 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
               >
                 <DollarSign size={15} className="flex-shrink-0" style={{ color: '#34d399' }} />
                 <div className="flex-1">
-                  <p className="text-xs font-semibold text-slate-700">{r.name}</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-xs font-semibold" style={{ color: colors.textPrimary }}>{r.name}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                     {r.days === 0 ? 'Expected today' : r.days === 1 ? 'Expected tomorrow' : `Expected in ${r.days} days`}
                   </p>
                 </div>
@@ -135,8 +135,8 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
               >
                 <CreditCard size={15} className="flex-shrink-0" style={{ color: '#f87171' }} />
                 <div className="flex-1">
-                  <p className="text-xs font-semibold text-slate-700">{s.name}</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-xs font-semibold" style={{ color: colors.textPrimary }}>{s.name}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                     {s.days === 0 ? 'Due today' : s.days === 1 ? 'Due tomorrow' : `Due in ${s.days} days`}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
           </p>
           <div className="card-dark rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-semibold text-slate-700">This month</p>
+              <p className="text-sm font-semibold" style={{ color: colors.textSecondary }}>This month</p>
               <p className="text-sm font-bold" style={{
                 color: budgetPct >= 100 ? '#ef4444' : budgetPct >= 80 ? '#f97316' : '#34d399'
               }}>
@@ -171,7 +171,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
                 }}
               />
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs" style={{ color: colors.textMuted }}>
               {formatCurrency(thisMonthExpenses, currency)} of {formatCurrency(monthlyBudget, currency)} spent
               {budgetPct >= 90 && ' · You\'re close to your limit'}
             </p>
@@ -189,9 +189,9 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
             className="rounded-2xl px-4 py-8 text-center"
             style={{ background: colors.bgCard, border: `1px solid ${colors.borderStrong}` }}
           >
-            <Lightbulb size={28} className="mx-auto mb-3 text-slate-600" />
-            <p className="text-sm font-semibold text-slate-400 mb-1">Not enough data yet</p>
-            <p className="text-xs text-slate-600">
+            <Lightbulb size={28} className="mx-auto mb-3" style={{ color: colors.textMuted }} />
+            <p className="text-sm font-semibold mb-1" style={{ color: colors.textSecondary }}>Not enough data yet</p>
+            <p className="text-xs" style={{ color: colors.textMuted }}>
               Add more transactions across a few weeks so Moneo can detect meaningful patterns.
             </p>
           </div>
@@ -208,7 +208,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
                 >
                   <div className="flex items-start gap-3">
                     <Icon size={15} className="flex-shrink-0 mt-0.5" style={{ color: c.icon }} />
-                    <p className="text-xs text-slate-700 leading-relaxed">{ins.text}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: colors.textSecondary }}>{ins.text}</p>
                   </div>
                 </div>
               );
@@ -218,7 +218,7 @@ export const MoneyCoachScreen: React.FC<MoneyCoachScreenProps> = ({
       </div>
 
       {/* ── Disclaimer ───────────────────────────────────────── */}
-      <p className="text-center text-[10px] text-slate-700 px-4">
+      <p className="text-center text-[10px] px-4" style={{ color: colors.textMuted }}>
         Moneo's observations are based on your recorded data and are not financial advice.
       </p>
 

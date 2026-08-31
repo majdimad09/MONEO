@@ -1,5 +1,6 @@
 import React from 'react';
 import { Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface PremiumGateProps {
   isPremium: boolean;
@@ -12,6 +13,7 @@ interface PremiumGateProps {
 export const PremiumGate: React.FC<PremiumGateProps> = ({
   isPremium, feature, description, onUpgrade, children,
 }) => {
+  const { colors } = useTheme();
   if (isPremium) return <>{children}</>;
 
   return (
@@ -39,16 +41,16 @@ export const PremiumGate: React.FC<PremiumGateProps> = ({
         </span>
       </div>
 
-      <h2 className="text-xl font-bold text-slate-900 mb-3" style={{ letterSpacing: '-0.01em' }}>
+      <h2 className="text-xl font-bold mb-3" style={{ letterSpacing: '-0.01em', color: colors.textPrimary }}>
         Unlock {feature}
       </h2>
-      <p className="text-sm text-slate-400 leading-relaxed max-w-xs mb-8">
+      <p className="text-sm leading-relaxed max-w-xs mb-8" style={{ color: colors.textSecondary }}>
         {description}
       </p>
 
       <button
         onClick={onUpgrade}
-        className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-slate-900 cursor-pointer transition-all"
+        className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white cursor-pointer transition-all"
         style={{
           background: 'linear-gradient(135deg, #7c3aed, #8b5cf6)',
           boxShadow: '0 4px 20px rgba(139,92,246,0.4)',
@@ -57,7 +59,7 @@ export const PremiumGate: React.FC<PremiumGateProps> = ({
         Upgrade to Premium <ArrowRight size={15} />
       </button>
 
-      <p className="text-xs text-slate-600 mt-4">$1.99 / month · Cancel anytime</p>
+      <p className="text-xs mt-4" style={{ color: colors.textMuted }}>$1.99 / month · Cancel anytime</p>
     </div>
   );
 };
