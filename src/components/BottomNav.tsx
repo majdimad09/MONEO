@@ -25,24 +25,26 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate })
   const communityActive = COMMUNITY_VIEWS.includes(currentView);
   const settingsActive  = SETTINGS_VIEWS.includes(currentView);
 
-  const accent = colors.accent;
+  const accent   = colors.accent;
+  const inactive = colors.textMuted;
 
   return (
     <div className="bottom-nav-bar">
-      <NavBtn label={t('navHome')}      Icon={Home}      active={homeActive}      accent={accent} isDark={isDark} onClick={() => onNavigate('home')} />
-      <NavBtn label={t('navInsights')}  Icon={Lightbulb} active={insightsActive}  accent={accent} isDark={isDark} onClick={() => onNavigate('insights')} />
-      <NavBtn label={t('budget')}       Icon={Wallet}    active={budgetActive}    accent={accent} isDark={isDark} onClick={() => onNavigate('budget')} />
-      <NavBtn label={t('navCommunity')} Icon={Users}     active={communityActive} accent={accent} isDark={isDark} onClick={() => onNavigate('community')} />
-      <NavBtn label={t('settings')}     Icon={Settings}  active={settingsActive}  accent={accent} isDark={isDark} onClick={() => onNavigate('settings')} />
+      <NavBtn label={t('navHome')}      Icon={Home}      active={homeActive}      accent={accent} inactive={inactive} isDark={isDark} onClick={() => onNavigate('home')} />
+      <NavBtn label={t('navInsights')}  Icon={Lightbulb} active={insightsActive}  accent={accent} inactive={inactive} isDark={isDark} onClick={() => onNavigate('insights')} />
+      <NavBtn label={t('budget')}       Icon={Wallet}    active={budgetActive}    accent={accent} inactive={inactive} isDark={isDark} onClick={() => onNavigate('budget')} />
+      <NavBtn label={t('navCommunity')} Icon={Users}     active={communityActive} accent={accent} inactive={inactive} isDark={isDark} onClick={() => onNavigate('community')} />
+      <NavBtn label={t('settings')}     Icon={Settings}  active={settingsActive}  accent={accent} inactive={inactive} isDark={isDark} onClick={() => onNavigate('settings')} />
     </div>
   );
 };
 
-function NavBtn({ label, Icon, active, accent, isDark, onClick }: {
+function NavBtn({ label, Icon, active, accent, inactive, isDark, onClick }: {
   label: string;
   Icon: React.ElementType;
   active: boolean;
   accent: string;
+  inactive: string;
   isDark: boolean;
   onClick: () => void;
 }) {
@@ -56,7 +58,6 @@ function NavBtn({ label, Icon, active, accent, isDark, onClick }: {
         WebkitTapHighlightColor: 'transparent',
       }}
     >
-      {/* Pill background — slides in on active */}
       <div
         style={{
           width: active ? 48 : 36,
@@ -75,7 +76,7 @@ function NavBtn({ label, Icon, active, accent, isDark, onClick }: {
           size={active ? 21 : 20}
           strokeWidth={active ? 2.4 : 1.8}
           style={{
-            color: active ? accent : isDark ? '#6b6d85' : '#8b91a6',
+            color: active ? accent : inactive,
             transition: 'all 0.2s ease',
             filter: active ? `drop-shadow(0 0 6px ${accent}55)` : 'none',
           }}
@@ -86,7 +87,7 @@ function NavBtn({ label, Icon, active, accent, isDark, onClick }: {
         style={{
           fontSize: 10,
           fontWeight: active ? 700 : 500,
-          color: active ? accent : isDark ? '#6b6d85' : '#8b91a6',
+          color: active ? accent : inactive,
           transition: 'all 0.2s ease',
           letterSpacing: active ? '0.01em' : '0',
         }}

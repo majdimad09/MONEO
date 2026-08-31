@@ -224,7 +224,7 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
   };
 
   const accentGreen = '#10b981';
-  const brandIndigo = isDark ? '#818cf8' : '#6366f1';
+  const brandIndigo = isDark ? '#34d399' : '#6366f1';
 
   return (
     <div className="page-enter pb-8" style={{ minHeight: '100vh' }}>
@@ -244,10 +244,10 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         {isPremium && (
           <div
             className="flex items-center gap-1 px-2.5 py-1 rounded-full"
-            style={{ background: isDark ? 'rgba(167,139,250,0.14)' : 'rgba(139,92,246,0.10)', border: `1px solid ${isDark ? 'rgba(167,139,250,0.28)' : 'rgba(139,92,246,0.25)'}` }}
+            style={{ background: isDark ? 'rgba(16,185,129,0.14)' : 'rgba(139,92,246,0.10)', border: `1px solid ${isDark ? 'rgba(16,185,129,0.28)' : 'rgba(139,92,246,0.25)'}` }}
           >
-            <Sparkles size={10} style={{ color: isDark ? '#a78bfa' : '#8b5cf6' }} />
-            <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isDark ? '#a78bfa' : '#8b5cf6' }}>Premium</span>
+            <Sparkles size={10} style={{ color: isDark ? '#34d399' : '#8b5cf6' }} />
+            <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isDark ? '#34d399' : '#8b5cf6' }}>Premium</span>
           </div>
         )}
       </div>
@@ -461,20 +461,20 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
           <div
             className="rounded-2xl p-4 text-center"
             style={{
-              background: isDark ? 'rgba(139,92,246,0.07)' : 'rgba(139,92,246,0.05)',
-              border: `1px solid ${isDark ? 'rgba(139,92,246,0.20)' : 'rgba(139,92,246,0.18)'}`,
+              background: isDark ? 'rgba(16,185,129,0.07)' : 'rgba(139,92,246,0.05)',
+              border: `1px solid ${isDark ? 'rgba(16,185,129,0.18)' : 'rgba(139,92,246,0.18)'}`,
             }}
           >
-            <Lock size={18} className="mx-auto mb-2" style={{ color: isDark ? '#a78bfa' : '#8b5cf6', opacity: 0.7 }} />
+            <Lock size={18} className="mx-auto mb-2" style={{ color: isDark ? '#34d399' : '#8b5cf6', opacity: 0.7 }} />
             <p className="text-sm font-semibold mb-0.5" style={{ color: colors.textPrimary }}>Ask anything about your money</p>
             <p className="text-xs mb-3" style={{ color: colors.textMuted }}>Upgrade to Premium to type any question</p>
             <button
               onClick={onUpgrade}
               className="px-5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-[0.97]"
               style={{
-                background: isDark ? 'rgba(167,139,250,0.18)' : 'rgba(139,92,246,0.14)',
-                border: `1px solid ${isDark ? 'rgba(167,139,250,0.32)' : 'rgba(139,92,246,0.28)'}`,
-                color: isDark ? '#a78bfa' : '#7c3aed',
+                background: isDark ? 'rgba(16,185,129,0.18)' : 'rgba(139,92,246,0.14)',
+                border: `1px solid ${isDark ? 'rgba(16,185,129,0.32)' : 'rgba(139,92,246,0.28)'}`,
+                color: isDark ? '#34d399' : '#7c3aed',
               }}
             >
               Upgrade to Premium — $1.99/mo

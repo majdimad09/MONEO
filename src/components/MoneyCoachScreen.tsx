@@ -30,8 +30,8 @@ function getColors(isDark: boolean): Record<InsightType, { bg: string; border: s
   return {
     positive: { bg: isDark ? 'rgba(16,185,129,0.16)'  : 'rgba(16,185,129,0.08)',  border: isDark ? 'rgba(16,185,129,0.32)'  : 'rgba(16,185,129,0.2)',   icon: '#34d399', text: '#6ee7b7' },
     warning:  { bg: isDark ? 'rgba(239,68,68,0.15)'   : 'rgba(239,68,68,0.07)',   border: isDark ? 'rgba(239,68,68,0.30)'   : 'rgba(239,68,68,0.2)',    icon: '#f87171', text: '#fca5a5' },
-    neutral:  { bg: isDark ? 'rgba(129,140,248,0.15)' : 'rgba(129,140,248,0.07)', border: isDark ? 'rgba(129,140,248,0.30)' : 'rgba(129,140,248,0.18)', icon: '#818cf8', text: '#c7d2fe' },
-    info:     { bg: isDark ? 'rgba(139,92,246,0.16)'  : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(139,92,246,0.32)'  : 'rgba(139,92,246,0.2)',   icon: '#a78bfa', text: '#c4b5fd' },
+    neutral:  { bg: isDark ? 'rgba(45,212,191,0.12)'   : 'rgba(129,140,248,0.07)', border: isDark ? 'rgba(45,212,191,0.28)'   : 'rgba(129,140,248,0.18)', icon: isDark ? '#2dd4bf' : '#818cf8', text: isDark ? '#5eead4' : '#c7d2fe' },
+    info:     { bg: isDark ? 'rgba(251,191,36,0.12)'   : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(251,191,36,0.28)'   : 'rgba(139,92,246,0.2)',   icon: isDark ? '#fbbf24' : '#a78bfa', text: isDark ? '#fde68a' : '#c4b5fd' },
   };
 }
 

@@ -137,7 +137,7 @@ export function AuthScreen({
     <div
       className="min-h-screen flex items-center justify-center p-5 relative overflow-hidden"
       style={{
-        background: isDark ? '#0d0d14' : '#f4f5f9',
+        background: isDark ? '#060d07' : '#f4f5f9',
       }}
     >
       {/* Background glows */}

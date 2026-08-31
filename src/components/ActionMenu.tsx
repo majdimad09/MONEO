@@ -14,8 +14,8 @@ interface ActionMenuProps {
 const ACTION_CONFIGS = [
   { id: 'expense' as ActionId, icon: ArrowDownRight, labelKey: 'addExpense' as TKey, descKey: 'descRecurring' as TKey, color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
   { id: 'income' as ActionId, icon: ArrowUpRight, labelKey: 'addIncome' as TKey, descKey: 'descRecurringIncome' as TKey, color: '#34d399', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.25)' },
-  { id: 'recurring' as ActionId, icon: RefreshCw, labelKey: 'addSubscription' as TKey, descKey: 'recurringPaymentsDesc' as TKey, color: '#818cf8', bg: 'rgba(129,140,248,0.12)', border: 'rgba(129,140,248,0.25)' },
-  { id: 'scan' as ActionId, icon: Camera, labelKey: 'loading' as TKey, descKey: 'loading' as TKey, color: '#a78bfa', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.2)', disabled: true },
+  { id: 'recurring' as ActionId, icon: RefreshCw, labelKey: 'addSubscription' as TKey, descKey: 'recurringPaymentsDesc' as TKey, color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },
+  { id: 'scan' as ActionId, icon: Camera, labelKey: 'loading' as TKey, descKey: 'loading' as TKey, color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', border: 'rgba(45,212,191,0.22)', disabled: true },
 ] as const;
 
 export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => {
@@ -30,8 +30,8 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
   const actions = [
     { id: 'expense' as ActionId, icon: ArrowDownRight, label: t('addExpense'), desc: 'Record a payment or purchase', color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
     { id: 'income' as ActionId, icon: ArrowUpRight, label: t('addIncome'), desc: 'Log salary, freelance or any inflow', color: '#34d399', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.25)' },
-    { id: 'recurring' as ActionId, icon: RefreshCw, label: t('addSubscription'), desc: t('recurringPaymentsDesc'), color: '#818cf8', bg: 'rgba(129,140,248,0.12)', border: 'rgba(129,140,248,0.25)' },
-    { id: 'scan' as ActionId, icon: Camera, label: 'Scan Receipt', desc: 'Coming soon', color: '#a78bfa', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.2)', disabled: true },
+    { id: 'recurring' as ActionId, icon: RefreshCw, label: t('addSubscription'), desc: t('recurringPaymentsDesc'), color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },
+    { id: 'scan' as ActionId, icon: Camera, label: 'Scan Receipt', desc: 'Coming soon', color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', border: 'rgba(45,212,191,0.22)', disabled: true },
   ];
 
   return (
