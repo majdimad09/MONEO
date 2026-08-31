@@ -32,10 +32,10 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
 
 function getInsightColors(isDark: boolean): Record<InsightType, { bg: string; border: string; icon: string }> {
   return {
-    positive: { bg: isDark ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.06)', border: isDark ? 'rgba(16,185,129,0.28)' : 'rgba(16,185,129,0.16)', icon: '#10b981' },
-    warning:  { bg: isDark ? 'rgba(239,68,68,0.12)'  : 'rgba(239,68,68,0.05)',  border: isDark ? 'rgba(239,68,68,0.28)'  : 'rgba(239,68,68,0.15)',  icon: '#ef4444' },
-    neutral:  { bg: isDark ? 'rgba(45,212,191,0.10)'  : 'rgba(129,140,248,0.05)', border: isDark ? 'rgba(45,212,191,0.26)'  : 'rgba(129,140,248,0.15)', icon: isDark ? '#2dd4bf' : '#818cf8' },
-    info:     { bg: isDark ? 'rgba(251,191,36,0.10)'  : 'rgba(139,92,246,0.06)',  border: isDark ? 'rgba(251,191,36,0.26)'  : 'rgba(139,92,246,0.16)',  icon: isDark ? '#fbbf24' : '#8b5cf6' },
+    positive: { bg: isDark ? 'rgba(34,197,94,0.10)'  : 'rgba(16,185,129,0.06)', border: isDark ? 'rgba(34,197,94,0.26)'  : 'rgba(16,185,129,0.16)', icon: isDark ? '#22c55e' : '#10b981' },
+    warning:  { bg: isDark ? 'rgba(239,68,68,0.10)'  : 'rgba(239,68,68,0.05)',  border: isDark ? 'rgba(239,68,68,0.26)'  : 'rgba(239,68,68,0.15)',  icon: '#ef4444' },
+    neutral:  { bg: isDark ? 'rgba(34,197,94,0.07)'  : 'rgba(129,140,248,0.05)', border: isDark ? 'rgba(34,197,94,0.20)'  : 'rgba(129,140,248,0.15)', icon: isDark ? '#4ade80' : '#818cf8' },
+    info:     { bg: isDark ? 'rgba(251,191,36,0.08)'  : 'rgba(139,92,246,0.06)',  border: isDark ? 'rgba(251,191,36,0.22)'  : 'rgba(139,92,246,0.16)',  icon: isDark ? '#fbbf24' : '#8b5cf6' },
   };
 }
 
@@ -83,9 +83,9 @@ const ToolRow: React.FC<{ tool: SectionTool; isPremium: boolean; onNavigate: (v:
             <span
               className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full flex-shrink-0"
               style={{
-                background: isDark ? 'rgba(16,185,129,0.12)' : 'linear-gradient(135deg, rgba(109,40,217,0.16), rgba(139,92,246,0.10))',
-                color: isDark ? '#34d399' : '#a78bfa',
-                border: isDark ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(139,92,246,0.25)',
+                background: isDark ? 'rgba(34,197,94,0.12)' : 'linear-gradient(135deg, rgba(109,40,217,0.16), rgba(139,92,246,0.10))',
+                color: isDark ? '#4ade80' : '#a78bfa',
+                border: isDark ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(139,92,246,0.25)',
               }}
             >
               PRO
@@ -95,7 +95,7 @@ const ToolRow: React.FC<{ tool: SectionTool; isPremium: boolean; onNavigate: (v:
         <p className="text-xs mt-0.5" style={{ color: colors.textMuted }}>{tool.desc}</p>
       </div>
       {locked
-        ? <Crown size={14} style={{ color: isDark ? '#34d399' : '#8b5cf6', flexShrink: 0 }} />
+        ? <Crown size={14} style={{ color: isDark ? '#22c55e' : '#8b5cf6', flexShrink: 0 }} />
         : <ChevronRight size={15} style={{ color: locked ? colors.textMuted : `${tool.color}80`, flexShrink: 0 }} />}
     </button>
   );
@@ -131,7 +131,7 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
     {
       label: 'PLAN',
       tools: [
-        { view: 'safe-to-spend', icon: Zap,        color: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  label: t('safeToSpend'),         desc: t('descSafeToSpend') },
+        { view: 'safe-to-spend', icon: Zap,        color: '#22c55e', iconBg: 'rgba(34,197,94,0.12)',  label: t('safeToSpend'),         desc: t('descSafeToSpend') },
         { view: 'projection',    icon: Sparkles,   color: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',  label: t('featProjectionShort'), desc: t('descProjection'),   premium: true },
         { view: 'what-if',       icon: TrendingUp, color: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', label: t('featWhatIf'),          desc: t('descWhatIf'),       premium: true },
       ],
@@ -160,8 +160,8 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           aria-label="Toggle theme"
           className="w-10 h-10 rounded-2xl flex items-center justify-center cursor-pointer transition-all"
           style={{
-            background: isDark ? 'rgba(16,185,129,0.10)' : 'rgba(99,102,241,0.08)',
-            border: `1px solid ${isDark ? 'rgba(16,185,129,0.18)' : 'rgba(99,102,241,0.14)'}`,
+            background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(99,102,241,0.08)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(99,102,241,0.14)'}`,
           }}
         >
           {isDark
@@ -276,28 +276,28 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           className="w-full rounded-3xl p-5 text-left cursor-pointer transition-all active:scale-[0.98]"
           style={{
             background: isDark
-              ? 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(52,211,153,0.10))'
+              ? 'linear-gradient(135deg, rgba(34,197,94,0.18), rgba(74,222,128,0.10))'
               : 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
-            border: isDark ? '1px solid rgba(16,185,129,0.28)' : 'none',
-            boxShadow: isDark ? '0 4px 24px rgba(16,185,129,0.14)' : '0 8px 32px rgba(109,40,217,0.40)',
+            border: isDark ? '1px solid rgba(34,197,94,0.30)' : 'none',
+            boxShadow: isDark ? '0 4px 24px rgba(34,197,94,0.14)' : '0 8px 32px rgba(109,40,217,0.40)',
           }}
         >
           <div className="flex items-center gap-3.5">
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-              style={{ background: isDark ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.15)' }}
+              style={{ background: isDark ? 'rgba(34,197,94,0.20)' : 'rgba(255,255,255,0.15)' }}
             >
-              <Crown size={22} style={{ color: isDark ? '#34d399' : '#ffffff' }} />
+              <Crown size={22} style={{ color: isDark ? '#22c55e' : '#ffffff' }} />
             </div>
             <div className="flex-1">
               <p className="text-[15px] font-bold leading-tight" style={{ color: isDark ? colors.textPrimary : '#ffffff', letterSpacing: '-0.01em' }}>
                 Unlock Moneo Premium
               </p>
-              <p className="text-xs mt-1" style={{ color: isDark ? '#6ee7b7' : 'rgba(255,255,255,0.80)' }}>
+              <p className="text-xs mt-1" style={{ color: isDark ? '#4ade80' : 'rgba(255,255,255,0.80)' }}>
                 Advanced insights, AI analysis & more — $1.99/mo
               </p>
             </div>
-            <ChevronRight size={18} style={{ color: isDark ? '#34d399' : 'rgba(255,255,255,0.70)', flexShrink: 0 }} />
+            <ChevronRight size={18} style={{ color: isDark ? '#22c55e' : 'rgba(255,255,255,0.70)', flexShrink: 0 }} />
           </div>
         </button>
       )}

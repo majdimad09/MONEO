@@ -120,7 +120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           className="w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-bold flex-shrink-0"
           style={{
             background: isDark
-              ? 'linear-gradient(135deg, rgba(16,185,129,0.22), rgba(52,211,153,0.14))'
+              ? 'linear-gradient(135deg, rgba(34,197,94,0.20), rgba(74,222,128,0.12))'
               : 'linear-gradient(135deg, rgba(16,185,129,0.20), rgba(99,102,241,0.14))',
             color: colors.accent,
             border: `1.5px solid ${colors.accent}30`,
@@ -144,8 +144,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           aria-label="Toggle theme"
           className="w-10 h-10 rounded-2xl flex items-center justify-center cursor-pointer transition-all flex-shrink-0"
           style={{
-            background: isDark ? 'rgba(16,185,129,0.10)' : 'rgba(99,102,241,0.08)',
-            border: `1px solid ${isDark ? 'rgba(16,185,129,0.18)' : 'rgba(99,102,241,0.14)'}`,
+            background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(99,102,241,0.08)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(99,102,241,0.14)'}`,
           }}
         >
           {isDark
@@ -181,7 +181,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 3,
                   fontSize: 10, fontWeight: 700,
-                  color: monthNet >= 0 ? (isDark ? '#34d399' : '#059669') : (isDark ? '#f87171' : '#dc2626'),
+                  color: monthNet >= 0 ? (isDark ? '#22c55e' : '#059669') : (isDark ? '#f87171' : '#dc2626'),
                   background: monthNet >= 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.10)',
                   border: `1px solid ${monthNet >= 0 ? 'rgba(16,185,129,0.28)' : 'rgba(239,68,68,0.25)'}`,
                   borderRadius: 99, padding: '2px 8px',
@@ -259,8 +259,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {([
             { label: t('expenseType'), icon: ArrowDownRight, color: '#ef4444', grad: 'linear-gradient(135deg,#b91c1c,#ef4444)', shadow: 'rgba(239,68,68,0.32)', onClick: onAddExpense },
             { label: t('incomeType'),  icon: ArrowUpRight,   color: '#10b981', grad: 'linear-gradient(135deg,#047857,#10b981)', shadow: 'rgba(16,185,129,0.32)',  onClick: onAddIncome },
-            { label: t('statisticsTitle'), icon: BarChart2,  color: isDark ? '#34d399' : '#6366f1', grad: isDark ? 'linear-gradient(135deg,#047857,#34d399)' : 'linear-gradient(135deg,#4338ca,#6366f1)', shadow: isDark ? 'rgba(52,211,153,0.30)' : 'rgba(99,102,241,0.30)',  onClick: onNavigateStats },
-            { label: t('budget'),      icon: Wallet,         color: isDark ? '#6ee7b7' : '#8b5cf6', grad: isDark ? 'linear-gradient(135deg,#065f46,#10b981)' : 'linear-gradient(135deg,#6d28d9,#8b5cf6)', shadow: isDark ? 'rgba(16,185,129,0.28)' : 'rgba(139,92,246,0.30)', onClick: onNavigateBudget },
+            { label: t('statisticsTitle'), icon: BarChart2,  color: isDark ? '#4ade80' : '#6366f1', grad: isDark ? 'linear-gradient(135deg,#166534,#22c55e)' : 'linear-gradient(135deg,#4338ca,#6366f1)', shadow: isDark ? 'rgba(34,197,94,0.30)' : 'rgba(99,102,241,0.30)',  onClick: onNavigateStats },
+            { label: t('budget'),      icon: Wallet,         color: isDark ? '#86efac' : '#8b5cf6', grad: isDark ? 'linear-gradient(135deg,#14532d,#22c55e)' : 'linear-gradient(135deg,#6d28d9,#8b5cf6)', shadow: isDark ? 'rgba(34,197,94,0.28)' : 'rgba(139,92,246,0.30)', onClick: onNavigateBudget },
           ] as { label: string; icon: React.ElementType; color: string; grad: string; shadow: string; onClick: () => void }[]).map(({ label, icon: Icon, grad, shadow, onClick }) => (
             <button
               key={label}
@@ -269,7 +269,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={{
                 background: isDark ? colors.bgCard : '#ffffff',
                 border: `1px solid ${isDark ? colors.border : 'rgba(99,102,241,0.10)'}`,
-                boxShadow: isDark ? `0 2px 12px rgba(16,185,129,0.04)` : '0 2px 12px rgba(99,102,241,0.06)',
+                boxShadow: isDark ? `0 2px 12px rgba(0,0,0,0.20)` : '0 2px 12px rgba(99,102,241,0.06)',
               }}
             >
               <div
@@ -308,7 +308,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div style={{ position: 'relative', flexShrink: 0, width: 72, height: 72 }}>
             <svg width={72} height={72} style={{ transform: 'rotate(-90deg)' }}>
               <circle cx={36} cy={36} r={30} fill="none"
-                stroke={isDark ? 'rgba(16,185,129,0.12)' : 'rgba(0,0,0,0.07)'}
+                stroke={isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.07)'}
                 strokeWidth={7} />
               <circle cx={36} cy={36} r={30} fill="none"
                 stroke={level.color} strokeWidth={7} strokeLinecap="round"
@@ -379,7 +379,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
             <div
               className="rounded-full overflow-hidden mb-3"
-              style={{ height: 8, background: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(99,102,241,0.08)' }}
+              style={{ height: 8, background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(99,102,241,0.08)' }}
             >
               <div
                 className="h-full rounded-full"
@@ -419,8 +419,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               const typeColors: Record<string, { bg: string; border: string; icon: string; accent: string }> = {
                 positive: { bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.20)', icon: '#10b981', accent: '#10b981' },
                 warning:  { bg: 'rgba(239,68,68,0.07)',   border: 'rgba(239,68,68,0.18)',  icon: '#ef4444', accent: '#ef4444' },
-                neutral:  { bg: isDark ? 'rgba(45,212,191,0.08)'  : 'rgba(99,102,241,0.08)',  border: isDark ? 'rgba(45,212,191,0.22)'  : 'rgba(99,102,241,0.20)',  icon: isDark ? '#2dd4bf' : '#6366f1', accent: isDark ? '#2dd4bf' : '#6366f1' },
-                info:     { bg: isDark ? 'rgba(251,191,36,0.08)'  : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(251,191,36,0.22)'  : 'rgba(139,92,246,0.20)',  icon: isDark ? '#fbbf24' : '#8b5cf6', accent: isDark ? '#fbbf24' : '#8b5cf6' },
+                neutral:  { bg: isDark ? 'rgba(34,197,94,0.07)'   : 'rgba(99,102,241,0.08)',  border: isDark ? 'rgba(34,197,94,0.20)'   : 'rgba(99,102,241,0.20)',  icon: isDark ? '#4ade80' : '#6366f1', accent: isDark ? '#4ade80' : '#6366f1' },
+                info:     { bg: isDark ? 'rgba(251,191,36,0.07)'  : 'rgba(139,92,246,0.08)',  border: isDark ? 'rgba(251,191,36,0.20)'  : 'rgba(139,92,246,0.20)',  icon: isDark ? '#fbbf24' : '#8b5cf6', accent: isDark ? '#fbbf24' : '#8b5cf6' },
               };
               const tc   = typeColors[ins.type] || typeColors.info;
               const Icon = INSIGHT_ICON_MAP[ins.icon] || Info;
@@ -603,7 +603,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       {pct !== null && (
                         <div
                           className="h-[4px] rounded-full overflow-hidden"
-                          style={{ background: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.07)' }}
+                          style={{ background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }}
                         >
                           <div
                             className="h-full rounded-full transition-all duration-700"

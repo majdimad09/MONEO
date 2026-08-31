@@ -18,15 +18,15 @@ const LogoMark: React.FC<{ size: number; animated: boolean }> = ({ size, animate
       xmlns="http://www.w3.org/2000/svg"
       style={{
         filter: animated
-          ? 'drop-shadow(0 0 24px rgba(16,185,129,0.65)) drop-shadow(0 0 8px rgba(16,185,129,0.45))'
+          ? 'drop-shadow(0 0 24px rgba(34,197,94,0.65)) drop-shadow(0 0 8px rgba(34,197,94,0.45))'
           : 'none',
         transition: 'filter 0.6s ease',
       }}
     >
       <defs>
         <linearGradient id="splash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#34d399" />
-          <stop offset="100%" stopColor="#059669" />
+          <stop offset="0%" stopColor="#22c55e" />
+          <stop offset="100%" stopColor="#15803d" />
         </linearGradient>
       </defs>
       <g transform="rotate(-12, 17, 18)">
@@ -38,9 +38,9 @@ const LogoMark: React.FC<{ size: number; animated: boolean }> = ({ size, animate
         <rect x="19" y="17.5" width="9.5" height="1.8" rx="0.9" fill="white" opacity="0.24" />
         <rect x="19" y="21.5" width="11" height="1.8" rx="0.9" fill="white" opacity="0.24" />
       </g>
-      <line x1="39" y1="10" x2="51" y2="10" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" />
-      <line x1="41" y1="17" x2="51" y2="17" stroke="#34d399" strokeWidth="2" strokeLinecap="round" opacity="0.65" />
-      <line x1="43" y1="24" x2="51" y2="24" stroke="#6ee7b7" strokeWidth="1.4" strokeLinecap="round" opacity="0.35" />
+      <line x1="39" y1="10" x2="51" y2="10" stroke="#22c55e" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="41" y1="17" x2="51" y2="17" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" opacity="0.65" />
+      <line x1="43" y1="24" x2="51" y2="24" stroke="#86efac" strokeWidth="1.4" strokeLinecap="round" opacity="0.35" />
     </svg>
   );
 };
@@ -94,7 +94,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           width: 320,
           height: 320,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.14) 0%, rgba(16,185,129,0.05) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(34,197,94,0.14) 0%, rgba(34,197,94,0.05) 50%, transparent 70%)',
           opacity: glowActive ? 1 : 0,
           transition: 'opacity 0.9s ease',
           pointerEvents: 'none',

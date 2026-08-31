@@ -327,7 +327,7 @@ const EmptyState: React.FC<{ isPremium: boolean; onJoin: () => void; onCreate: (
       {/* Hero */}
       <div
         className="rounded-3xl p-6 text-center"
-        style={{ background: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(16,185,129,0.04)', border: isDark ? '1px solid rgba(16,185,129,0.22)' : '1px solid rgba(16,185,129,0.12)' }}
+        style={{ background: isDark ? 'rgba(34,197,94,0.07)' : 'rgba(16,185,129,0.04)', border: isDark ? '1px solid rgba(34,197,94,0.20)' : '1px solid rgba(16,185,129,0.12)' }}
       >
         <div
           className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4"

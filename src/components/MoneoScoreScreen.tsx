@@ -90,7 +90,7 @@ export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
       <div
         className="flex items-center gap-2 px-3.5 py-1.5 rounded-full"
         style={{
-          background: isDark ? 'rgba(16,185,129,0.10)' : 'rgba(5,150,105,0.07)',
+          background: isDark ? colors.accentSoft : 'rgba(5,150,105,0.07)',
           border: `1px solid ${colors.accent}25`,
         }}
       >

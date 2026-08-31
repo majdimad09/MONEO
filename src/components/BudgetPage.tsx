@@ -237,8 +237,8 @@ export const BudgetPage: React.FC<BudgetPageProps> = ({
             onClick={() => setShowAddLimit(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all"
             style={{
-              background: 'rgba(16,185,129,0.10)',
-              border: '1px solid rgba(16,185,129,0.22)',
+              background: colors.accentSoft,
+              border: `1px solid ${colors.accent}30`,
               color: colors.accent,
             }}
           >

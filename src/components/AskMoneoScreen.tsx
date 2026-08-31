@@ -244,10 +244,10 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
         {isPremium && (
           <div
             className="flex items-center gap-1 px-2.5 py-1 rounded-full"
-            style={{ background: isDark ? 'rgba(16,185,129,0.14)' : 'rgba(139,92,246,0.10)', border: `1px solid ${isDark ? 'rgba(16,185,129,0.28)' : 'rgba(139,92,246,0.25)'}` }}
+            style={{ background: isDark ? 'rgba(34,197,94,0.14)' : 'rgba(139,92,246,0.10)', border: `1px solid ${isDark ? 'rgba(34,197,94,0.30)' : 'rgba(139,92,246,0.25)'}` }}
           >
-            <Sparkles size={10} style={{ color: isDark ? '#34d399' : '#8b5cf6' }} />
-            <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isDark ? '#34d399' : '#8b5cf6' }}>Premium</span>
+            <Sparkles size={10} style={{ color: isDark ? '#22c55e' : '#8b5cf6' }} />
+            <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isDark ? '#22c55e' : '#8b5cf6' }}>Premium</span>
           </div>
         )}
       </div>
@@ -258,9 +258,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
           className="mx-auto mb-4 flex items-center justify-center"
           style={{
             width: 64, height: 64, borderRadius: '50%',
-            background: isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.12)',
-            border: `2px solid rgba(16,185,129,0.35)`,
-            boxShadow: '0 0 28px rgba(16,185,129,0.30)',
+            background: isDark ? 'rgba(34,197,94,0.14)' : 'rgba(16,185,129,0.12)',
+            border: `2px solid rgba(34,197,94,0.35)`,
+            boxShadow: isDark ? '0 0 28px rgba(34,197,94,0.22)' : '0 0 28px rgba(16,185,129,0.20)',
           }}
         >
           <span style={{ fontSize: 26, fontWeight: 900, color: accentGreen, letterSpacing: '-0.04em' }}>M</span>
@@ -382,9 +382,9 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
                       className="flex-shrink-0 flex items-center justify-center mt-0.5"
                       style={{
                         width: 28, height: 28, borderRadius: '50%',
-                        background: 'rgba(16,185,129,0.18)',
-                        border: '1px solid rgba(16,185,129,0.30)',
-                        boxShadow: '0 0 10px rgba(16,185,129,0.20)',
+                        background: 'rgba(34,197,94,0.16)',
+                        border: '1px solid rgba(34,197,94,0.30)',
+                        boxShadow: '0 0 10px rgba(34,197,94,0.18)',
                       }}
                     >
                       <span style={{ fontSize: 11, fontWeight: 900, color: accentGreen }}>M</span>
@@ -461,20 +461,20 @@ export const AskMoneoScreen: React.FC<AskMoneoProps> = ({
           <div
             className="rounded-2xl p-4 text-center"
             style={{
-              background: isDark ? 'rgba(16,185,129,0.07)' : 'rgba(139,92,246,0.05)',
-              border: `1px solid ${isDark ? 'rgba(16,185,129,0.18)' : 'rgba(139,92,246,0.18)'}`,
+              background: isDark ? 'rgba(34,197,94,0.07)' : 'rgba(139,92,246,0.05)',
+              border: `1px solid ${isDark ? 'rgba(34,197,94,0.18)' : 'rgba(139,92,246,0.18)'}`,
             }}
           >
-            <Lock size={18} className="mx-auto mb-2" style={{ color: isDark ? '#34d399' : '#8b5cf6', opacity: 0.7 }} />
+            <Lock size={18} className="mx-auto mb-2" style={{ color: isDark ? '#22c55e' : '#8b5cf6', opacity: 0.7 }} />
             <p className="text-sm font-semibold mb-0.5" style={{ color: colors.textPrimary }}>Ask anything about your money</p>
             <p className="text-xs mb-3" style={{ color: colors.textMuted }}>Upgrade to Premium to type any question</p>
             <button
               onClick={onUpgrade}
               className="px-5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-[0.97]"
               style={{
-                background: isDark ? 'rgba(16,185,129,0.18)' : 'rgba(139,92,246,0.14)',
-                border: `1px solid ${isDark ? 'rgba(16,185,129,0.32)' : 'rgba(139,92,246,0.28)'}`,
-                color: isDark ? '#34d399' : '#7c3aed',
+                background: isDark ? 'rgba(34,197,94,0.18)' : 'rgba(139,92,246,0.14)',
+                border: `1px solid ${isDark ? 'rgba(34,197,94,0.32)' : 'rgba(139,92,246,0.28)'}`,
+                color: isDark ? '#22c55e' : '#7c3aed',
               }}
             >
               Upgrade to Premium — $1.99/mo

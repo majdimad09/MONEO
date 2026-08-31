@@ -199,7 +199,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
                 {
                   label: budgetRemaining < 0 ? t('overBudget') : t('remaining'),
                   value: formatCurrency(Math.abs(budgetRemaining), currency),
-                  color: budgetRemaining < 0 ? '#ef4444' : '#34d399',
+                  color: budgetRemaining < 0 ? '#ef4444' : '#22c55e',
                 },
               ].map(stat => (
                 <div key={stat.label} className="rounded-2xl p-2.5 text-center"
@@ -395,8 +395,8 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}>
-              <Target size={17} style={{ color: '#34d399' }} />
+              style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.22)' }}>
+              <Target size={17} style={{ color: '#22c55e' }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('savingGoalsTitle')}</p>

@@ -530,7 +530,7 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
 
             <button
               onClick={() => onComplete(buildCheckIn())}
-              style={{ width: '100%', padding: '15px', borderRadius: 14, background: '#34d399', color: '#052e16', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              style={{ width: '100%', padding: '15px', borderRadius: 14, background: '#22c55e', color: '#052e16', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               <Sparkles size={16} /> Let's go!
             </button>

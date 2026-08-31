@@ -277,7 +277,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               className={`w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2 transition-all ${
                 profileSaved ? '' : 'btn-primary'
               }`}
-              style={profileSaved ? { background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#34d399' } : {}}
+              style={profileSaved ? { background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.32)', color: '#22c55e' } : {}}
             >
               {profileSaved ? <><Check size={15} /> {t('changesSaved')}</> : t('saveChanges')}
             </button>
@@ -356,8 +356,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           {/* Email notifications */}
           <div className="flex items-center gap-3.5 px-4 py-3.5">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}>
-              <Mail size={17} style={{ color: '#34d399' }} />
+              style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.22)' }}>
+              <Mail size={17} style={{ color: '#22c55e' }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('emailNotifications')}</p>
@@ -498,8 +498,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
           <RowButton
             icon={Download}
-            iconColor="#34d399"
-            iconBg="rgba(52,211,153,0.1)"
+            iconColor="#22c55e"
+            iconBg="rgba(34,197,94,0.12)"
             label={t('exportCsv')}
             desc={t('exportDesc').replace('{n}', String(transactionCount))}
             onClick={onExportCSV}
@@ -582,8 +582,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
           >
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}>
-              <MessageCircle size={17} style={{ color: '#34d399' }} />
+              style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.22)' }}>
+              <MessageCircle size={17} style={{ color: '#22c55e' }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('contactSupport')}</p>

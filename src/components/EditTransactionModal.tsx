@@ -112,7 +112,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
       style={{ background: 'rgba(5,10,20,0.8)', backdropFilter: 'blur(6px)' }}>
       <div className="fixed inset-0" onClick={onClose} />
       <div className="relative w-full max-w-lg rounded-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-200"
-        style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(16,185,129,0.08)' }}>
+        style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.20)' }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${colors.border}`, background: colors.bgSecondary }}>

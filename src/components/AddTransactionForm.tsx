@@ -140,11 +140,11 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           onClick={() => handleTabChange('income')}
           className="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all"
           style={activeTab === 'income'
-            ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: '#34d399' }
+            ? { background: colors.bgCard, border: `1px solid ${colors.borderStrong}`, color: colors.accent }
             : { color: colors.textSecondary }}
         >
           <div className="w-6 h-6 rounded-lg flex items-center justify-center"
-            style={{ background: activeTab === 'income' ? 'rgba(52,211,153,0.12)' : 'transparent', color: activeTab === 'income' ? '#34d399' : colors.textMuted }}>
+            style={{ background: activeTab === 'income' ? colors.accentSoft : 'transparent', color: activeTab === 'income' ? colors.accent : colors.textMuted }}>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </div>
           <span>{t('addIncome')}</span>
@@ -163,7 +163,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
 
         {successMessage && (
           <div className="flex items-center gap-2 p-3 text-green-400 text-xs font-semibold rounded-xl animate-in fade-in duration-200"
-            style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)' }}>
+            style={{ background: colors.accentSoft, border: `1px solid ${colors.accent}40` }}>
             <Check className="w-4 h-4 flex-shrink-0" />
             <span>{successMessage}</span>
           </div>

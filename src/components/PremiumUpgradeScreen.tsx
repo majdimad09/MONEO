@@ -234,10 +234,10 @@ function PremiumActiveView({ startDate, showCancel, cancelling, onShowCancel, on
         </div>
         <div
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
-          style={{ background: isDark ? 'rgba(16,185,129,0.18)' : 'rgba(16,185,129,0.1)', border: isDark ? '1px solid rgba(16,185,129,0.35)' : '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: isDark ? 'rgba(34,197,94,0.18)' : 'rgba(16,185,129,0.1)', border: isDark ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(16,185,129,0.2)' }}
         >
-          <div className="w-2 h-2 rounded-full" style={{ background: '#10b981' }} />
-          <span className="text-xs font-bold" style={{ color: isDark ? '#34d399' : '#059669' }}>Active</span>
+          <div className="w-2 h-2 rounded-full" style={{ background: isDark ? '#22c55e' : '#10b981' }} />
+          <span className="text-xs font-bold" style={{ color: isDark ? '#22c55e' : '#059669' }}>Active</span>
         </div>
         <h1 className="text-2xl font-bold mb-1" style={{ color: colors.textPrimary }}>Moneo Premium</h1>
         <p className="text-sm" style={{ color: colors.textSecondary }}>All features unlocked</p>

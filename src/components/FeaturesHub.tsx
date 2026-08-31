@@ -44,7 +44,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
     cards: [
       { icon: Wallet,       iconColor: '#10b981', iconBg: 'rgba(16,185,129,0.12)',  labelKey: 'budget',              descKey: 'descBudget',           view: 'budget' },
       { icon: Repeat,       iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featRecurring',       descKey: 'descRecurring',        view: 'recurring' },
-      { icon: PiggyBank,    iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'savingGoalsTitle',    descKey: 'descSavingsGoals',     view: 'savings' },
+      { icon: PiggyBank,    iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.12)',  labelKey: 'savingGoalsTitle',    descKey: 'descSavingsGoals',     view: 'savings' },
       { icon: DollarSign,   iconColor: '#fbbf24', iconBg: 'rgba(251,191,36,0.12)',  labelKey: 'featRecurringIncome', descKey: 'descRecurringIncome',  view: 'recurring-income' },
     ],
   },
@@ -60,7 +60,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
   {
     titleKey: 'sectionPlanningTools',
     cards: [
-      { icon: Zap,         iconColor: '#34d399', iconBg: 'rgba(52,211,153,0.12)',  labelKey: 'safeToSpend',         descKey: 'descSafeToSpend',      view: 'safe-to-spend' },
+      { icon: Zap,         iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.12)',  labelKey: 'safeToSpend',         descKey: 'descSafeToSpend',      view: 'safe-to-spend' },
       { icon: CalendarDays,iconColor: '#818cf8', iconBg: 'rgba(129,140,248,0.12)', labelKey: 'featTimeline',        descKey: 'descTimeline',         view: 'activity' },
       { icon: TrendingUp,  iconColor: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)',  labelKey: 'featWhatIf',          descKey: 'descWhatIf',           view: 'what-if', premium: true },
       { icon: Target,      iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', labelKey: 'featProjectionShort', descKey: 'descProjection',       view: 'projection', premium: true },
