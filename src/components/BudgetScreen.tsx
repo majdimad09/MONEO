@@ -1,13 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import {
   Wallet, Plus, Edit2, Trash2, Check, X, AlertTriangle, ChevronRight,
-  RefreshCw, Target, TrendingUp,
+  RefreshCw, Target, TrendingUp, ChevronLeft,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface BudgetScreenProps {
   monthlyBudget: number;
@@ -39,6 +40,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
 }) => {
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
+  const { goBack } = useNavigation();
   const [editBudget, setEditBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? String(monthlyBudget) : '');
 
@@ -119,8 +121,11 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center gap-3">
+        <button onClick={goBack} className="cursor-pointer" style={{ color: colors.textMuted }}>
+          <ChevronLeft size={20} />
+        </button>
+        <div className="flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: colors.textMuted }}>{monthLabel}</p>
           <h2 className="text-xl font-bold mt-0.5" style={{ color: colors.textPrimary }}>{t('budget')}</h2>
         </div>

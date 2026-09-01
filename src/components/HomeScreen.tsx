@@ -3,7 +3,7 @@ import {
   ArrowUpRight, ArrowDownRight, ChevronRight,
   TrendingUp, TrendingDown, AlertTriangle, Sparkles,
   Wallet, BarChart2, Zap, Flame, PiggyBank,
-  CalendarDays, Info, Sun, Moon, Star,
+  CalendarDays, Info, Sun, Moon, Star, RefreshCw, DollarSign,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -66,9 +66,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   savingGoals, recurringIncome, userName,
   onViewAllTransactions, onEdit, onLoadSample,
   onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
-  // onNavigate is consumed by SetupSection via context — accepted here for prop typing
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onNavigate: _onNavigate,
+  onNavigate,
 }) => {
   const { isDark, toggleTheme, colors } = useTheme();
   const { t } = useLanguage();
@@ -605,6 +603,66 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
       )}
+
+      {/* ── RECURRING ─────────────────────────────────────────── */}
+      <div className="px-4 pb-3">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
+            Recurring
+          </p>
+        </div>
+        <div
+          className="rounded-3xl overflow-hidden"
+          style={{
+            background: isDark ? colors.bgCard : '#ffffff',
+            border: `1px solid ${isDark ? colors.border : 'rgba(99,102,241,0.10)'}`,
+            boxShadow: isDark ? '0 2px 20px rgba(0,0,0,0.35)' : '0 2px 16px rgba(99,102,241,0.06)',
+          }}
+        >
+          {/* Recurring Payments */}
+          <button
+            onClick={() => onNavigate('recurring')}
+            className="w-full flex items-center gap-3.5 px-4 py-4 text-left cursor-pointer active:scale-[0.99] transition-transform"
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
+          >
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{ background: isDark ? 'rgba(248,113,113,0.12)' : 'rgba(239,68,68,0.08)', border: `1px solid rgba(248,113,113,0.20)` }}
+            >
+              <RefreshCw size={17} style={{ color: '#f87171' }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>Recurring Payments</p>
+              <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
+                {subscriptions.filter(s => s.isActive).length} active
+                {monthlyRecurringExpenses > 0 && ` · ${formatCurrency(monthlyRecurringExpenses, currency)}/mo`}
+              </p>
+            </div>
+            <ChevronRight size={15} style={{ color: colors.textMuted }} />
+          </button>
+
+          {/* Recurring Income */}
+          <button
+            onClick={() => onNavigate('recurring-income')}
+            className="w-full flex items-center gap-3.5 px-4 py-4 text-left cursor-pointer active:scale-[0.99] transition-transform"
+          >
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{ background: isDark ? 'rgba(34,197,94,0.12)' : 'rgba(16,185,129,0.08)', border: `1px solid rgba(34,197,94,0.20)` }}
+            >
+              <DollarSign size={17} style={{ color: colors.accent }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>Recurring Income</p>
+              <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
+                {recurringIncome.filter(r => r.isActive).length} active
+                {monthlyRecurringIncome > 0 && ` · ${formatCurrency(monthlyRecurringIncome, currency)}/mo`}
+              </p>
+            </div>
+            <ChevronRight size={15} style={{ color: colors.textMuted }} />
+          </button>
+        </div>
+      </div>
 
       {/* ── AI INSIGHTS ───────────────────────────────────────── */}
       {insights.length > 0 && (

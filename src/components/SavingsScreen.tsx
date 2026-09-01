@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import {
-  Plus, Edit2, Trash2, PlusCircle, X, Check, AlertTriangle, Target, Flag,
+  Plus, Edit2, Trash2, PlusCircle, X, Check, AlertTriangle, Target, Flag, ChevronLeft,
 } from 'lucide-react';
 import { SavingGoal } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { useTheme } from '../context/ThemeContext';
 import { SetupReminderCard } from './SetupReminderCard';
 import { useSetupReminders } from '../context/SetupRemindersContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface SavingsScreenProps {
   currency: string;
@@ -37,6 +38,7 @@ const emptyForm = { name: '', targetAmount: '', currentAmount: '', targetDate: g
 
 export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, onSaveGoals }) => {
   const { colors, isDark } = useTheme();
+  const { goBack } = useNavigation();
   const { activeItems } = useSetupReminders();
   const goalReminderItem = activeItems.find(i => i.key === 'savings-goal');
   const [showForm, setShowForm] = useState(false);
@@ -105,6 +107,22 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
 
   return (
     <div className="page-enter px-4 pt-3 pb-6 space-y-5">
+
+      {/* ── Header ── */}
+      <div className="flex items-center gap-3 pt-1">
+        <button onClick={goBack} className="cursor-pointer" style={{ color: colors.textMuted }}>
+          <ChevronLeft size={20} />
+        </button>
+        <div className="flex-1">
+          <h2 className="text-xl font-bold" style={{ color: colors.textPrimary, letterSpacing: '-0.02em' }}>Saving Goals</h2>
+        </div>
+        <button
+          onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer btn-primary text-xs font-bold"
+        >
+          <Plus size={13} /> Add
+        </button>
+      </div>
 
       {/* ── SUMMARY HERO CARD ─────────────────────────── */}
       {goals.length > 0 && (

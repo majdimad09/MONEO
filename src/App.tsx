@@ -417,7 +417,7 @@ export default function App() {
     await handleSignOut();
   };
 
-  const ROOT_VIEWS: AppView[] = ['home', 'insights', 'budget', 'earn', 'community', 'settings'];
+  const ROOT_VIEWS: AppView[] = ['home', 'insights', 'earn', 'community', 'settings'];
 
   const navigate = (view: AppView) => {
     if (view === currentView) return;

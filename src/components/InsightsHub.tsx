@@ -3,9 +3,10 @@ import {
   ShieldCheck, Lightbulb, BarChart2, TrendingUp, ChevronRight,
   TrendingDown, AlertTriangle, Info, Sparkles, Flame, PiggyBank,
   CalendarDays, Zap, BookOpen, MessageCircle, GitBranch, Crown,
-  Brain, Sun, Moon,
+  Brain, Sun, Moon, Wallet, Target, Plus,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView, RecurringIncome } from '../types/finance';
+import { formatCurrency } from '../utils/formatters';
 import {
   calculateCashlyScore, generateInsights, getScoreLevel,
   InsightIcon, InsightType,
@@ -115,6 +116,25 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
     () => generateInsights(transactions, currency, subscriptions, recurringIncome),
     [transactions, currency, subscriptions, recurringIncome],
   );
+
+  // Budget calculations for the Budget section
+  const { thisMonthExpenses } = useMemo(() => {
+    const prefix = (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}`; })();
+    let total = 0;
+    transactions.filter(tx => tx.type === 'expense' && tx.date.startsWith(prefix))
+      .forEach(tx => { total += tx.amount; });
+    return { thisMonthExpenses: total };
+  }, [transactions]);
+
+  const budgetPct       = monthlyBudget > 0 ? Math.min((thisMonthExpenses / monthlyBudget) * 100, 100) : 0;
+  const budgetRemaining = monthlyBudget - thisMonthExpenses;
+  const budgetColor     = budgetPct >= 100 ? '#ef4444' : budgetPct >= 80 ? '#f97316' : budgetPct >= 60 ? '#f59e0b' : '#10b981';
+
+  // Savings goals summary
+  const totalSaved  = savingGoals.reduce((s, g) => s + g.currentAmount, 0);
+  const totalTarget = savingGoals.reduce((s, g) => s + g.targetAmount, 0);
+  const overallPct  = totalTarget > 0 ? Math.min((totalSaved / totalTarget) * 100, 100) : 0;
+  const completed   = savingGoals.filter(g => g.currentAmount >= g.targetAmount).length;
 
   const { isDark, colors, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -255,6 +275,129 @@ export const InsightsHub: React.FC<InsightsHubProps> = ({
           </div>
         </div>
       )}
+
+      {/* ── BUDGET ─────────────────────────────────────────── */}
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-widest px-1 mb-2.5" style={{ color: colors.textMuted }}>BUDGET</p>
+        <button
+          onClick={() => onNavigate('budget')}
+          className="w-full text-left rounded-3xl overflow-hidden cursor-pointer active:scale-[0.99] transition-transform"
+          style={{
+            background: isDark ? colors.bgCard : '#ffffff',
+            border: `1px solid ${isDark ? colors.border : 'rgba(99,102,241,0.10)'}`,
+            boxShadow: isDark ? 'none' : '0 2px 16px rgba(99,102,241,0.06)',
+            padding: '18px 20px',
+          }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${budgetColor}18` }}>
+                <Wallet size={16} style={{ color: budgetColor }} />
+              </div>
+              <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>
+                {monthlyBudget > 0 ? 'Monthly Budget' : 'Set Your Budget'}
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {budgetPct >= 80 && monthlyBudget > 0 && <AlertTriangle size={13} style={{ color: budgetColor }} />}
+              {monthlyBudget > 0
+                ? <span className="text-sm font-bold" style={{ color: budgetColor }}>{budgetPct.toFixed(0)}%</span>
+                : <span className="text-xs font-semibold" style={{ color: colors.accent }}>Tap to set →</span>}
+            </div>
+          </div>
+          {monthlyBudget > 0 ? (
+            <>
+              <div className="rounded-full overflow-hidden mb-3" style={{ height: 7, background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }}>
+                <div className="h-full rounded-full" style={{
+                  width: `${budgetPct}%`,
+                  background: `linear-gradient(90deg, ${budgetColor}cc, ${budgetColor})`,
+                  boxShadow: `0 0 10px ${budgetColor}55`,
+                  transition: 'width 1s cubic-bezier(0.34,1.2,0.64,1)',
+                }} />
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[11px]" style={{ color: colors.textSecondary }}>{formatCurrency(thisMonthExpenses, currency)} spent</span>
+                <span className="text-[11px] font-semibold" style={{ color: budgetRemaining < 0 ? '#ef4444' : colors.positive }}>
+                  {budgetRemaining >= 0
+                    ? `${formatCurrency(budgetRemaining, currency)} left`
+                    : `${formatCurrency(Math.abs(budgetRemaining), currency)} over`}
+                </span>
+              </div>
+            </>
+          ) : (
+            <p className="text-xs" style={{ color: colors.textMuted }}>
+              Set a monthly limit and Moneo will track your spending against it.
+            </p>
+          )}
+        </button>
+      </div>
+
+      {/* ── SAVINGS GOALS ──────────────────────────────────────── */}
+      <div>
+        <div className="flex items-center justify-between px-1 mb-2.5">
+          <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>SAVINGS GOALS</p>
+          <button
+            onClick={() => onNavigate('savings')}
+            className="text-[11px] font-bold cursor-pointer"
+            style={{ color: colors.accent }}
+          >
+            {savingGoals.length > 0 ? 'Manage →' : 'Add Goal →'}
+          </button>
+        </div>
+        <button
+          onClick={() => onNavigate('savings')}
+          className="w-full text-left rounded-3xl overflow-hidden cursor-pointer active:scale-[0.99] transition-transform"
+          style={{
+            background: isDark ? colors.bgCard : '#ffffff',
+            border: `1px solid ${isDark ? colors.border : 'rgba(99,102,241,0.10)'}`,
+            boxShadow: isDark ? 'none' : '0 2px 16px rgba(99,102,241,0.06)',
+            padding: '18px 20px',
+          }}
+        >
+          {savingGoals.length === 0 ? (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.25)' }}>
+                <Target size={16} style={{ color: '#fbbf24' }} />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>No goals yet</p>
+                <p className="text-xs mt-0.5" style={{ color: colors.textMuted }}>Tap to create your first saving goal</p>
+              </div>
+              <Plus size={16} style={{ color: colors.accent }} />
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.25)' }}>
+                    <Target size={16} style={{ color: '#fbbf24' }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{savingGoals.length} goal{savingGoals.length !== 1 ? 's' : ''}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>{completed} completed</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-base font-bold" style={{ color: '#fbbf24' }}>{overallPct.toFixed(1)}%</p>
+                  <p className="text-[10px]" style={{ color: colors.textMuted }}>overall</p>
+                </div>
+              </div>
+              <div className="rounded-full overflow-hidden mb-2" style={{ height: 7, background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }}>
+                <div className="h-full rounded-full" style={{
+                  width: `${overallPct}%`,
+                  background: 'linear-gradient(90deg, #f59e0bcc, #fbbf24)',
+                  boxShadow: '0 0 10px rgba(251,191,36,0.55)',
+                  transition: 'width 1s cubic-bezier(0.34,1.2,0.64,1)',
+                }} />
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[11px]" style={{ color: colors.textSecondary }}>{formatCurrency(totalSaved, currency)} saved</span>
+                <span className="text-[11px] font-semibold" style={{ color: colors.textMuted }}>of {formatCurrency(totalTarget, currency)}</span>
+              </div>
+            </>
+          )}
+        </button>
+      </div>
 
       {/* Organized sections — richer card treatment */}
       {SECTIONS.map(section => (
