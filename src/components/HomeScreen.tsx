@@ -83,8 +83,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       if (tx.type === 'income') { inc += tx.amount; if (tx.date.startsWith(prefix)) mInc += tx.amount; }
       else { exp += tx.amount; if (tx.date.startsWith(prefix)) mExp += tx.amount; }
     });
-    return { totalIncome: inc, totalExpenses: exp, balance: inc - exp, thisMonthIncome: mInc, thisMonthExpenses: mExp };
-  }, [transactions, prefix]);
+    const monthlyRI = recurringIncome.filter(r => r.isActive).reduce((s, r) => {
+      if (r.frequency === 'weekly') return s + (r.amount * 52) / 12;
+      if (r.frequency === 'biweekly') return s + (r.amount * 26) / 12;
+      return s + r.amount;
+    }, 0);
+    return { totalIncome: inc, totalExpenses: exp, balance: inc - exp, thisMonthIncome: mInc + monthlyRI, thisMonthExpenses: mExp };
+  }, [transactions, prefix, recurringIncome]);
 
   const recentTx = useMemo(() =>
     [...transactions].sort((a, b) => b.createdAt - a.createdAt).slice(0, 5),
@@ -99,12 +104,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }, [transactions, prefix]);
 
   const insights = useMemo(() =>
-    generateInsights(transactions, currency, subscriptions),
-    [transactions, currency, subscriptions]
+    generateInsights(transactions, currency, subscriptions, recurringIncome),
+    [transactions, currency, subscriptions, recurringIncome]
   );
   const scoreResult = useMemo(() =>
-    calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals),
-    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals]
+    calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome),
+    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome]
   );
 
   const budgetPct       = monthlyBudget > 0 ? (thisMonthExpenses / monthlyBudget) * 100 : 0;

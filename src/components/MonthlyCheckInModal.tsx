@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   ChevronLeft, TrendingUp, PiggyBank, Wallet, Check, Plus, Trash2,
-  DollarSign, Target, Sparkles,
+  DollarSign, Target, Sparkles, CalendarDays,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -16,7 +16,7 @@ interface MonthlyCheckInModalProps {
   onNavigate?: (view: AppView) => void;
 }
 
-const STEP_COUNT = 5;
+const STEP_COUNT = 6;
 
 const INCOME_SUGGESTIONS = ['Salary', 'Freelance', 'Part-time', 'Business', 'Investment', 'Rental', 'Other'];
 const EXPENSE_SUGGESTIONS = ['Rent', 'Phone', 'Internet', 'Electricity', 'Transport', 'Gym', 'Insurance', 'Other'];
@@ -79,6 +79,7 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
   const [expenses, setExpenses] = useState<CheckInExpense[]>([]);
   const [goals, setGoals] = useState<CheckInGoal[]>([]);
   const [monthlyBudget, setMonthlyBudget] = useState('');
+  const [upcomingExpenses, setUpcomingExpenses] = useState('');
 
   // Add-income form
   const [showIncomeForm, setShowIncomeForm] = useState(false);
@@ -113,7 +114,7 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
     expenses,
     goals,
     monthlyBudget: parseFloat(monthlyBudget) || 0,
-    upcomingExpenses: '',
+    upcomingExpenses,
     skipped: false,
   });
 
@@ -176,11 +177,12 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
 
 
   const STEPS = [
-    { icon: TrendingUp, color: colors.accent, label: 'Regular Income' },
-    { icon: Wallet, color: '#f97316', label: 'Fixed Expenses' },
-    { icon: PiggyBank, color: '#a78bfa', label: 'Savings Goals' },
-    { icon: DollarSign, color: '#fbbf24', label: 'Monthly Budget' },
-    { icon: Sparkles, color: '#34d399', label: 'All Set!' },
+    { icon: TrendingUp,   color: colors.accent, label: 'Regular Income' },
+    { icon: Wallet,       color: '#f97316',     label: 'Fixed Expenses' },
+    { icon: DollarSign,   color: '#fbbf24',     label: 'Monthly Budget' },
+    { icon: PiggyBank,    color: '#a78bfa',     label: 'Savings Goals' },
+    { icon: CalendarDays, color: '#34d399',     label: 'Upcoming Expenses' },
+    { icon: Sparkles,     color: '#22c55e',     label: 'All Set!' },
   ];
 
   const currentStep = STEPS[step];
@@ -362,8 +364,42 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
           </div>
         )}
 
-        {/* ── Step 2: Savings Goals ── */}
+        {/* ── Step 2: Monthly Budget ── */}
         {step === 2 && (
+          <div>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.textPrimary, textAlign: 'center', marginBottom: 4, letterSpacing: '-0.02em' }}>
+              Do you have a monthly budget?
+            </h2>
+            <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 24, lineHeight: 1.5 }}>
+              A spending limit helps you stay on track. We'll show alerts when you're close. Skip if you don't have one.
+            </p>
+
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: colors.textMuted, marginBottom: 8 }}>
+              Monthly spending limit
+            </label>
+            <div style={{ display: 'flex', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}`, marginBottom: 28 }}>
+              <div style={{ padding: '13px 12px', background: colors.bgSecondary, fontSize: 14, fontWeight: 600, color: colors.textMuted, borderRight: `1px solid ${colors.border}`, whiteSpace: 'nowrap' }}>{sym}</div>
+              <input
+                type="number" inputMode="decimal" placeholder="e.g. 2000" value={monthlyBudget}
+                onChange={e => setMonthlyBudget(e.target.value)}
+                style={{ ...inputS, border: 'none', borderRadius: 0, flex: 1 }}
+              />
+            </div>
+
+            <button
+              onClick={() => setStep(3)}
+              style={{ width: '100%', padding: '14px', borderRadius: 14, background: '#fbbf24', color: '#1c1917', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}
+            >
+              Continue
+            </button>
+            <button onClick={() => setStep(3)} style={{ width: '100%', padding: '10px', marginTop: 8, borderRadius: 14, background: 'none', color: colors.textMuted, fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
+              Skip this step
+            </button>
+          </div>
+        )}
+
+        {/* ── Step 3: Savings Goals ── */}
+        {step === 3 && (
           <div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.textPrimary, textAlign: 'center', marginBottom: 4, letterSpacing: '-0.02em' }}>
               Are you saving for something?
@@ -413,41 +449,7 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
               </div>
             )}
 
-            <button onClick={() => setStep(3)} style={{ width: '100%', padding: '14px', borderRadius: 14, background: '#a78bfa', color: '#fff', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}>
-              Continue
-            </button>
-            <button onClick={() => setStep(3)} style={{ width: '100%', padding: '10px', marginTop: 8, borderRadius: 14, background: 'none', color: colors.textMuted, fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
-              Skip this step
-            </button>
-          </div>
-        )}
-
-        {/* ── Step 3: Monthly Budget ── */}
-        {step === 3 && (
-          <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.textPrimary, textAlign: 'center', marginBottom: 4, letterSpacing: '-0.02em' }}>
-              Do you have a monthly budget?
-            </h2>
-            <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 24, lineHeight: 1.5 }}>
-              A spending limit helps you stay on track. We'll show alerts when you're close. Skip if you don't have one.
-            </p>
-
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: colors.textMuted, marginBottom: 8 }}>
-              Monthly spending limit
-            </label>
-            <div style={{ display: 'flex', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}`, marginBottom: 28 }}>
-              <div style={{ padding: '13px 12px', background: colors.bgSecondary, fontSize: 14, fontWeight: 600, color: colors.textMuted, borderRight: `1px solid ${colors.border}`, whiteSpace: 'nowrap' }}>{sym}</div>
-              <input
-                type="number" inputMode="decimal" placeholder="e.g. 2000" value={monthlyBudget}
-                onChange={e => setMonthlyBudget(e.target.value)}
-                style={{ ...inputS, border: 'none', borderRadius: 0, flex: 1 }}
-              />
-            </div>
-
-            <button
-              onClick={() => setStep(4)}
-              style={{ width: '100%', padding: '14px', borderRadius: 14, background: '#fbbf24', color: '#1c1917', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}
-            >
+            <button onClick={() => setStep(4)} style={{ width: '100%', padding: '14px', borderRadius: 14, background: '#a78bfa', color: '#fff', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}>
               Continue
             </button>
             <button onClick={() => setStep(4)} style={{ width: '100%', padding: '10px', marginTop: 8, borderRadius: 14, background: 'none', color: colors.textMuted, fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
@@ -456,8 +458,44 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
           </div>
         )}
 
-        {/* ── Step 4: Done ── */}
+        {/* ── Step 4: Upcoming Expenses ── */}
         {step === 4 && (
+          <div>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.textPrimary, textAlign: 'center', marginBottom: 4, letterSpacing: '-0.02em' }}>
+              Any big expenses coming up?
+            </h2>
+            <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 24, lineHeight: 1.5 }}>
+              Car repair, travel, a gift? Jot down one-time expenses so Moneo can plan around them. Totally optional.
+            </p>
+
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: colors.textMuted, marginBottom: 8 }}>
+              Upcoming expenses (optional)
+            </label>
+            <textarea
+              placeholder="e.g. Flight tickets $400 next week, dentist $150..."
+              value={upcomingExpenses}
+              onChange={e => setUpcomingExpenses(e.target.value)}
+              rows={4}
+              style={{
+                ...inputS, resize: 'none', lineHeight: 1.6, marginBottom: 28,
+                fontFamily: 'inherit',
+              }}
+            />
+
+            <button
+              onClick={() => setStep(5)}
+              style={{ width: '100%', padding: '14px', borderRadius: 14, background: '#34d399', color: '#052e16', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}
+            >
+              Continue
+            </button>
+            <button onClick={() => setStep(5)} style={{ width: '100%', padding: '10px', marginTop: 8, borderRadius: 14, background: 'none', color: colors.textMuted, fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
+              Skip this step
+            </button>
+          </div>
+        )}
+
+        {/* ── Step 5: Done ── */}
+        {step === 5 && (
           <div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.textPrimary, textAlign: 'center', marginBottom: 4, letterSpacing: '-0.02em' }}>
               You're all set!
@@ -490,13 +528,19 @@ export const MonthlyCheckInModal: React.FC<MonthlyCheckInModalProps> = ({
                 </div>
               )}
               {parseFloat(monthlyBudget) > 0 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                   <DollarSign size={14} style={{ color: '#fbbf24', flexShrink: 0 }} />
                   <span style={{ fontSize: 13, color: colors.textSecondary, flex: 1 }}>Monthly budget set</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#fbbf24' }}>{sym}{parseFloat(monthlyBudget).toLocaleString()}</span>
                 </div>
               )}
-              {incomes.length === 0 && expenses.length === 0 && goals.length === 0 && !parseFloat(monthlyBudget) && (
+              {upcomingExpenses.trim().length > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <CalendarDays size={14} style={{ color: '#34d399', flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: colors.textSecondary, flex: 1 }}>Upcoming expenses noted</span>
+                </div>
+              )}
+              {incomes.length === 0 && expenses.length === 0 && goals.length === 0 && !parseFloat(monthlyBudget) && !upcomingExpenses.trim() && (
                 <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center' }}>Nothing entered — you can always add this later in Budget & Savings.</p>
               )}
             </div>

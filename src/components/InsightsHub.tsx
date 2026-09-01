@@ -5,7 +5,7 @@ import {
   CalendarDays, Zap, BookOpen, MessageCircle, GitBranch, Crown,
   Brain, Sun, Moon,
 } from 'lucide-react';
-import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView } from '../types/finance';
+import { Transaction, CategoryLimit, Subscription, SavingGoal, AppView, RecurringIncome } from '../types/finance';
 import {
   calculateCashlyScore, generateInsights, getScoreLevel,
   InsightIcon, InsightType,
@@ -21,6 +21,7 @@ interface InsightsHubProps {
   categoryLimits: CategoryLimit[];
   subscriptions: Subscription[];
   savingGoals: SavingGoal[];
+  recurringIncome?: RecurringIncome[];
   isPremium: boolean;
   onNavigate: (view: AppView) => void;
 }
@@ -104,15 +105,15 @@ const ToolRow: React.FC<{ tool: SectionTool; isPremium: boolean; onNavigate: (v:
 
 export const InsightsHub: React.FC<InsightsHubProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions, savingGoals,
-  isPremium, onNavigate,
+  recurringIncome = [], isPremium, onNavigate,
 }) => {
   const scoreResult = useMemo(
-    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals),
-    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals],
+    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome),
+    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome],
   );
   const insights = useMemo(
-    () => generateInsights(transactions, currency, subscriptions),
-    [transactions, currency, subscriptions],
+    () => generateInsights(transactions, currency, subscriptions, recurringIncome),
+    [transactions, currency, subscriptions, recurringIncome],
   );
 
   const { isDark, colors, toggleTheme } = useTheme();

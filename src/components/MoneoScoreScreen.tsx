@@ -3,7 +3,7 @@ import {
   ShieldCheck, TrendingUp, TrendingDown, AlertCircle,
   CheckCircle2, Lightbulb, Lock, ArrowRight,
 } from 'lucide-react';
-import { Transaction, CategoryLimit, Subscription, SavingGoal } from '../types/finance';
+import { Transaction, CategoryLimit, Subscription, SavingGoal, RecurringIncome } from '../types/finance';
 import {
   calculateCashlyScore, getScoreLevel, getNextScoreLevel, SCORE_LEVELS,
 } from '../utils/insights';
@@ -16,6 +16,7 @@ interface MoneoScoreScreenProps {
   categoryLimits: CategoryLimit[];
   subscriptions: Subscription[];
   savingGoals: SavingGoal[];
+  recurringIncome?: RecurringIncome[];
   currency: string;
 }
 
@@ -62,11 +63,11 @@ function ScoreRing({ score, color, size = 140 }: { score: number; color: string;
 }
 
 export const MoneoScoreScreen: React.FC<MoneoScoreScreenProps> = ({
-  transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals,
+  transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome = [],
 }) => {
   const result = useMemo(
-    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals),
-    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals]
+    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome),
+    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome]
   );
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();

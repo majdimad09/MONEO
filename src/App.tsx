@@ -214,6 +214,63 @@ export default function App() {
     setCheckIn(data);
     saveCheckIn(data);
     setShowCheckIn(false);
+
+    // Flow incomes → RecurringIncome (skip duplicates by name)
+    if (data.incomes.length > 0) {
+      const existing = recurringIncome;
+      const newItems = data.incomes
+        .filter(ci => !existing.some(ri => ri.name.toLowerCase() === ci.name.toLowerCase()))
+        .map(ci => ({
+          id: ci.id,
+          name: ci.name,
+          amount: ci.amount,
+          frequency: ci.frequency,
+          nextPaymentDate: ci.nextPaymentDate,
+          category: 'Salary' as const,
+          isActive: true,
+          createdAt: Date.now(),
+        }));
+      if (newItems.length > 0) handleSaveRecurringIncome([...existing, ...newItems]);
+    }
+
+    // Flow expenses → Subscriptions (skip duplicates by name)
+    if (data.expenses.length > 0) {
+      const existing = subscriptions;
+      const newSubs = data.expenses
+        .filter(ce => !existing.some(s => s.name.toLowerCase() === ce.name.toLowerCase()))
+        .map(ce => ({
+          id: ce.id,
+          name: ce.name,
+          amount: ce.amount,
+          frequency: ce.frequency,
+          nextPaymentDate: ce.nextPaymentDate,
+          category: 'Bills' as const,
+          isActive: true,
+          createdAt: Date.now(),
+        }));
+      if (newSubs.length > 0) handleSaveSubscriptions([...existing, ...newSubs]);
+    }
+
+    // Flow savings goals → SavingGoals (skip duplicates by name)
+    if (data.goals.length > 0) {
+      const existing = savingGoals;
+      const newGoals = data.goals
+        .filter(cg => !existing.some(sg => sg.name.toLowerCase() === cg.name.toLowerCase()))
+        .map(cg => ({
+          id: cg.id,
+          name: cg.name,
+          targetAmount: cg.targetAmount,
+          currentAmount: cg.currentAmount,
+          targetDate: cg.targetDate ?? '',
+          createdAt: Date.now(),
+        }));
+      if (newGoals.length > 0) handleSaveGoals([...existing, ...newGoals]);
+    }
+
+    // Flow monthly budget (only if none set yet)
+    if (data.monthlyBudget > 0 && monthlyBudget === 0) {
+      handleSaveBudget(data.monthlyBudget);
+    }
   };
 
   const handleCheckInSkip = () => {
@@ -418,8 +475,8 @@ export default function App() {
   }, []);
 
   const currentScore = useMemo(
-    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals).score,
-    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals],
+    () => calculateCashlyScore(transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome).score,
+    [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome],
   );
 
   const handleCreateCommunity = useCallback(async (community: Community) => {
@@ -610,6 +667,7 @@ export default function App() {
               categoryLimits={categoryLimits}
               subscriptions={subscriptions}
               savingGoals={savingGoals}
+              recurringIncome={recurringIncome}
               currency={currency}
             />
           )}
@@ -666,6 +724,7 @@ export default function App() {
               categoryLimits={categoryLimits}
               subscriptions={subscriptions}
               savingGoals={savingGoals}
+              recurringIncome={recurringIncome}
               isPremium={isPremium}
               onNavigate={navigate}
             />
@@ -714,6 +773,7 @@ export default function App() {
               currency={currency}
               monthlyBudget={monthlyBudget}
               checkIn={checkIn}
+              recurringIncome={recurringIncome}
               onNavigate={navigate}
             />
           )}

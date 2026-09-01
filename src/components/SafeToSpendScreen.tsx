@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { ChevronLeft, Shield, TrendingDown, Calendar, DollarSign, Info, Zap, TrendingUp } from 'lucide-react';
-import { Transaction, Subscription, AppView, MonthlyCheckIn } from '../types/finance';
+import { ChevronLeft, Shield, TrendingDown, Calendar, DollarSign, Info, Zap } from 'lucide-react';
+import { Transaction, Subscription, AppView, MonthlyCheckIn, RecurringIncome } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { calculateSafeToSpend } from '../utils/insights';
 import { useTheme } from '../context/ThemeContext';
@@ -14,52 +14,26 @@ interface SafeToSpendProps {
   currency: string;
   monthlyBudget: number;
   checkIn?: MonthlyCheckIn | null;
+  recurringIncome?: RecurringIncome[];
   onNavigate: (view: AppView) => void;
 }
 
 export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
-  transactions, subscriptions, currency, monthlyBudget, checkIn, onNavigate,
+  transactions, subscriptions, currency, monthlyBudget, checkIn, recurringIncome = [], onNavigate,
 }) => {
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   const { goBack } = useNavigation();
   const result = useMemo(
-    () => calculateSafeToSpend(transactions, subscriptions),
-    [transactions, subscriptions],
+    () => calculateSafeToSpend(transactions, subscriptions, 0, recurringIncome),
+    [transactions, subscriptions, recurringIncome],
   );
-
-  // Supplement income from checkIn if no transactions this month recorded income
-  const checkInMonthlyIncome = useMemo(() => {
-    if (!checkIn || checkIn.incomes.length === 0) return 0;
-    return checkIn.incomes.reduce((sum, inc) => {
-      if (inc.frequency === 'monthly') return sum + inc.amount;
-      if (inc.frequency === 'weekly') return sum + inc.amount * 4.33;
-      if (inc.frequency === 'biweekly') return sum + inc.amount * 2.17;
-      return sum + inc.amount;
-    }, 0);
-  }, [checkIn]);
-
-  const checkInMonthlyExpenses = useMemo(() => {
-    if (!checkIn || checkIn.expenses.length === 0) return 0;
-    return checkIn.expenses.reduce((sum, exp) => {
-      if (exp.frequency === 'monthly') return sum + exp.amount;
-      if (exp.frequency === 'weekly') return sum + exp.amount * 4.33;
-      if (exp.frequency === 'yearly') return sum + exp.amount / 12;
-      return sum + exp.amount;
-    }, 0);
-  }, [checkIn]);
 
   const now = new Date();
   const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   const daysLeft = Math.max(1, daysInMonth - now.getDate());
 
-  // Use checkIn income as supplement when actual transaction income = 0
-  const effectiveIncome = result.income > 0 ? result.income : checkInMonthlyIncome;
-  const effectiveSafe = effectiveIncome > 0 && result.income === 0
-    ? Math.max(0, effectiveIncome - result.expenses - result.subsRemaining - checkInMonthlyExpenses)
-    : result.safeAmount;
-
-  const displaySafe = effectiveSafe;
+  const displaySafe = result.safeAmount;
   const dailySafe = displaySafe > 0 ? displaySafe / daysLeft : 0;
 
   const activeBudget = monthlyBudget > 0 ? monthlyBudget : (checkIn?.monthlyBudget ?? 0);
@@ -142,11 +116,10 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
           </p>
         </div>
         {[
-          { icon: DollarSign, label: result.income > 0 ? t('incomeThisMonth') : 'Estimated income', value: effectiveIncome, positive: true, note: result.income === 0 && checkInMonthlyIncome > 0 ? 'From setup' : undefined },
+          { icon: DollarSign, label: t('incomeThisMonth'), value: result.income, positive: true },
           { icon: TrendingDown, label: t('expensesSoFar'), value: result.expenses, positive: false },
-          ...(checkInMonthlyExpenses > 0 ? [{ icon: TrendingUp as React.ElementType, label: 'Recurring fixed costs', value: checkInMonthlyExpenses, positive: false, note: 'From setup' }] : []),
           { icon: Calendar, label: t('upcomingSubs'), value: result.subsRemaining, positive: false },
-        ].map(({ icon: Icon, label, value, positive, note }) => (
+        ].map(({ icon: Icon, label, value, positive }) => (
           <div
             key={label}
             className="flex items-center justify-between px-4 py-3.5"
@@ -161,10 +134,7 @@ export const SafeToSpendScreen: React.FC<SafeToSpendProps> = ({
               >
                 <Icon size={14} style={{ color: positive ? colors.positive : colors.negative }} />
               </div>
-              <div>
-                <span className="text-sm" style={{ color: colors.textSecondary }}>{label}</span>
-                {note && <span className="text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full" style={{ background: colors.bgSecondary, color: colors.textMuted }}>{note}</span>}
-              </div>
+              <span className="text-sm" style={{ color: colors.textSecondary }}>{label}</span>
             </div>
             <span className="text-sm font-bold" style={{ color: positive ? colors.positive : colors.negative }}>
               {positive ? '+' : '-'}{formatCurrency(value, currency)}

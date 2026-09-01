@@ -1,5 +1,13 @@
-import { Transaction, Subscription, CategoryLimit, SavingGoal } from '../types/finance';
+import { Transaction, Subscription, CategoryLimit, SavingGoal, RecurringIncome } from '../types/finance';
 import { formatCurrency } from './formatters';
+
+function toMonthlyIncome(items: RecurringIncome[]): number {
+  return items.filter(r => r.isActive).reduce((sum, r) => {
+    if (r.frequency === 'weekly') return sum + (r.amount * 52) / 12;
+    if (r.frequency === 'biweekly') return sum + (r.amount * 26) / 12;
+    return sum + r.amount;
+  }, 0);
+}
 
 function getMonthPrefix(date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -34,7 +42,8 @@ export interface Insight {
 export function generateInsights(
   transactions: Transaction[],
   currency: string,
-  subscriptions: Subscription[]
+  subscriptions: Subscription[],
+  recurringIncome: RecurringIncome[] = []
 ): Insight[] {
   const insights: Insight[] = [];
   const now = new Date();
@@ -44,7 +53,7 @@ export function generateInsights(
   const thisMonthTx = transactions.filter(t => t.date.startsWith(thisMonth));
   const prevMonthTx = transactions.filter(t => t.date.startsWith(prevMonth));
 
-  const thisIncome = thisMonthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const thisIncome = thisMonthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0) + toMonthlyIncome(recurringIncome);
   const thisExpenses = thisMonthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
   const prevExpenses = prevMonthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
@@ -193,12 +202,13 @@ export function calculateCashlyScore(
   monthlyBudget: number,
   categoryLimits: CategoryLimit[],
   subscriptions: Subscription[],
-  savingGoals: SavingGoal[] = []
+  savingGoals: SavingGoal[] = [],
+  recurringIncome: RecurringIncome[] = []
 ): ScoreResult {
   const thisMonth = getMonthPrefix();
   const monthExp = transactions.filter(t => t.type === 'expense' && t.date.startsWith(thisMonth));
   const monthInc = transactions.filter(t => t.type === 'income' && t.date.startsWith(thisMonth));
-  const income = monthInc.reduce((s, t) => s + t.amount, 0);
+  const income = monthInc.reduce((s, t) => s + t.amount, 0) + toMonthlyIncome(recurringIncome);
   const expenses = monthExp.reduce((s, t) => s + t.amount, 0);
 
   // Check if user has enough data for a meaningful score
@@ -365,14 +375,15 @@ export interface SafeToSpendResult {
 export function calculateSafeToSpend(
   transactions: Transaction[],
   subscriptions: Subscription[],
-  savingsBuffer = 0
+  savingsBuffer = 0,
+  recurringIncome: RecurringIncome[] = []
 ): SafeToSpendResult {
   const now = new Date();
   const thisMonth = getMonthPrefix();
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   const monthTx = transactions.filter(t => t.date.startsWith(thisMonth));
-  const income = monthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const income = monthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0) + toMonthlyIncome(recurringIncome);
   const expenses = monthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
   let subsRemaining = 0;
