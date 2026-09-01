@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import {
   Plus, Edit2, Trash2, Check, X, AlertTriangle, RefreshCw,
-  Calendar, DollarSign, ToggleLeft, ToggleRight, ChevronDown,
+  Calendar, DollarSign, ToggleLeft, ToggleRight, ChevronDown, ChevronLeft,
 } from 'lucide-react';
 import { Subscription, SubscriptionFrequency, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { getCategoryColor } from './CategoryIcon';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '../context/NavigationContext';
 
 interface RecurringScreenProps {
   subscriptions: Subscription[];
@@ -44,6 +45,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
   subscriptions, currency, onSaveSubscriptions,
 }) => {
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -125,11 +127,14 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
     <div className="page-enter px-4 pt-3 pb-8 space-y-5">
 
       {/* ── HEADER ───────────────────────────────────── */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold" style={{ color: colors.textPrimary }}>Recurring</h2>
+      <div className="flex items-center gap-3 pt-1">
+        <button onClick={goBack} className="cursor-pointer flex-shrink-0" style={{ color: colors.textMuted }}>
+          <ChevronLeft size={20} />
+        </button>
+        <div className="flex-1 flex items-center gap-2 min-w-0">
+          <h2 className="text-xl font-bold" style={{ color: colors.textPrimary }}>Recurring Expenses</h2>
           {active.length > 0 && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0"
               style={{ background: colors.accentSoft, color: colors.accent }}>
               {active.length} active
             </span>
@@ -138,7 +143,7 @@ export const RecurringScreen: React.FC<RecurringScreenProps> = ({
         {!showForm && (
           <button
             onClick={() => { setShowForm(true); setEditingId(null); setForm(emptyForm); }}
-            className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-3 py-1.5 rounded-xl btn-primary"
+            className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer px-3 py-1.5 rounded-xl btn-primary flex-shrink-0"
           >
             <Plus size={14} /> Add
           </button>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Edit2, Trash2, ArrowUpRight, ArrowDownRight, Inbox, X, SlidersHorizontal } from 'lucide-react';
+import { Search, Edit2, Trash2, ArrowUpRight, ArrowDownRight, Inbox, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
 import { Transaction } from '../types/finance';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { CategoryIcon, getCategoryColor } from './CategoryIcon';
@@ -233,31 +233,55 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
           {filteredTransactions.map((item, i) => {
             const isIncome = item.type === 'income';
             const catColor = getCategoryColor(item.category, item.type);
+            const isVirtual = !!item.isRecurring;
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all"
+                className="flex items-center gap-3 px-4 py-3.5 transition-all"
                 style={{
                   borderBottom: i < filteredTransactions.length - 1 ? `1px solid ${colors.divider}` : 'none',
                   minHeight: 56,
+                  cursor: isVirtual ? 'default' : 'pointer',
                 }}
-                onClick={() => onEdit(item)}
-                onMouseEnter={e => (e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)')}
+                onClick={() => !isVirtual && onEdit(item)}
+                onMouseEnter={e => { if (!isVirtual) e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'; }}
                 onMouseLeave={e => (e.currentTarget.style.background = '')}
               >
                 {/* Icon */}
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 relative"
                   style={{ background: `${catColor}16`, border: `1px solid ${catColor}22` }}
                 >
                   <CategoryIcon category={item.category} type={item.type} size={15} />
+                  {isVirtual && (
+                    <div
+                      className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                      style={{ background: isIncome ? colors.positive : '#f97316', border: `1.5px solid ${isDark ? colors.bgCard : '#fff'}` }}
+                    >
+                      <RefreshCw size={8} color="#fff" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Description + meta */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold truncate" style={{ color: colors.textPrimary }}>
-                    {item.description}
-                  </p>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <p className="text-[13px] font-semibold truncate" style={{ color: colors.textPrimary }}>
+                      {item.description}
+                    </p>
+                    {isVirtual && (
+                      <span
+                        className="flex-shrink-0 text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                        style={{
+                          background: isIncome ? `${colors.positive}18` : 'rgba(249,115,22,0.12)',
+                          color: isIncome ? colors.positive : '#f97316',
+                          border: `1px solid ${isIncome ? `${colors.positive}28` : 'rgba(249,115,22,0.22)'}`,
+                        }}
+                      >
+                        Recurring
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[11px] mt-0.5" style={{ color: colors.textMuted }}>
                     {item.category} · {formatDate(item.date)}
                   </p>
@@ -271,16 +295,18 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                   >
                     {isIncome ? '+' : '−'}{formatCurrency(item.amount, currency)}
                   </span>
-                  <button
-                    onClick={e => { e.stopPropagation(); onDelete(item); }}
-                    aria-label="Delete transaction"
-                    className="w-7 h-7 flex items-center justify-center rounded-lg transition-all cursor-pointer opacity-0 group-hover:opacity-100"
-                    style={{ color: colors.textMuted }}
-                    onMouseEnter={e => { e.currentTarget.style.color = colors.negative; e.currentTarget.style.background = colors.negativeSoft; }}
-                    onMouseLeave={e => { e.currentTarget.style.color = colors.textMuted; e.currentTarget.style.background = ''; }}
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                  {!isVirtual && (
+                    <button
+                      onClick={e => { e.stopPropagation(); onDelete(item); }}
+                      aria-label="Delete transaction"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg transition-all cursor-pointer"
+                      style={{ color: colors.textMuted }}
+                      onMouseEnter={e => { e.currentTarget.style.color = colors.negative; e.currentTarget.style.background = colors.negativeSoft; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = colors.textMuted; e.currentTarget.style.background = ''; }}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
                 </div>
               </div>
             );

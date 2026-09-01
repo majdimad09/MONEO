@@ -3,7 +3,7 @@ import {
   DollarSign, Plus, Pause, Play, Trash2, ChevronLeft,
   Edit2, X, Check, Calendar,
 } from 'lucide-react';
-import { RecurringIncome, RecurringIncomeFrequency } from '../types/finance';
+import { RecurringIncome, RecurringIncomeFrequency, INCOME_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { frequencyLabel, getNextOccurrence, monthlyEquivalent } from '../utils/recurringUtils';
 import { AppView } from '../types/finance';
@@ -129,9 +129,28 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
             </button>
           </div>
 
+          {/* Category */}
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Category</label>
+            <div className="grid grid-cols-3 gap-1.5">
+              {INCOME_CATEGORIES.map(c => (
+                <button
+                  key={c.name}
+                  onClick={() => setForm(f => ({ ...f, category: c.name }))}
+                  className="px-2 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all truncate"
+                  style={form.category === c.name
+                    ? { background: `${c.color}20`, border: `1px solid ${c.color}50`, color: c.color }
+                    : { background: colors.bgSecondary, border: `1px solid ${colors.borderStrong}`, color: colors.textSecondary }}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Name */}
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Name</label>
+            <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>Name / Description</label>
             <input
               type="text"
               placeholder="e.g. Monthly Salary"
@@ -258,7 +277,7 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
                         <div>
                           <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>{item.name}</p>
                           <p className="text-xs mt-0.5" style={{ color: colors.textMuted }}>
-                            {frequencyLabel(item.frequency)}
+                            {item.category} · {frequencyLabel(item.frequency)}
                             {item.frequency !== 'monthly' && ` · ${formatCurrency(monthly, currency)}/mo`}
                           </p>
                         </div>

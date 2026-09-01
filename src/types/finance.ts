@@ -9,6 +9,8 @@ export interface Transaction {
   date: string;
   createdAt: number;
   note?: string;
+  isRecurring?: boolean;
+  recurringId?: string;
 }
 
 export interface CategoryInfo {

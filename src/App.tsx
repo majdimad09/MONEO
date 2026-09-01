@@ -37,6 +37,7 @@ import { LangCode } from './i18n/translations';
 import { useTheme } from './context/ThemeContext';
 import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
+import { generateVirtualTransactions } from './utils/recurringTransactions';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
 import { SetupRemindersProvider } from './context/SetupRemindersContext';
 import { NavigationProvider } from './context/NavigationContext';
@@ -479,6 +480,18 @@ export default function App() {
     [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome],
   );
 
+  // Virtual transactions represent this month's recurring items so they appear
+  // in Transaction History and Statistics without double-counting the balance card
+  // (which computes monthly recurring separately via HomeScreen's useMemo).
+  const virtualTransactions = useMemo(
+    () => generateVirtualTransactions(recurringIncome, subscriptions),
+    [recurringIncome, subscriptions],
+  );
+  const allTransactions = useMemo(
+    () => [...transactions, ...virtualTransactions],
+    [transactions, virtualTransactions],
+  );
+
   const handleCreateCommunity = useCallback(async (community: Community) => {
     if (!user) return;
     await createCommunityInDB(user.id, community, userName || 'You', currentScore).catch(() => {});
@@ -628,7 +641,7 @@ export default function App() {
 
           {/* ── Existing views ─────────────────────────────── */}
           {currentView === 'statistics' && (
-            <StatisticsScreen transactions={transactions} currency={currency} />
+            <StatisticsScreen transactions={allTransactions} currency={currency} />
           )}
 
           {currentView === 'savings' && (
@@ -697,7 +710,7 @@ export default function App() {
           {currentView === 'transactions' && (
             <div className="px-4 pt-4 pb-6">
               <TransactionHistory
-                transactions={transactions}
+                transactions={allTransactions}
                 onEdit={tx => setEditingTransaction(tx)}
                 onDelete={tx => setDeletingTransaction(tx)}
                 currency={currency}
