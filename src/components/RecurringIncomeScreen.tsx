@@ -3,6 +3,7 @@ import {
   DollarSign, Plus, Pause, Play, Trash2, ChevronLeft,
   Edit2, X, Check, Calendar,
 } from 'lucide-react';
+import { DatePicker } from './DatePicker';
 import { RecurringIncome, RecurringIncomeFrequency, INCOME_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { frequencyLabel, getNextOccurrence, monthlyEquivalent } from '../utils/recurringUtils';
@@ -199,11 +200,9 @@ export const RecurringIncomeScreen: React.FC<RecurringIncomeScreenProps> = ({
             <label className="text-[10px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: colors.textMuted }}>
               Next Payment Date
             </label>
-            <input
-              type="date"
+            <DatePicker
               value={form.nextPaymentDate}
-              onChange={e => setForm(f => ({ ...f, nextPaymentDate: e.target.value }))}
-              className={inputBase + ' input-dark'}
+              onChange={v => setForm(f => ({ ...f, nextPaymentDate: v }))}
             />
           </div>
 

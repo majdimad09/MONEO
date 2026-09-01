@@ -3,13 +3,13 @@ import {
   X,
   Check,
   AlertCircle,
-  Calendar,
   FileText,
   Tag,
   ArrowUpRight,
   ArrowDownRight,
   PlusCircle,
 } from 'lucide-react';
+import { DatePicker } from './DatePicker';
 import {
   Transaction,
   TransactionType,
@@ -200,18 +200,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
               <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: colors.textMuted }}>
                 Date *
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="w-4 h-4" style={{ color: colors.textMuted }} />
-                </div>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="input-dark w-full pl-9 pr-3 py-2 text-xs sm:text-sm font-semibold rounded-xl"
-                  required
-                />
-              </div>
+              <DatePicker value={date} onChange={setDate} />
             </div>
           </div>
 

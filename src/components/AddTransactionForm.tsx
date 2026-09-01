@@ -3,13 +3,13 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
-  Calendar,
   FileText,
   Tag,
   Check,
   AlertCircle,
   PlusCircle,
 } from 'lucide-react';
+import { DatePicker } from './DatePicker';
 import {
   TransactionType,
   EXPENSE_CATEGORIES,
@@ -199,18 +199,7 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
             <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: colors.textSecondary }}>
               Date *
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Calendar className="w-4 h-4" style={{ color: colors.textMuted }} />
-              </div>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="input-dark w-full pl-9 pr-3.5 py-2 font-semibold rounded-xl text-xs sm:text-sm"
-                required
-              />
-            </div>
+            <DatePicker value={date} onChange={setDate} />
           </div>
         </div>
 

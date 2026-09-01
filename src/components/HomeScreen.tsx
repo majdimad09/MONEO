@@ -102,7 +102,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return {
       actualBalance: inc - exp,
       thisMonthIncome: mInc + monthlyRI,
-      thisMonthExpenses: mExp,
+      thisMonthExpenses: mExp + monthlyRE,
       monthlyRecurringIncome: monthlyRI,
       monthlyRecurringExpenses: monthlyRE,
     };
