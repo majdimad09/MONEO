@@ -77,7 +77,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const greeting   = getGreeting(userName || undefined);
   const initials   = (userName || 'M').split(' ').slice(0, 2).map(w => w[0]?.toUpperCase()).join('') || 'M';
 
-  const { totalIncome, totalExpenses, balance, thisMonthIncome, thisMonthExpenses } = useMemo(() => {
+  const {
+    actualBalance,          // logged transactions only — what you've actually recorded
+    thisMonthIncome,        // this month transactions + monthly recurring equivalent
+    thisMonthExpenses,      // this month transaction expenses
+    monthlyRecurringIncome, // recurring income monthly equivalent (for display)
+  } = useMemo(() => {
     let inc = 0, exp = 0, mInc = 0, mExp = 0;
     transactions.forEach(tx => {
       if (tx.type === 'income') { inc += tx.amount; if (tx.date.startsWith(prefix)) mInc += tx.amount; }
@@ -88,7 +93,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       if (r.frequency === 'biweekly') return s + (r.amount * 26) / 12;
       return s + r.amount;
     }, 0);
-    return { totalIncome: inc, totalExpenses: exp, balance: inc - exp, thisMonthIncome: mInc + monthlyRI, thisMonthExpenses: mExp };
+    return {
+      actualBalance: inc - exp,           // transaction-only net (actual logged money)
+      thisMonthIncome: mInc + monthlyRI,  // expected monthly income (transactions + recurring)
+      thisMonthExpenses: mExp,
+      monthlyRecurringIncome: monthlyRI,
+    };
   }, [transactions, prefix, recurringIncome]);
 
   const recentTx = useMemo(() =>
@@ -112,13 +122,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     [transactions, monthlyBudget, categoryLimits, subscriptions, savingGoals, recurringIncome]
   );
 
-  const budgetPct       = monthlyBudget > 0 ? (thisMonthExpenses / monthlyBudget) * 100 : 0;
-  const budgetRemaining = monthlyBudget - thisMonthExpenses;
-  const barColor        = getBarColor(budgetPct);
-  const level           = getScoreLevel(scoreResult.score);
-  const isEmpty         = transactions.length === 0;
-  const monthNet        = thisMonthIncome - thisMonthExpenses;
-  const isPositive      = balance >= 0;
+  const budgetPct         = monthlyBudget > 0 ? (thisMonthExpenses / monthlyBudget) * 100 : 0;
+  const budgetRemaining   = monthlyBudget - thisMonthExpenses;
+  const barColor          = getBarColor(budgetPct);
+  const level             = getScoreLevel(scoreResult.score);
+  const isEmpty           = transactions.length === 0;
+  // Projected monthly = this month's expected income (incl. recurring) minus this month's expenses
+  const projectedMonthly  = thisMonthIncome - thisMonthExpenses;
+  const hasRecurring      = monthlyRecurringIncome > 0;
+  const isActualPositive  = actualBalance >= 0;
+  const isProjectedPositive = projectedMonthly >= 0;
 
   return (
     <div className="page-enter pb-6">
@@ -201,35 +214,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }} />
           )}
 
-          {/* Total Balance label + month net badge */}
+          {/* Label row */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6, position: 'relative' }}>
             <p style={{
               fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em',
               color: isDark ? 'rgba(255,255,255,0.35)' : colors.brand,
             }}>
-              {t('totalBalance')}
+              {hasRecurring ? 'Actual Balance' : t('totalBalance')}
             </p>
-            {transactions.length > 0 && (
+            {hasRecurring && (
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 3,
-                fontSize: 10, fontWeight: 700,
-                color: monthNet >= 0 ? (isDark ? '#22c55e' : '#059669') : (isDark ? '#f87171' : '#dc2626'),
-                background: monthNet >= 0
-                  ? (isDark ? 'rgba(34,197,94,0.12)' : 'rgba(16,185,129,0.10)')
-                  : (isDark ? 'rgba(248,113,113,0.12)' : 'rgba(239,68,68,0.08)'),
-                border: `1px solid ${monthNet >= 0
-                  ? (isDark ? 'rgba(34,197,94,0.30)' : 'rgba(16,185,129,0.25)')
-                  : (isDark ? 'rgba(248,113,113,0.28)' : 'rgba(239,68,68,0.22)')}`,
-                borderRadius: 99, padding: '2px 8px',
+                fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: isDark ? 'rgba(255,255,255,0.30)' : 'rgba(0,0,0,0.35)',
               }}>
-                {monthNet >= 0 ? <ArrowUpRight size={9} /> : <ArrowDownRight size={9} />}
-                {monthNet >= 0 ? '+' : ''}{formatCurrency(Math.abs(monthNet), currency)}
+                logged transactions only
               </span>
             )}
           </div>
 
-          {/* Big balance amount */}
-          <div style={{ marginBottom: 20, position: 'relative' }}>
+          {/* Actual balance — transaction ledger */}
+          <div style={{ marginBottom: hasRecurring ? 10 : 20, position: 'relative' }}>
             <span style={{
               fontSize: 52,
               fontWeight: 900,
@@ -237,14 +242,41 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               lineHeight: 1,
               display: 'block',
               fontFeatureSettings: '"tnum"',
-              color: isPositive
+              color: isActualPositive
                 ? (isDark ? '#ffffff' : colors.textPrimary)
                 : (isDark ? '#f87171' : '#dc2626'),
-              textShadow: isDark && isPositive ? '0 0 40px rgba(255,255,255,0.08)' : 'none',
+              textShadow: isDark && isActualPositive ? '0 0 40px rgba(255,255,255,0.08)' : 'none',
             }}>
-              {isPositive ? '' : '−'}{formatCurrency(Math.abs(balance), currency)}
+              {isActualPositive ? '' : '−'}{formatCurrency(Math.abs(actualBalance), currency)}
             </span>
           </div>
+
+          {/* Projected Monthly — shown when recurring income/expenses exist */}
+          {hasRecurring && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18,
+              padding: '9px 12px', borderRadius: 12,
+              background: isProjectedPositive
+                ? (isDark ? 'rgba(34,197,94,0.10)' : 'rgba(16,185,129,0.07)')
+                : (isDark ? 'rgba(248,113,113,0.10)' : 'rgba(239,68,68,0.06)'),
+              border: `1px solid ${isProjectedPositive
+                ? (isDark ? 'rgba(34,197,94,0.22)' : 'rgba(16,185,129,0.20)')
+                : (isDark ? 'rgba(248,113,113,0.22)' : 'rgba(239,68,68,0.18)')}`,
+            }}>
+              <Sparkles size={12} style={{ color: isProjectedPositive ? (isDark ? '#22c55e' : '#10b981') : (isDark ? '#f87171' : '#dc2626'), flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.10em', color: isDark ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.40)' }}>
+                  Projected This Month
+                </span>
+              </div>
+              <span style={{
+                fontSize: 15, fontWeight: 800, fontFeatureSettings: '"tnum"', letterSpacing: '-0.02em',
+                color: isProjectedPositive ? (isDark ? '#22c55e' : '#059669') : (isDark ? '#f87171' : '#dc2626'),
+              }}>
+                {isProjectedPositive ? '+' : '−'}{formatCurrency(Math.abs(projectedMonthly), currency)}
+              </span>
+            </div>
+          )}
 
           {/* Income & Expenses sub-cards — dark: near-black with accent glow */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, position: 'relative' }}>
@@ -279,7 +311,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
                   color: isDark ? '#22c55e' : 'rgba(255,255,255,0.90)',
                 }}>
-                  {t('income')}
+                  {hasRecurring ? 'Monthly Income' : t('income')}
                 </span>
               </div>
               <p style={{
@@ -322,7 +354,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
                   color: isDark ? '#f87171' : 'rgba(255,255,255,0.90)',
                 }}>
-                  {t('expenses')}
+                  {hasRecurring ? 'Monthly Exp.' : t('expenses')}
                 </span>
               </div>
               <p style={{
