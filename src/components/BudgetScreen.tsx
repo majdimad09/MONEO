@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   Wallet, Plus, Edit2, Trash2, Check, X, AlertTriangle, ChevronRight,
-  RefreshCw, Target,
+  RefreshCw, Target, TrendingUp,
 } from 'lucide-react';
 import { Transaction, CategoryLimit, EXPENSE_CATEGORIES } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
@@ -17,6 +17,7 @@ interface BudgetScreenProps {
   onSaveBudget: (amount: number) => void;
   onSaveLimits: (limits: CategoryLimit[]) => void;
   onNavigateRecurring: () => void;
+  onNavigateRecurringIncome: () => void;
   onNavigateSavings: () => void;
 }
 
@@ -34,7 +35,7 @@ function getProgressColor(pct: number): string {
 
 export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   monthlyBudget, categoryLimits, transactions, currency,
-  onSaveBudget, onSaveLimits, onNavigateRecurring, onNavigateSavings,
+  onSaveBudget, onSaveLimits, onNavigateRecurring, onNavigateRecurringIncome, onNavigateSavings,
 }) => {
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
@@ -386,6 +387,22 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
             <div className="flex-1">
               <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>{t('recurringPaymentsTitle')}</p>
               <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>{t('recurringPaymentsDesc')}</p>
+            </div>
+            <ChevronRight size={15} style={{ color: colors.textMuted }} />
+          </button>
+
+          <button
+            onClick={onNavigateRecurringIncome}
+            className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left transition-colors cursor-pointer"
+            style={{ borderBottom: `1px solid ${colors.divider}` }}
+          >
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.22)' }}>
+              <TrendingUp size={17} style={{ color: '#22c55e' }} />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold" style={{ color: colors.textPrimary }}>Recurring Income</p>
+              <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>Salary, freelance & regular income sources</p>
             </div>
             <ChevronRight size={15} style={{ color: colors.textMuted }} />
           </button>

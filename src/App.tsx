@@ -648,6 +648,7 @@ export default function App() {
               onSaveBudget={handleSaveBudget}
               onSaveLimits={handleSaveLimits}
               onNavigateRecurring={() => navigate('recurring')}
+              onNavigateRecurringIncome={() => navigate('recurring-income')}
               onNavigateSavings={() => navigate('savings')}
             />
           )}
