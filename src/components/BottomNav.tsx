@@ -93,8 +93,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate })
       <div className="bottom-nav-bar">
         <NavBtn label={t('navHome')}     Icon={Home}          active={homeActive}    accent={accent}      inactive={inactive} isDark={isDark} onClick={() => onNavigate('home')} />
         <NavBtn label={t('navInsights')} Icon={Lightbulb}     active={insightsActive} accent={accent}     inactive={inactive} isDark={isDark} onClick={() => onNavigate('insights')} />
-        <NavBtn label="Earn"             Icon={TrendingUp}    active={earnActive}    accent={EARN_ACCENT} inactive={inactive} isDark={isDark} onClick={() => onNavigate('earn')} earn />
         <NavBtn label={t('budget')}      Icon={Wallet}        active={budgetActive}  accent={accent}      inactive={inactive} isDark={isDark} onClick={() => onNavigate('budget')} />
+        <NavBtn label="Earn"             Icon={TrendingUp}    active={earnActive}    accent={EARN_ACCENT} inactive={inactive} isDark={isDark} onClick={() => onNavigate('earn')} earn />
         <NavBtn label="More"             Icon={moreActive ? X : MoreHorizontal} active={moreActive || showMore} accent={accent} inactive={inactive} isDark={isDark} onClick={handleMore} />
       </div>
     </>
