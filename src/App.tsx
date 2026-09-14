@@ -14,7 +14,7 @@ import {
   loadSubscriptions, saveSubscriptions,
   loadRecurringIncome, saveRecurringIncome,
   loadUserName, saveUserName,
-  loadCheckIn, saveCheckIn,
+  loadCheckIn,
   SAMPLE_TRANSACTIONS, exportTransactionsToCSV,
 } from './utils/storage';
 import { isSupabaseConfigured } from './lib/supabase';
@@ -39,7 +39,7 @@ import { loadCommunities, saveCommunities } from './utils/communityUtils';
 import { calculateCashlyScore } from './utils/insights';
 import { generateVirtualTransactions } from './utils/recurringTransactions';
 import { fetchUserCommunities, createCommunityInDB, joinCommunityByCode as dbJoinCommunity } from './lib/supabaseService';
-import { SetupRemindersProvider } from './context/SetupRemindersContext';
+import { getConversionRate, conv } from './utils/currencyRates';
 import { NavigationProvider } from './context/NavigationContext';
 
 import { SplashScreen } from './components/SplashScreen';
@@ -75,7 +75,6 @@ import { MoneyStoryScreen } from './components/MoneyStoryScreen';
 import { SpendingPatternsScreen } from './components/SpendingPatternsScreen';
 import { SafeToSpendScreen } from './components/SafeToSpendScreen';
 import { AskMoneoScreen } from './components/AskMoneoScreen';
-import { MonthlyCheckInModal } from './components/MonthlyCheckInModal';
 // Stage 3 — Earn
 import { EarnScreen } from './components/EarnScreen';
 import { EarnDetailScreen } from './components/EarnDetailScreen';
@@ -117,9 +116,8 @@ export default function App() {
   const [earnProgress, setEarnProgress] = useState<EarnProgress[]>(() => loadEarnProgress());
   const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null);
 
-  // ── Check-in state ────────────────────────────────────────────────────────
-  const [checkIn, setCheckIn] = useState<MonthlyCheckIn | null>(() => loadCheckIn());
-  const [showCheckIn, setShowCheckIn] = useState(false);
+  // ── Check-in state (loaded for SafeToSpendScreen; no longer collected via modal) ──
+  const [checkIn] = useState<MonthlyCheckIn | null>(() => loadCheckIn());
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showActionMenu, setShowActionMenu] = useState(false);
@@ -201,104 +199,38 @@ export default function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  // Show monthly check-in once per month (after app is ready)
-  useEffect(() => {
-    if (showSplash || authLoading || cloudLoading) return;
-    const now = new Date();
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    if (!checkIn || checkIn.month !== currentMonth) {
-      const timer = setTimeout(() => setShowCheckIn(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showSplash, authLoading, cloudLoading]);
-
-  const handleCheckInComplete = (data: MonthlyCheckIn) => {
-    setCheckIn(data);
-    saveCheckIn(data);
-    setShowCheckIn(false);
-
-    // Flow incomes → RecurringIncome (skip duplicates by name)
-    if (data.incomes.length > 0) {
-      const existing = recurringIncome;
-      const newItems = data.incomes
-        .filter(ci => !existing.some(ri => ri.name.toLowerCase() === ci.name.toLowerCase()))
-        .map(ci => ({
-          id: ci.id,
-          name: ci.name,
-          amount: ci.amount,
-          frequency: ci.frequency,
-          nextPaymentDate: ci.nextPaymentDate,
-          category: 'Salary' as const,
-          isActive: true,
-          createdAt: Date.now(),
-        }));
-      if (newItems.length > 0) handleSaveRecurringIncome([...existing, ...newItems]);
-    }
-
-    // Flow expenses → Subscriptions (skip duplicates by name)
-    if (data.expenses.length > 0) {
-      const existing = subscriptions;
-      const newSubs = data.expenses
-        .filter(ce => !existing.some(s => s.name.toLowerCase() === ce.name.toLowerCase()))
-        .map(ce => ({
-          id: ce.id,
-          name: ce.name,
-          amount: ce.amount,
-          frequency: ce.frequency,
-          nextPaymentDate: ce.nextPaymentDate,
-          category: 'Bills' as const,
-          isActive: true,
-          createdAt: Date.now(),
-        }));
-      if (newSubs.length > 0) handleSaveSubscriptions([...existing, ...newSubs]);
-    }
-
-    // Flow savings goals → SavingGoals (skip duplicates by name)
-    if (data.goals.length > 0) {
-      const existing = savingGoals;
-      const newGoals = data.goals
-        .filter(cg => !existing.some(sg => sg.name.toLowerCase() === cg.name.toLowerCase()))
-        .map(cg => ({
-          id: cg.id,
-          name: cg.name,
-          targetAmount: cg.targetAmount,
-          currentAmount: cg.currentAmount,
-          targetDate: cg.targetDate ?? '',
-          createdAt: Date.now(),
-        }));
-      if (newGoals.length > 0) handleSaveGoals([...existing, ...newGoals]);
-    }
-
-    // Flow monthly budget (only if none set yet)
-    if (data.monthlyBudget > 0 && monthlyBudget === 0) {
-      handleSaveBudget(data.monthlyBudget);
-    }
-  };
-
-  const handleCheckInSkip = () => {
-    const now = new Date();
-    const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const skipped: MonthlyCheckIn = {
-      month,
-      completedAt: Date.now(),
-      incomes: [],
-      expenses: [],
-      goals: [],
-      monthlyBudget: 0,
-      upcomingExpenses: '',
-      skipped: true,
-    };
-    setCheckIn(skipped);
-    saveCheckIn(skipped);
-    setShowCheckIn(false);
-  };
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleCurrencyChange = (code: string) => {
-    setCurrency(code);
-    saveSelectedCurrency(code);
-    if (user) saveUserPreferences(user.id, { currency: code }).catch(() => {});
+  const handleCurrencyChange = (code: string): void => {
+    if (code === currency) return;
+    // Async conversion — fire and forget
+    (async () => {
+      try {
+        const rate = await getConversionRate(currency, code);
+        if (rate !== 1 && rate > 0) {
+          const newTx      = transactions.map(tx => ({ ...tx, amount: conv(tx.amount, rate) }));
+          const newSubs    = subscriptions.map(s  => ({ ...s, amount: conv(s.amount, rate) }));
+          const newRI      = recurringIncome.map(r  => ({ ...r, amount: conv(r.amount, rate) }));
+          const newGoals   = savingGoals.map(g => ({
+            ...g,
+            targetAmount: conv(g.targetAmount, rate),
+            currentAmount: conv(g.currentAmount, rate),
+          }));
+          const newLimits  = categoryLimits.map(l => ({ ...l, limit: conv(l.limit, rate) }));
+          const newBudget  = monthlyBudget > 0 ? conv(monthlyBudget, rate) : 0;
+
+          setTransactions(newTx);   saveTransactions(newTx);
+          setSubscriptions(newSubs); saveSubscriptions(newSubs);
+          setRecurringIncome(newRI); saveRecurringIncome(newRI);
+          setSavingGoals(newGoals);  saveSavingGoals(newGoals);
+          setCategoryLimits(newLimits); saveCategoryLimits(newLimits);
+          setMonthlyBudget(newBudget); saveMonthlyBudget(newBudget);
+        }
+      } catch { /* no network — just change symbol */ }
+      setCurrency(code);
+      saveSelectedCurrency(code);
+      if (user) saveUserPreferences(user.id, { currency: code }).catch(() => {});
+    })();
   };
 
   const handleAddTransaction = (data: { type: TransactionType; amount: number; description: string; category: string; date: string }) => {
@@ -598,11 +530,6 @@ export default function App() {
   // Authenticated: go straight to dashboard — no onboarding inside the app.
   return (
     <NavigationProvider goBack={goBack}>
-    <SetupRemindersProvider
-      data={{ recurringIncome, subscriptions, monthlyBudget, savingGoals, checkIn }}
-      onNavigate={navigate}
-      onTriggerCheckIn={() => setShowCheckIn(true)}
-    >
     <div className="desktop-bg">
       <div className="app-shell">
 
@@ -631,10 +558,9 @@ export default function App() {
               onViewAllTransactions={() => navigate('transactions')}
               onEdit={tx => setEditingTransaction(tx)}
               onDelete={tx => setDeletingTransaction(tx)}
-              onLoadSample={handleLoadSampleData}
               onAddExpense={() => openAddModal('expense')}
               onAddIncome={() => openAddModal('income')}
-              onNavigateStats={() => navigate('statistics')}
+              onScan={() => navigate('scan')}
               onNavigateBudget={() => navigate('budget')}
               onNavigateScore={() => navigate('moneo-score')}
               onNavigate={navigate}
@@ -997,16 +923,7 @@ export default function App() {
         currency={currency}
       />
 
-      {showCheckIn && (
-        <MonthlyCheckInModal
-          currency={currency}
-          onComplete={handleCheckInComplete}
-          onSkip={handleCheckInSkip}
-          onNavigate={navigate}
-        />
-      )}
     </div>
-    </SetupRemindersProvider>
     </NavigationProvider>
   );
 }

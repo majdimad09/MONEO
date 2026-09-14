@@ -41,7 +41,7 @@ export const BudgetScreen: React.FC<BudgetScreenProps> = ({
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   const { goBack } = useNavigation();
-  const [editBudget, setEditBudget] = useState(false);
+  const [editBudget, setEditBudget] = useState(monthlyBudget === 0);
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? String(monthlyBudget) : '');
 
   const [showAddLimit, setShowAddLimit] = useState(false);

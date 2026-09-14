@@ -5,8 +5,6 @@ import {
 import { SavingGoal } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { useTheme } from '../context/ThemeContext';
-import { SetupReminderCard } from './SetupReminderCard';
-import { useSetupReminders } from '../context/SetupRemindersContext';
 import { useNavigation } from '../context/NavigationContext';
 
 interface SavingsScreenProps {
@@ -39,8 +37,6 @@ const emptyForm = { name: '', targetAmount: '', currentAmount: '', targetDate: g
 export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, onSaveGoals }) => {
   const { colors, isDark } = useTheme();
   const { goBack } = useNavigation();
-  const { activeItems } = useSetupReminders();
-  const goalReminderItem = activeItems.find(i => i.key === 'savings-goal');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -203,11 +199,6 @@ export const SavingsScreen: React.FC<SavingsScreenProps> = ({ currency, goals, o
       {/* ── GOALS ─────────────────────────────────────── */}
       {goals.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {/* Setup reminder card — shown when the reminder is active */}
-          {goalReminderItem && !showForm && (
-            <SetupReminderCard item={goalReminderItem} />
-          )}
-
           {/* Standard empty state */}
           <div
             style={{

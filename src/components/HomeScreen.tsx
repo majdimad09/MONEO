@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import {
   ArrowUpRight, ArrowDownRight, ChevronRight,
   TrendingUp, TrendingDown, AlertTriangle, Sparkles,
-  Wallet, BarChart2, Zap, Flame, PiggyBank,
-  CalendarDays, Info, Sun, Moon, Star, RefreshCw, DollarSign,
+  Wallet, Camera, Zap, Flame, PiggyBank,
+  CalendarDays, Info, Sun, Moon, RefreshCw, DollarSign,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -14,7 +14,6 @@ import {
   generateInsights, calculateCashlyScore,
   getGreeting, getScoreLevel, InsightIcon,
 } from '../utils/insights';
-import { SetupSection } from './SetupReminderCard';
 
 interface HomeScreenProps {
   transactions: Transaction[];
@@ -28,10 +27,9 @@ interface HomeScreenProps {
   onViewAllTransactions: () => void;
   onEdit: (tx: Transaction) => void;
   onDelete: (tx: Transaction) => void;
-  onLoadSample: () => void;
   onAddExpense: () => void;
   onAddIncome: () => void;
-  onNavigateStats: () => void;
+  onScan: () => void;
   onNavigateBudget: () => void;
   onNavigateScore: () => void;
   onNavigate: (view: AppView) => void;
@@ -64,8 +62,8 @@ const INSIGHT_ICON_MAP: Record<InsightIcon, React.ElementType> = {
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   transactions, currency, monthlyBudget, categoryLimits, subscriptions,
   savingGoals, recurringIncome, userName,
-  onViewAllTransactions, onEdit, onLoadSample,
-  onAddExpense, onAddIncome, onNavigateStats, onNavigateBudget, onNavigateScore,
+  onViewAllTransactions, onEdit,
+  onAddExpense, onAddIncome, onScan, onNavigateBudget, onNavigateScore,
   onNavigate,
 }) => {
   const { isDark, toggleTheme, colors } = useTheme();
@@ -370,13 +368,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 onClick: onAddIncome,
               },
               {
-                label: t('statisticsTitle'),
-                icon: BarChart2,
-                grad: isDark
-                  ? 'linear-gradient(135deg, #14532d, #22c55e)'
-                  : 'linear-gradient(135deg, #4338ca, #6366f1)',
-                shadow: isDark ? 'rgba(34,197,94,0.30)' : 'rgba(99,102,241,0.30)',
-                onClick: onNavigateStats,
+                label: 'Scan',
+                icon: Camera,
+                grad: 'linear-gradient(135deg, #0e7490, #06b6d4)',
+                shadow: 'rgba(6,182,212,0.32)',
+                onClick: onScan,
               },
               {
                 label: t('budget'),
@@ -542,8 +538,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </button>
       </div>
 
-      {/* ── SETUP REMINDERS ───────────────────────────────────── */}
-      <SetupSection />
 
       {/* ── BUDGET STRIP ──────────────────────────────────────── */}
       {monthlyBudget > 0 && (
@@ -840,17 +834,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </button>
             </div>
 
-            <button
-              onClick={onLoadSample}
-              className="cursor-pointer"
-              style={{
-                fontSize: 11, fontWeight: 600,
-                color: colors.textMuted,
-                background: 'none', border: 'none',
-              }}
-            >
-              {t('loadDemo')}
-            </button>
           </div>
         </div>
       )}

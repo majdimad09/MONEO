@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   User, Mail, Hash, Briefcase, ChevronRight, Check, Globe,
   Bell, BellOff, Lock, LogOut, Download, RotateCcw,
-  Sparkles, Info, MessageCircle, Trash2, Eye, EyeOff, Crown,
+  Info, MessageCircle, Trash2, Eye, EyeOff, Crown,
   Sun, Moon,
 } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -485,16 +485,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       <div>
         <SectionHeader label={t('settingsPrivacyData')} />
         <div className="card-dark rounded-2xl overflow-hidden">
-
-          <RowButton
-            icon={Sparkles}
-            iconColor="#818cf8"
-            iconBg="rgba(129,140,248,0.1)"
-            label={t('loadDemo')}
-            desc={t('loadDemoDesc')}
-            onClick={onLoadSampleData}
-            disabled={transactionCount > 0}
-          />
 
           <RowButton
             icon={Download}
