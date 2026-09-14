@@ -549,9 +549,9 @@ export default function App() {
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  // Splash is shown on every app open, covering auth loading
-  if (showSplash || authLoading) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  // Splash covers the auth loading period; holds in visible phase until auth resolves
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} ready={!authLoading} />;
   }
 
   if (cloudLoading) {

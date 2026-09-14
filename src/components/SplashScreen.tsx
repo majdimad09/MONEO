@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface SplashScreenProps {
   onComplete: () => void;
+  ready?: boolean; // when false, hold in visible phase until auth resolves
 }
 
 const BRAND_FONT = "'Paytone One', 'Fredoka One', Impact, system-ui, sans-serif";
@@ -45,28 +46,31 @@ const LogoMark: React.FC<{ size: number; animated: boolean }> = ({ size, animate
   );
 };
 
-export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
+export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, ready = true }) => {
   const [phase, setPhase] = useState<'enter' | 'hold' | 'exit'>('enter');
   const [glowActive, setGlowActive] = useState(false);
+  const [timerDone, setTimerDone] = useState(false);
   const called = useRef(false);
 
   useEffect(() => {
-    // Glow kicks in 300ms after mount
     const t1 = setTimeout(() => setGlowActive(true), 300);
-    // Hold state at 600ms
     const t2 = setTimeout(() => setPhase('hold'), 600);
-    // Begin exit at 1700ms
-    const t3 = setTimeout(() => setPhase('exit'), 1700);
-    // Call onComplete at 2100ms (exit animation finishes)
-    const t4 = setTimeout(() => {
+    const t3 = setTimeout(() => setTimerDone(true), 1700);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
+
+  // Start exit once minimum display time has elapsed AND auth is resolved
+  useEffect(() => {
+    if (!timerDone || !ready) return;
+    setPhase('exit');
+    const t = setTimeout(() => {
       if (!called.current) {
         called.current = true;
         onComplete();
       }
-    }, 2100);
-
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [onComplete]);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [timerDone, ready, onComplete]);
 
   const logoScale = phase === 'enter' ? 0.72 : phase === 'hold' ? 1 : 1.04;
   const logoOpacity = phase === 'enter' ? 0 : phase === 'hold' ? 1 : 0;
