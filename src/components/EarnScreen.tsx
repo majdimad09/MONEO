@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import {
   TrendingUp, Clock, Star, Zap, ChevronRight, Bookmark,
-  BookmarkCheck, CheckCircle2, Circle, ArrowRight,
+  BookmarkCheck, CheckCircle2, Circle,
   GraduationCap, PenLine, ShoppingBag, Share2, LayoutList,
   Palette, Heart, Camera, Code2, BookOpen, Award,
-  BarChart3, Video, Briefcase, PiggyBank, Plus, X,
-  Sparkles, Target, Trophy,
+  BarChart3, Video, Briefcase, PiggyBank,
+  Sparkles, Target, Trophy, Lock,
 } from 'lucide-react';
 import { AppView, EarnProgress, EarnStatus } from '../types/finance';
 import { useTheme } from '../context/ThemeContext';
@@ -51,6 +51,7 @@ interface EarnScreenProps {
   onNavigate: (view: AppView) => void;
   onSelectOpportunity: (id: string) => void;
   onAddRecurringIncome: () => void;
+  isPremium?: boolean;
 }
 
 // ── Filter tabs ──────────────────────────────────────────────────────────────
@@ -247,6 +248,7 @@ function ProgressSummary({
 export const EarnScreen: React.FC<EarnScreenProps> = ({
   userAge, userStatus, userName,
   earnProgress, onProgressChange, onSelectOpportunity,
+  isPremium = false,
 }) => {
   const { isDark, colors } = useTheme();
   const [filter, setFilter] = useState<Filter>('all');
@@ -369,6 +371,86 @@ export const EarnScreen: React.FC<EarnScreenProps> = ({
                 </button>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Featured cards ────────────────────────────────────────── */}
+      {filter === 'all' && (
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Target size={13} style={{ color: '#10b981' }} />
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: colors.textMuted }}>
+              Featured Paths
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            {/* Investing Education */}
+            <button
+              onClick={() => onSelectOpportunity('learn-investing')}
+              className="text-left rounded-2xl p-4 transition-all active:scale-[0.98]"
+              style={{
+                background: isDark ? 'linear-gradient(135deg, #0d2818 0%, #0a1f14 100%)' : 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+                border: '1px solid rgba(16,185,129,0.25)',
+                boxShadow: isDark ? '0 0 30px rgba(16,185,129,0.08)' : '0 2px 16px rgba(16,185,129,0.1)',
+              }}
+            >
+              <div className="flex items-center gap-3 mb-2.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.2)' }}>
+                  <PiggyBank size={18} style={{ color: '#10b981' }} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#10b981' }}>📚 LEARNING JOURNEY</span>
+                  </div>
+                  <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Learn Investing</p>
+                </div>
+              </div>
+              <p className="text-xs leading-relaxed mb-2.5" style={{ color: colors.textSecondary }}>
+                8 structured modules on compound growth, risk, diversification, and building long-term wealth. Educational — not financial advice.
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>Beginner</span>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>1–2 hrs/week</span>
+                </div>
+                <span className="text-xs font-bold" style={{ color: '#10b981' }}>Start →</span>
+              </div>
+            </button>
+
+            {/* Build Your Future */}
+            <button
+              onClick={() => onSelectOpportunity('build-your-future')}
+              className="text-left rounded-2xl p-4 transition-all active:scale-[0.98]"
+              style={{
+                background: isDark ? 'linear-gradient(135deg, #0f0f1a 0%, #13103a 100%)' : 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+                border: '1px solid rgba(99,102,241,0.25)',
+                boxShadow: isDark ? '0 0 30px rgba(99,102,241,0.08)' : '0 2px 16px rgba(99,102,241,0.1)',
+              }}
+            >
+              <div className="flex items-center gap-3 mb-2.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(99,102,241,0.2)' }}>
+                  <TrendingUp size={18} style={{ color: '#6366f1' }} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#6366f1' }}>🎯 PREMIUM PATH</span>
+                    {!isPremium && <Lock size={9} style={{ color: '#6366f1' }} />}
+                  </div>
+                  <p className="text-sm font-bold" style={{ color: colors.textPrimary }}>Build Your Future</p>
+                </div>
+              </div>
+              <p className="text-xs leading-relaxed mb-2.5" style={{ color: colors.textSecondary }}>
+                A personalised long-term roadmap with milestones, skill development, and monthly progress tracking — designed to keep you moving for months.
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  {!isPremium && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(99,102,241,0.15)', color: '#6366f1' }}>Premium</span>}
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(99,102,241,0.1)', color: '#6366f1' }}>3–5 hrs/week</span>
+                </div>
+                <span className="text-xs font-bold" style={{ color: '#6366f1' }}>Explore →</span>
+              </div>
+            </button>
           </div>
         </div>
       )}

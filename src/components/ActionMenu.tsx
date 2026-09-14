@@ -31,7 +31,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ onSelect, onClose }) => 
     { id: 'expense' as ActionId, icon: ArrowDownRight, label: t('addExpense'), desc: 'Record a payment or purchase', color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
     { id: 'income' as ActionId, icon: ArrowUpRight, label: t('addIncome'), desc: 'Log salary, freelance or any inflow', color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.28)' },
     { id: 'recurring' as ActionId, icon: RefreshCw, label: t('addSubscription'), desc: t('recurringPaymentsDesc'), color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.25)' },
-    { id: 'scan' as ActionId, icon: Camera, label: 'Scan Receipt', desc: 'Coming soon', color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', border: 'rgba(45,212,191,0.22)', disabled: true },
+    { id: 'scan' as ActionId, icon: Camera, label: 'Scan Receipt', desc: 'Scan & extract from a receipt', color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', border: 'rgba(45,212,191,0.22)' },
   ];
 
   return (

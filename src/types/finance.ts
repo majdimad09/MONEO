@@ -164,11 +164,15 @@ export type AppView =
   | 'recurring-income' | 'premium' | 'projection' | 'money-story'
   | 'spending-patterns' | 'safe-to-spend' | 'ask-moneo'
   // Stage 2 — Community
-  | 'community'           // Community hub tab
-  | 'community-detail'    // Specific community view
+  | 'community'
+  | 'community-detail'
   // Stage 3 — Earn
-  | 'earn'                // Earn hub
-  | 'earn-detail';        // Opportunity detail
+  | 'earn'
+  | 'earn-detail'
+  | 'earn-plan'
+  | 'earn-investing'
+  // Scan
+  | 'scan';
 
 export type EarnStatus = 'saved' | 'interested' | 'in-progress' | 'completed';
 
@@ -176,6 +180,11 @@ export interface EarnProgress {
   opportunityId: string;
   status: EarnStatus;
   savedAt: number;
+  completedSteps?: number[];
+  startedAt?: number;
+  lastActivityAt?: number;
+  streakDays?: number;
+  planActivated?: boolean;
 }
 
 export type RecurringIncomeFrequency = 'weekly' | 'biweekly' | 'monthly';

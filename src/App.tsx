@@ -82,6 +82,8 @@ import { EarnDetailScreen } from './components/EarnDetailScreen';
 import { loadEarnProgress, saveEarnProgress } from './utils/earnStorage';
 import { EarnProgress } from './types/finance';
 import { EARN_OPPORTUNITIES } from './utils/earnData';
+// Scan
+import { ScanReceiptScreen } from './components/ScanReceiptScreen';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -544,7 +546,7 @@ export default function App() {
     if (action === 'expense') { openAddModal('expense'); }
     else if (action === 'income') { openAddModal('income'); }
     else if (action === 'recurring') { navigate('recurring'); }
-    else if (action === 'scan') { showToast('Scan receipt — coming soon!'); }
+    else if (action === 'scan') { navigate('scan'); }
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -852,6 +854,7 @@ export default function App() {
               onNavigate={navigate}
               onSelectOpportunity={handleSelectOpportunity}
               onAddRecurringIncome={() => navigate('recurring-income')}
+              isPremium={isPremium}
             />
           )}
 
@@ -864,9 +867,23 @@ export default function App() {
                 earnProgress={earnProgress}
                 onProgressChange={handleEarnProgressChange}
                 onAddRecurringIncome={() => navigate('recurring-income')}
+                isPremium={isPremium}
+                onUpgrade={() => navigate('premium')}
               />
             );
           })()}
+
+          {/* ── Scan Receipt ───────────────────────────────────── */}
+          {currentView === 'scan' && (
+            <ScanReceiptScreen
+              onSaveTransaction={(data) => {
+                handleAddTransaction(data);
+                navigate('home');
+              }}
+              existingTransactions={transactions}
+              currency={currency}
+            />
+          )}
 
           {currentView === 'premium' && (
             <PremiumUpgradeScreen
