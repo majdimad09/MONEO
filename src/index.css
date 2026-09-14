@@ -674,6 +674,29 @@ body {
   from { stroke-dashoffset: 999; }
   to   { stroke-dashoffset: var(--target-offset); }
 }
+@keyframes phonefloat {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-7px); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.85; }
+}
+
+.phone-float { animation: phonefloat 5s ease-in-out infinite; }
+
+/* Landing phone sizes */
+.phone-demo-shell {
+  width: 256px;
+  height: 510px;
+  flex-shrink: 0;
+}
+@media (min-width: 520px) {
+  .phone-demo-shell {
+    width: 288px;
+    height: 574px;
+  }
+}
 
 .page-enter  { animation: pageEnter 0.22s ease forwards; }
 .slide-up    { animation: slideUp 0.26s ease forwards; }
