@@ -61,6 +61,9 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     'community-detail':  t('navCommunity'),
     'what-if':           t('featWhatIf'),
     'earn-detail':       'Earn',
+    'income-breakdown':  'Income',
+    'expense-breakdown': 'Expenses',
+    'scan':              'Scan Receipt',
   };
   const backLabel = BACK_LABELS[currentView];
 

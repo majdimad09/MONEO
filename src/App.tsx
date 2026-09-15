@@ -83,6 +83,8 @@ import { EarnProgress } from './types/finance';
 import { EARN_OPPORTUNITIES } from './utils/earnData';
 // Scan
 import { ScanReceiptScreen } from './components/ScanReceiptScreen';
+// Money breakdowns
+import { MoneyBreakdownScreen } from './components/MoneyBreakdownScreen';
 
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut, resetPassword, updatePassword, isRecoveryMode } = useAuth();
@@ -564,6 +566,8 @@ export default function App() {
               onNavigateBudget={() => navigate('budget')}
               onNavigateScore={() => navigate('moneo-score')}
               onNavigate={navigate}
+              onViewIncome={() => navigate('income-breakdown')}
+              onViewExpenses={() => navigate('expense-breakdown')}
             />
           )}
 
@@ -858,6 +862,22 @@ export default function App() {
               />
             );
           })()}
+
+          {/* ── Income / Expense breakdowns ────────────────────── */}
+          {(currentView === 'income-breakdown' || currentView === 'expense-breakdown') && (
+            <MoneyBreakdownScreen
+              type={currentView === 'income-breakdown' ? 'income' : 'expense'}
+              transactions={transactions}
+              recurringIncome={recurringIncome}
+              subscriptions={subscriptions}
+              currency={currency}
+              onEditTransaction={tx => setEditingTransaction(tx)}
+              onNavigateRecurring={() => navigate('recurring')}
+              onNavigateRecurringIncome={() => navigate('recurring-income')}
+              onAddIncome={() => openAddModal('income')}
+              onAddExpense={() => openAddModal('expense')}
+            />
+          )}
         </div>
 
         <BottomNav

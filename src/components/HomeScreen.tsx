@@ -33,6 +33,8 @@ interface HomeScreenProps {
   onNavigateBudget: () => void;
   onNavigateScore: () => void;
   onNavigate: (view: AppView) => void;
+  onViewIncome: () => void;
+  onViewExpenses: () => void;
 }
 
 function getCurrentMonthPrefix(): string {
@@ -64,7 +66,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   savingGoals, recurringIncome, userName,
   onViewAllTransactions, onEdit,
   onAddExpense, onAddIncome, onScan, onNavigateBudget, onNavigateScore,
-  onNavigate,
+  onNavigate, onViewIncome, onViewExpenses,
 }) => {
   const { isDark, toggleTheme, colors } = useTheme();
   const { t } = useLanguage();
@@ -245,9 +247,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Income & Expenses sub-cards — dark: near-black with accent glow */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, position: 'relative' }}>
 
-            {/* Income sub-card */}
+            {/* Income sub-card — tap to view income breakdown */}
             <button
-              onClick={onAddIncome}
+              onClick={onViewIncome}
               className="text-left cursor-pointer active:scale-[0.96] transition-transform"
               style={{
                 padding: '14px 14px',
@@ -263,20 +265,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 }),
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <div style={{
-                  width: 20, height: 20, borderRadius: 7,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isDark ? 'rgba(34,197,94,0.16)' : 'rgba(255,255,255,0.22)',
-                }}>
-                  <ArrowUpRight size={12} style={{ color: isDark ? '#22c55e' : '#ffffff' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: 7,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isDark ? 'rgba(34,197,94,0.16)' : 'rgba(255,255,255,0.22)',
+                  }}>
+                    <ArrowUpRight size={12} style={{ color: isDark ? '#22c55e' : '#ffffff' }} />
+                  </div>
+                  <span style={{
+                    fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
+                    color: isDark ? '#22c55e' : 'rgba(255,255,255,0.90)',
+                  }}>
+                    {t('income')}
+                  </span>
                 </div>
-                <span style={{
-                  fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
-                  color: isDark ? '#22c55e' : 'rgba(255,255,255,0.90)',
-                }}>
-                  {t('income')}
-                </span>
+                <ChevronRight size={11} style={{ color: isDark ? 'rgba(34,197,94,0.50)' : 'rgba(255,255,255,0.55)' }} />
               </div>
               <p style={{
                 fontSize: 17, fontWeight: 800, letterSpacing: '-0.03em',
@@ -288,9 +293,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
             </button>
 
-            {/* Expenses sub-card */}
+            {/* Expenses sub-card — tap to view expense breakdown */}
             <button
-              onClick={onAddExpense}
+              onClick={onViewExpenses}
               className="text-left cursor-pointer active:scale-[0.96] transition-transform"
               style={{
                 padding: '14px 14px',
@@ -306,20 +311,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 }),
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <div style={{
-                  width: 20, height: 20, borderRadius: 7,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isDark ? 'rgba(248,113,113,0.16)' : 'rgba(255,255,255,0.22)',
-                }}>
-                  <ArrowDownRight size={12} style={{ color: isDark ? '#f87171' : '#ffffff' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: 7,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isDark ? 'rgba(248,113,113,0.16)' : 'rgba(255,255,255,0.22)',
+                  }}>
+                    <ArrowDownRight size={12} style={{ color: isDark ? '#f87171' : '#ffffff' }} />
+                  </div>
+                  <span style={{
+                    fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
+                    color: isDark ? '#f87171' : 'rgba(255,255,255,0.90)',
+                  }}>
+                    {t('expenses')}
+                  </span>
                 </div>
-                <span style={{
-                  fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.13em',
-                  color: isDark ? '#f87171' : 'rgba(255,255,255,0.90)',
-                }}>
-                  {t('expenses')}
-                </span>
+                <ChevronRight size={11} style={{ color: isDark ? 'rgba(248,113,113,0.50)' : 'rgba(255,255,255,0.55)' }} />
               </div>
               <p style={{
                 fontSize: 17, fontWeight: 800, letterSpacing: '-0.03em',

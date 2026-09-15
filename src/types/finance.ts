@@ -172,7 +172,10 @@ export type AppView =
   | 'earn-plan'
   | 'earn-investing'
   // Scan
-  | 'scan';
+  | 'scan'
+  // Money breakdowns
+  | 'income-breakdown'
+  | 'expense-breakdown';
 
 export type EarnStatus = 'saved' | 'interested' | 'in-progress' | 'completed';
 
